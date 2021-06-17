@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.temp</groupId>
+    <artifactId>project-2e</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>project-2e-ear</artifactId>
+  <packaging>ear</packaging>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.temp</groupId>
+  		<artifactId>project-2e-ejb</artifactId>
+  		<version>${project.version}</version>
+  		<type>ejb</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.temp</groupId>
+  		<artifactId>project-2e-ws</artifactId>
+  		<version>${project.version}</version>
+  		<type>war</type>
+  	</dependency>
+  </dependencies>
+ <!-- <build>
+  	<plugins>
+		<plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-jar-maven-plugin</artifactId>
+                <configuration>
+                    
+                    <feature-packs>
+                   		<feature-pack>
+                        	<location>wildfly@maven(org.jboss.universe:community-universe)#23.0.2.Final</location>
+                       	</feature-pack>
+	                    <feature-pack>
+	                        <groupId>org.wildfly</groupId>
+	                        <artifactId>wildfly-datasources-galleon-pack</artifactId>
+	                        <version>2.0.0.Final</version>
+	                    </feature-pack>	
+                    </feature-packs>
+                    <layers>
+                        <layer>ejb-lite</layer>
+                        <layer>jaxrs</layer>
+                        <layer>cdi</layer>
+                        <layer>jpa</layer>
+                   		<layer>mysql-datasource</layer>
+                        <layer>mysql-driver</layer>
+                    </layers>
+                    <plugin-options>
+                        <jboss-fork-embedded>${plugin.fork.embedded}</jboss-fork-embedded>
+                    </plugin-options>
+                    <skip>false</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+  	</plugins>
+  </build> -->
+</project>
