@@ -12,7 +12,9 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
+import application.entity.PlayerCharacter;
 import application.entity.ToDo;
+import application.entity.User;
 import application.utils.MiscUtils;
 
 @Stateless
@@ -74,5 +76,15 @@ public class PersistenceSLS extends SLSBase {
 	public ToDo persistToDo(final ToDo toDo)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return this.persistItem(toDo, toDo.methodGetKey(), "persistToDo");
+	}
+
+	public PlayerCharacter persistPlayerCharacter(final PlayerCharacter character)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return this.persistItem(character, character.methodGetKey(), "persistPlayerCharacter");
+	}
+
+	public User persistUser(final User user)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return this.persistItem(user, user.methodGetKey(), "persistUser");
 	}
 }
