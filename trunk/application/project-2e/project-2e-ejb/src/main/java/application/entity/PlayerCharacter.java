@@ -2,7 +2,9 @@ package application.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -36,18 +40,36 @@ public class PlayerCharacter implements HandleItemInf {
 	String name;
 
 	@ManyToOne
-	@JoinColumn(name = "userId", nullable = false)
-	User user;
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	@OneToOne(mappedBy = "playerCharacter", cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumn
+	private Inventory inventory;
+
+	@OneToOne(mappedBy = "playerCharacter", cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumn
+	private Background background;
+
+	@OneToMany(mappedBy = "playerCharacter")
+	private List<Level> levels;
+
 
 
 	public PlayerCharacter() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public PlayerCharacter(final Long pId, final String pName) {
+	public PlayerCharacter(final Long pId, final String pName, final User pUser, final Inventory pInventory, final Background pBackground,
+			final List<Level> pLevels) {
 		super();
 		this.id = pId;
 		this.name = pName;
+		this.user = pUser;
+		this.inventory = pInventory;
+		this.background = pBackground;
+		this.levels = pLevels;
 	}
 
 	public Long getId() {
@@ -64,6 +86,38 @@ public class PlayerCharacter implements HandleItemInf {
 
 	public void setName(final String pName) {
 		this.name = pName;
+	}
+
+	public User getUser() {
+		return this.user;
+	}
+
+	public void setUser(final User pUser) {
+		this.user = pUser;
+	}
+
+	public Inventory getInventory() {
+		return this.inventory;
+	}
+
+	public void setInventory(final Inventory pInventory) {
+		this.inventory = pInventory;
+	}
+
+	public Background getBackground() {
+		return this.background;
+	}
+
+	public void setBackground(final Background pBackground) {
+		this.background = pBackground;
+	}
+
+	public List<Level> getLevels() {
+		return this.levels;
+	}
+
+	public void setLevels(final List<Level> pLevels) {
+		this.levels = pLevels;
 	}
 
 	public void copyFields(final PlayerCharacter item) {
