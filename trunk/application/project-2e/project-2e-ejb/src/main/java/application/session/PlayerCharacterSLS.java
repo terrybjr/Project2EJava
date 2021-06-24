@@ -1,6 +1,7 @@
 package application.session;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import application.entity.Background;
+import application.entity.Inventory;
 import application.entity.PlayerCharacter;
 import application.entity.User;
 import application.entity.PlayerCharacter;
@@ -40,12 +43,18 @@ public class PlayerCharacterSLS {
 			throw new Error("crap");
 		}
 		User user = optUser.get();
-		PlayerCharacter newCharacter = new PlayerCharacter();
-		newCharacter.setName(characterName);
-
-		// persist into db
-		return this.persistenceSLS.persistPlayerCharacter(newCharacter);
+		PlayerCharacter newCharacter = new PlayerCharacter(characterName, user, new Inventory(), new Background(),
+				new ArrayList());
+		newCharacter = this.persistenceSLS.persistPlayerCharacter(newCharacter);
 		// return the persisted object to the client
+		return newCharacter;
+	}
+
+	public void createAndSetBackground(final PlayerCharacter pc)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Background background = new Background();
+		pc.setBackground(this.persistenceSLS.persistBackground(background));
+
 	}
 
 	public PlayerCharacter updatePlayerCharacter(final PlayerCharacter character) {

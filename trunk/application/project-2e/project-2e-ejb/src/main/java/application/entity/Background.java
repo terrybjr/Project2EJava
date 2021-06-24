@@ -1,5 +1,8 @@
 package application.entity;
 
+import java.io.Serializable;
+
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,18 +13,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import application.data.HandleItemInf;
 
 @Entity
-public class Background implements HandleItemInf {
+public class Background implements HandleItemInf, Serializable {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column
 	private Long id;
 
 	@OneToOne
-	@MapsId
 	@JoinColumn(name = "player_character_id")
+	@JsonbTransient
 	private PlayerCharacter playerCharacter;
 
 	public Background() {

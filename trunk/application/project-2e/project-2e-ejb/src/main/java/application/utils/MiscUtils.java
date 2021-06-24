@@ -10,6 +10,21 @@ import java.util.Iterator;
  */
 public class MiscUtils {
 
+	public static boolean hasValue(final String val) {
+		if (val == null || val.trim().isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+	public static String getParmString(final String parm) {
+		if (parm != null) {
+			return parm.trim();
+		} else {
+			return "";
+		}
+	}
+
 	public static Method matchMethod(final Method[] list, final String methodName) {
 		if (methodName == null) {
 			return null;

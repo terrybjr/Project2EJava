@@ -12,6 +12,9 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
+import application.entity.Background;
+import application.entity.Inventory;
+import application.entity.Level;
 import application.entity.PlayerCharacter;
 import application.entity.ToDo;
 import application.entity.User;
@@ -71,6 +74,21 @@ public class PersistenceSLS extends SLSBase {
 			// TODO: debug Too many
 		}
 		return Optional.ofNullable(results.get(0));
+	}
+
+	public Level persistInventory(final Level item)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return this.persistItem(item, item.methodGetKey(), "persistLevel");
+	}
+
+	public Inventory persistInventory(final Inventory item)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return this.persistItem(item, item.methodGetKey(), "persistInventory");
+	}
+
+	public Background persistBackground(final Background item)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return this.persistItem(item, item.methodGetKey(), "persistBackground");
 	}
 
 	public ToDo persistToDo(final ToDo toDo)
