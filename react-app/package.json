@@ -1,14 +1,22 @@
 {
-  "name": "react-app",
+  "name": "pathfinder-2e-character-creation",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^12.20.13",
+    "@types/react": "^17.0.8",
+    "@types/react-dom": "^17.0.5",
+    "clsx": "^1.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "typescript": "^4.3.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
@@ -18,10 +26,25 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
+    "root": true,
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "parserOptions": {
+      "project": ["./tsconfig.json"]
+    },
+    "rules": {
+      "object-curly-newline": ["error", { "multiline": true} ]
+    }
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "printWidth": 100,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5"
   },
   "browserslist": {
     "production": [
@@ -34,5 +57,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.3.0",
+    "tslint-config-prettier": "^1.18.0"
   }
 }
