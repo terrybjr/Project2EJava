@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="p2e_char" id="Project_a0c" database="MySql" >
+	<comment><![CDATA[Pathfinder Second Edition Character Builder]]></comment>
+	<schema name="p2e" >
+		<table name="Tbl_AbilityCode" prior="Tbl_Ability" >
+			<column name="AbilityCode" prior="Ability" type="char" length="3" jt="1" mandatory="y" >
+				<comment><![CDATA[STR, DEX, CON, INT, WIS, CHA]]></comment>
+			</column>
+			<column name="Ability" prior="AbilityName" type="varchar" length="100" jt="12" />
+			<column name="AbilityDesc" type="varchar" length="500" jt="12" />
+			<column name="AbilityType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[ancestry, background, class, choice]]></comment>
+			</column>
+			<index name="Pk_Tbl_Ability_Ability" unique="PRIMARY_KEY" >
+				<column name="AbilityCode" />
+			</index>
+			<fk name="Fk_Tbl_Ability_Tbl_Ability_Type" to_schema="p2e" to_table="Tbl_Ability_Type" >
+				<fk_column name="AbilityType" pk="AbilityType" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Ability_Type" prior="Tbl" >
+			<column name="AbilityType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[ancestry, background, class, choice]]></comment>
+			</column>
+			<index name="Pk_Tbl_Ability_Type_AbilityType" unique="PRIMARY_KEY" >
+				<column name="AbilityType" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Action" prior="Tbl" >
+			<comment><![CDATA[Round consists of free action, 3 actions, + 1 reaction]]></comment>
+			<column name="Action" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="ActionType" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Size" type="tinyint" jt="-6" mandatory="y" >
+				<comment><![CDATA[0-3]]></comment>
+			</column>
+			<index name="Pk_Tbl_Action_Action" unique="PRIMARY_KEY" >
+				<column name="Action" />
+			</index>
+			<fk name="Fk_Tbl_Action_Tbl_Action_Type" to_schema="p2e" to_table="Tbl_Action_Type" >
+				<fk_column name="ActionType" pk="ActionType" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Action_Req_Skill" prior="Tbl" >
+			<column name="ActionReqSkillId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="Action" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="SkillName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="SkillProficiencyLevel" prior="SkillProficiency" type="tinyint" jt="-6" mandatory="y" >
+				<comment><![CDATA[1-5]]></comment>
+			</column>
+			<index name="Pk_Tbl_Action_Req_Skill_ActionReqSkillId" unique="PRIMARY_KEY" >
+				<column name="ActionReqSkillId" />
+			</index>
+			<fk name="Fk_Tbl_Action_Req_Skill_Tbl_Action" to_schema="p2e" to_table="Tbl_Action" >
+				<fk_column name="Action" pk="Action" />
+			</fk>
+			<fk name="Fk_Tbl_Action_Req_Skill_Tbl_Skill" to_schema="p2e" to_table="Tbl_Skill" >
+				<fk_column name="SkillName" pk="Skill" />
+			</fk>
+			<fk name="Fk_Tbl_Action_Req_Skill_Tbl_Skill_Proficiency" to_schema="p2e" to_table="Tbl_Skill_Proficiency" >
+				<fk_column name="SkillProficiencyLevel" pk="SkillProficiencyLevel" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Action_Type" prior="Tbl" >
+			<comment><![CDATA[free, reaction, action, activities]]></comment>
+			<column name="ActionType" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="MinSize" type="tinyint" length="100" jt="-6" >
+				<comment><![CDATA[0-2]]></comment>
+			</column>
+			<column name="MaxSize" type="tinyint" jt="-6" >
+				<comment><![CDATA[0-3]]></comment>
+			</column>
+			<index name="Pk_Tbl_Action_Type_ActionType" unique="PRIMARY_KEY" >
+				<column name="ActionType" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Alignment" prior="Tbl" >
+			<comment><![CDATA[Lawful, Neutral, Choatic
+Good, Neutral, Evil]]></comment>
+			<column name="AlignmentCode" prior="Alignment" type="varchar" length="2" jt="12" mandatory="y" >
+				<comment><![CDATA[LG, LN, LE, NG, N, NE, CG, CN, CE]]></comment>
+			</column>
+			<column name="Alignment" prior="AlignmentName" type="varchar" length="100" jt="12" />
+			<index name="Pk_Tbl_Alignment_Alignment" unique="PRIMARY_KEY" >
+				<column name="AlignmentCode" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Ancestry" prior="Tbl" >
+			<column name="Ancestry" prior="AncestryName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="CreatureType" type="varchar" length="100" jt="12" />
+			<column name="RarityLevel" type="smallint" jt="5" />
+			<column name="Size" type="varchar" length="100" jt="12" />
+			<column name="HpBonus" type="int" jt="4" />
+			<column name="Speed" type="blob" jt="2004" />
+			<index name="Pk_Tbl_Ancestry_AncestryName" unique="PRIMARY_KEY" >
+				<column name="Ancestry" />
+			</index>
+			<fk name="Fk_Tbl_Ancestry_Tbl_Trait" to_schema="p2e" to_table="Tbl_Trait" >
+				<fk_column name="Ancestry" pk="Trait" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Ancestry_Ability" prior="Tbl" >
+			<comment><![CDATA[more than one ability per ancestry
+specified boost, specified flaw, free boost, taken flaw]]></comment>
+			<column name="AncestryAbilityId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="Ancestry" prior="AncestryName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="AbilityCode" prior="Ability" type="char" length="3" jt="1" mandatory="y" >
+				<comment><![CDATA[STR, DEX, CON, INT, WIS, CHA]]></comment>
+			</column>
+			<column name="BoostType" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[specified boost, specified flaw, free boost, taken flaw]]></comment>
+			</column>
+			<column name="BoostAmount" type="int" jt="4" />
+			<index name="Pk_Tbl_Ancestry_Ability_AncestryAbilityId" unique="PRIMARY_KEY" >
+				<column name="AncestryAbilityId" />
+			</index>
+			<fk name="Fk_Tbl_Ancestry_Ability_Tbl_Ability" to_schema="p2e" to_table="Tbl_AbilityCode" >
+				<fk_column name="AbilityCode" pk="AbilityCode" />
+			</fk>
+			<fk name="Fk_Tbl_Ancestry_Ability_Tbl_Ancestry" to_schema="p2e" to_table="Tbl_Ancestry" >
+				<fk_column name="Ancestry" pk="Ancestry" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Ancestry_Feat" prior="Tbl" >
+			<column name="AncestryFeatId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="FeatId" type="int" jt="4" mandatory="y" >
+				<comment><![CDATA[Paizo Id?]]></comment>
+			</column>
+			<column name="AncestryName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Ancestry_Feat_AncestryFeatId" unique="PRIMARY_KEY" >
+				<column name="AncestryFeatId" />
+			</index>
+			<fk name="Fk_Tbl_Ancestry_Feat_Tbl_Feat" to_schema="p2e" to_table="Tbl_Feat" >
+				<fk_column name="FeatId" pk="FeatId" />
+			</fk>
+			<fk name="Fk_Tbl_Ancestry_Feat_Tbl_Ancestry" to_schema="p2e" to_table="Tbl_Ancestry" >
+				<fk_column name="AncestryName" pk="Ancestry" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Ancestry_Language" prior="Tbl" >
+			<column name="AncestryLanguageId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="Ancestry" prior="AncestryName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Language" prior="LanguageName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Ancestry_Language_AncestryLanguageId" unique="PRIMARY_KEY" >
+				<column name="AncestryLanguageId" />
+			</index>
+			<fk name="Fk_Tbl_Ancestry_Language_Tbl_Ancestry" to_schema="p2e" to_table="Tbl_Ancestry" >
+				<fk_column name="Ancestry" pk="Ancestry" />
+			</fk>
+			<fk name="Fk_Tbl_Ancestry_Language_Tbl_Language" to_schema="p2e" to_table="Tbl_Language" >
+				<fk_column name="Language" pk="Language" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Archetype" prior="Tbl" >
+			<comment><![CDATA[mods Class - may not be needed as Extra table]]></comment>
+			<column name="ArchetypeId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="Class" prior="ClassName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Archetype" prior="ArchetypeName" type="varchar" length="100" jt="12" />
+			<index name="Pk_Tbl_Archetype_ArchetypeId" unique="PRIMARY_KEY" >
+				<column name="ArchetypeId" />
+			</index>
+			<fk name="Fk_Tbl_Archetype_Tbl_Class" to_schema="p2e" to_table="Tbl_Class" >
+				<fk_column name="Class" pk="Class" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Archetype_Feat" prior="Tbl" >
+			<column name="ArchetypeFeatId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="FeatId" type="int" jt="4" mandatory="y" >
+				<comment><![CDATA[Paizo Id?]]></comment>
+			</column>
+			<column name="ArchetypeId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Archetype_Feat_ArchetypeFeatId" unique="PRIMARY_KEY" >
+				<column name="ArchetypeFeatId" />
+			</index>
+			<fk name="Fk_Tbl_Archetype_Feat_Tbl_Feat" to_schema="p2e" to_table="Tbl_Feat" >
+				<fk_column name="FeatId" pk="FeatId" />
+			</fk>
+			<fk name="Fk_Tbl_Archetype_Feat_Tbl_Archetype" to_schema="p2e" to_table="Tbl_Archetype" >
+				<fk_column name="ArchetypeId" pk="ArchetypeId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Background" prior="Tbl" >
+			<column name="BackgroundId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="BackgroundName" type="varchar" length="100" jt="12" />
+			<index name="Pk_Tbl_Background_BackgroundId" unique="PRIMARY_KEY" >
+				<column name="BackgroundId" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Campaign" prior="Tbl" >
+			<column name="Campaign" prior="CampaignName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Unq_Tbl_Campaign_CampaignName" unique="UNIQUE_KEY" >
+				<column name="Campaign" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Campaign_Day" prior="Tbl" >
+			<column name="CampaignDay" type="int" jt="4" mandatory="y" />
+			<column name="CampaignDisplayDate" type="date" jt="91" />
+			<column name="Campaign" prior="CampaignName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="PartyId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Campaign_Day_CampaignDay" unique="PRIMARY_KEY" >
+				<column name="CampaignDay" />
+			</index>
+			<fk name="Fk_Tbl_Campaign_Day_Tbl_Campaign" to_schema="p2e" to_table="Tbl_Campaign" >
+				<fk_column name="Campaign" pk="Campaign" />
+			</fk>
+			<fk name="Fk_Tbl_Campaign_Day_Tbl_Party" to_schema="p2e" to_table="Tbl_Party" >
+				<fk_column name="PartyId" pk="PartyId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char" prior="Tbl" >
+			<column name="CharId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="CreatureType" type="varchar" length="30" jt="12" mandatory="y" >
+				<defo><![CDATA['humanoid']]></defo>
+				<comment><![CDATA[Humanoid, Construct, Dragon]]></comment>
+			</column>
+			<column name="Ancestry" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Heritage" type="varchar" length="100" jt="12" />
+			<column name="Size" type="varchar" length="20" jt="12" >
+				<defo><![CDATA['medium']]></defo>
+			</column>
+			<column name="IsCreature" type="bit" jt="-7" />
+			<column name="IsNpc" type="bit" jt="-7" />
+			<column name="RarityLevel" type="tinyint" jt="-6" mandatory="y" >
+				<comment><![CDATA[1-4]]></comment>
+			</column>
+			<column name="DeityName" type="varchar" length="100" jt="12" />
+			<column name="Alignment" type="varchar" length="2" jt="12" mandatory="y" >
+				<comment><![CDATA[LG, LN, LE, NG, N, NE, CG, CN, CE]]></comment>
+			</column>
+			<index name="Pk_Tbl_Char_CharId" unique="PRIMARY_KEY" >
+				<column name="CharId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Tbl_Rarity" to_schema="p2e" to_table="Tbl_Rarity" >
+				<fk_column name="RarityLevel" pk="RarityLevel" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Tbl_Deity" to_schema="p2e" to_table="Tbl_Deity" >
+				<fk_column name="DeityName" pk="DeityName" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Tbl_Alignment" to_schema="p2e" to_table="Tbl_Alignment" >
+				<fk_column name="Alignment" pk="AlignmentCode" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Tbl_Char_Equipment" to_schema="p2e" to_table="Tbl_Char_Equipment" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Ability" prior="Tbl" >
+			<comment><![CDATA[base ability when starting out
+ancestry cannot mod base ability >12, <8
+limit 2 background boost
+limit 4 determine scores]]></comment>
+			<column name="CharAbilityId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="AbilityCode" prior="Ability" type="char" length="3" jt="1" mandatory="y" >
+				<comment><![CDATA[STR, DEX, CON, INT, WIS, CHA]]></comment>
+			</column>
+			<column name="AbilityType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[ancestry, background, class, determine (choice)]]></comment>
+			</column>
+			<index name="Pk_Tbl_Char_Ability_CharAbilityId" unique="PRIMARY_KEY" >
+				<column name="CharAbilityId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Ability_Tbl_Ability" to_schema="p2e" to_table="Tbl_AbilityCode" >
+				<fk_column name="AbilityCode" pk="AbilityCode" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Ability_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Ability_Tbl_Ability_Type" to_schema="p2e" to_table="Tbl_Ability_Type" >
+				<fk_column name="AbilityType" pk="AbilityType" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Equipment" prior="Char_Equipment" >
+			<comment><![CDATA[unique rules based on equipment]]></comment>
+			<column name="CharEquipmentId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="EquipmentId" type="int" jt="4" mandatory="y" />
+			<column name="IsEquipped" type="int" jt="4" />
+			<index name="Pk_Char_Equipment_CharEquipmentId" unique="PRIMARY_KEY" >
+				<column name="CharEquipmentId" />
+			</index>
+			<index name="Unq_Tbl_Char_Equipment_CharId" unique="UNIQUE_KEY" >
+				<column name="CharId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Equipment_Tbl_Equipment" to_schema="p2e" to_table="Tbl_Equipment" >
+				<fk_column name="EquipmentId" pk="EquipmentId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Language" prior="Tbl" >
+			<comment><![CDATA[similar to Char_Skills
+limited by Feat & Ancestry]]></comment>
+			<column name="CharLanguageId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="LanguageName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Char_Language_CharLanguageId" unique="PRIMARY_KEY" >
+				<column name="CharLanguageId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Language_Tbl_Language" to_schema="p2e" to_table="Tbl_Language" >
+				<fk_column name="LanguageName" pk="Language" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Language_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Level" prior="Tbl" >
+			<column name="CharLevelId" prior="Id" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="Level" type="tinyint" jt="-6" mandatory="y" unsigned="y" >
+				<defo><![CDATA[1]]></defo>
+				<comment><![CDATA[1-20]]></comment>
+			</column>
+			<column name="BonusAbilityCode" type="int" jt="4" />
+			<index name="Pk_Tbl_Char_Level_Id" unique="PRIMARY_KEY" >
+				<column name="CharLevelId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Level_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Level_Tbl_Level" to_schema="p2e" to_table="Tbl_Level" >
+				<fk_column name="Level" pk="Level" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Level_Feat" prior="Tbl" >
+			<comment><![CDATA[can have more than one feat per level
+can sub skill feat for general feat]]></comment>
+			<column name="CharLevelFeatId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharLevelId" type="int" jt="4" mandatory="y" />
+			<column name="FeatId" type="int" jt="4" mandatory="y" >
+				<comment><![CDATA[Paizo Id?]]></comment>
+			</column>
+			<index name="Pk_Tbl_Char_Level_Feat_CharLevelFeatId" unique="PRIMARY_KEY" >
+				<column name="CharLevelFeatId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Level_Feat_Tbl_Char_Level" to_schema="p2e" to_table="Tbl_Char_Level" >
+				<fk_column name="CharLevelId" pk="CharLevelId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Level_Feat_Tbl_Feat" to_schema="p2e" to_table="Tbl_Feat" >
+				<fk_column name="FeatId" pk="FeatId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Spell_Prepared" prior="Tbl" >
+			<column name="CharSpellPreparedId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="SpellId" type="int" jt="4" mandatory="y" />
+			<column name="SpellLevel" type="tinyint" jt="-6" mandatory="y" />
+			<column name="PreparedNumber" type="int" jt="4" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<index name="Pk_Tbl_Char_Spell_Prepared_CharSpellPreparedId" unique="PRIMARY_KEY" >
+				<column name="CharSpellPreparedId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Spell_Prepared_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Spell_Prepared_Tbl_Spell" to_schema="p2e" to_table="Tbl_Spell" >
+				<fk_column name="SpellId" pk="SpellId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Spell_Prepared_Tbl_Spell_Level" to_schema="p2e" to_table="Tbl_Spell_Level" >
+				<fk_column name="SpellLevel" pk="SpellLevel" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Spell_Used" prior="Tbl_Char_Spell_Spontaneous" >
+			<comment><![CDATA[for spontaneous or prepared]]></comment>
+			<column name="CharSpellUsedId" prior="CharSpellSpontaneousId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="SpellId" type="int" jt="4" mandatory="y" />
+			<column name="SpellLevel" type="tinyint" jt="-6" mandatory="y" />
+			<column name="UsedNumber" type="int" jt="4" mandatory="y" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="ResetDatetime" type="datetime" length="0" jt="93" />
+			<index name="Pk_Tbl_Char_Spell_Spontaneous_CharSpellSpontaneousId" unique="PRIMARY_KEY" >
+				<column name="CharSpellUsedId" />
+			</index>
+			<fk name="Fk_Tbl_Char_Spell_Spontaneous_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Spell_Spontaneous_Tbl_Spell" to_schema="p2e" to_table="Tbl_Spell" >
+				<fk_column name="SpellId" pk="SpellId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Spell_Used_Tbl_Spell_Level" to_schema="p2e" to_table="Tbl_Spell_Level" >
+				<fk_column name="SpellLevel" pk="SpellLevel" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Char_Trait" prior="Tbl" >
+			<comment><![CDATA[alternative to storing denormalized]]></comment>
+			<column name="CharTraitId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="Trait" prior="TraitName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="TraitType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[school of magic, rules element, rarity, alignment, etc]]></comment>
+			</column>
+			<index name="Pk_Tbl_Char_Trait_CharTraitId" unique="PRIMARY_KEY" >
+				<column name="CharTraitId" />
+			</index>
+			<index name="Unq_Tbl_Char_Trait" unique="UNIQUE_KEY" >
+				<column name="CharId" />
+				<column name="TraitType" />
+			</index>
+			<fk name="Fk_Tbl_Char_Trait_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Trait_Tbl_Trait" to_schema="p2e" to_table="Tbl_Trait" >
+				<fk_column name="Trait" pk="Trait" />
+			</fk>
+			<fk name="Fk_Tbl_Char_Trait_Tbl_Trait_Type" to_schema="p2e" to_table="Tbl_Trait_Type" >
+				<fk_column name="TraitType" pk="TraitType" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Class" prior="Tbl" >
+			<column name="Class" prior="ClassName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="IsSpellcastingSpontaneous" prior="SpellcastingType" type="bit" length="100" jt="-7" >
+				<comment><![CDATA[consider SpellcastingType]]></comment>
+			</column>
+			<column name="IsSpellcastingPrepared" type="bit" jt="-7" />
+			<column name="AddSkillFeatAllLevels" prior="AddSkillFeatOddLevels" type="bit" jt="-7" />
+			<column name="SkillBonus" type="varchar" length="500" jt="12" >
+				<comment><![CDATA[add more details]]></comment>
+			</column>
+			<index name="Pk_Tbl_Class_ClassName" unique="PRIMARY_KEY" >
+				<column name="Class" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Class_Spell" prior="Tbl" >
+			<column name="ClassSpellId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="Class" prior="ClassName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="SpellId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Class_Spell_ClassSpellId" unique="PRIMARY_KEY" >
+				<column name="ClassSpellId" />
+			</index>
+			<fk name="Fk_Tbl_Class_Spell_Tbl_Class" to_schema="p2e" to_table="Tbl_Class" >
+				<fk_column name="Class" pk="Class" />
+			</fk>
+			<fk name="Fk_Tbl_Class_Spell_Tbl_Spell" to_schema="p2e" to_table="Tbl_Spell" >
+				<fk_column name="SpellId" pk="SpellId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Combat" prior="Tbl" >
+			<column name="CombatId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<index name="Pk_Tbl_Combat_CombatId" unique="PRIMARY_KEY" >
+				<column name="CombatId" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Combat_Initiative" prior="Tbl_Session_Initiative" >
+			<column name="CombatInitativeId" prior="SessionInitativeId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<column name="InitiativeTotal" prior="InitiaveTotal" type="int" jt="4" />
+			<column name="CombatId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Session_Initiative_SessionInitativeId" unique="PRIMARY_KEY" >
+				<column name="CombatInitativeId" />
+			</index>
+			<fk name="Fk_Tbl_Session_Initiative_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<fk name="Fk_Tbl_Combat_Initiative_Tbl_Combat" to_schema="p2e" to_table="Tbl_Combat" >
+				<fk_column name="CombatId" pk="CombatId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Creature" prior="Tbl_NPC" >
+			<comment><![CDATA[creature_type: humanoid, spirit, drago, construct, etc
+knowledge DC, family, level
+skills + language
+abilities, interactions, perception
+rarity, alignment, size, other
+equipment, AC, melee, ranged, speed, HP
+saving throws, weakness, resistances, immunities
+automatic abilities, reactice abilities
+spells, innate spells, focus spells, rituals
+offensive/proactice abilities]]></comment>
+			<column name="CreatureId" prior="NpcId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<index name="Pk_Tbl_Creature_CreatureId" unique="PRIMARY_KEY" >
+				<column name="CreatureId" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Deity" prior="Tbl" >
+			<column name="DeityName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Domain" prior="DomainName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Alignment" type="varchar" length="2" jt="12" mandatory="y" >
+				<comment><![CDATA[LG, LN, LE, NG, N, NE, CG, CN, CE]]></comment>
+			</column>
+			<index name="Pk_Tbl_Deity_DeityName" unique="PRIMARY_KEY" >
+				<column name="DeityName" />
+			</index>
+			<fk name="Fk_Tbl_Deity_Tbl_Domain" to_schema="p2e" to_table="Tbl_Domain" >
+				<fk_column name="Domain" pk="Domain" />
+			</fk>
+			<fk name="Fk_Tbl_Deity_Tbl_Alignment" to_schema="p2e" to_table="Tbl_Alignment" >
+				<fk_column name="Alignment" pk="AlignmentCode" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Domain" prior="Tbl" >
+			<column name="Domain" prior="DomainName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Unq_Tbl_Domain_DomainName" unique="UNIQUE_KEY" >
+				<column name="Domain" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Equipment" prior="Tbl" >
+			<column name="EquipmentId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="PaizoId" type="int" jt="4" />
+			<column name="EquipmentName" type="varchar" length="100" jt="12" />
+			<column name="EquipmentType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[armor, shield, weapon, gear, alchemical item, consumable, held items, materials, runes, snares, staves, structures, wands, worn items]]></comment>
+			</column>
+			<column name="BaseEquipmentId" type="int" jt="4" />
+			<column name="IsTwoHanded" type="bit" jt="-7" />
+			<index name="Pk_Tbl_Equipment_EquipmentId" unique="PRIMARY_KEY" >
+				<column name="EquipmentId" />
+			</index>
+			<fk name="Fk_Tbl_Equipment_Tbl_Equipment_Type" to_schema="p2e" to_table="Tbl_Equipment_Type" >
+				<fk_column name="EquipmentType" pk="EquipmentType" />
+			</fk>
+			<fk name="Fk_Tbl_Equipment_Tbl_Equipment" to_schema="p2e" to_table="Tbl_Equipment" >
+				<fk_column name="BaseEquipmentId" pk="EquipmentId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Equipment_Trait" prior="Tbl" >
+			<column name="EquipmentTraitId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="EquipmentId" type="int" jt="4" mandatory="y" />
+			<column name="Trait" prior="TraitName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Equipment_Trait_EquipmentTraitId" unique="PRIMARY_KEY" >
+				<column name="EquipmentTraitId" />
+			</index>
+			<fk name="Fk_Tbl_Equipment_Trait_Tbl_Equipment" to_schema="p2e" to_table="Tbl_Equipment" >
+				<fk_column name="EquipmentId" pk="EquipmentId" />
+			</fk>
+			<fk name="Fk_Tbl_Equipment_Trait_Tbl_Trait" to_schema="p2e" to_table="Tbl_Trait" >
+				<fk_column name="Trait" pk="Trait" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Equipment_Type" prior="Tbl" >
+			<column name="EquipmentType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[armor, shield, weapon, gear, alchemical item, consumable, held items, materials, runes, snares, staves, structures, wands, worn items]]></comment>
+			</column>
+			<column name="IsEquipable" prior="IsEquipped" type="bit" jt="-7" />
+			<column name="EquipmentTraits" type="json" jt="2000" />
+			<index name="Pk_Tbl_Equipment_Type_EquipmentType" unique="PRIMARY_KEY" >
+				<column name="EquipmentType" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Feat" prior="Tbl" >
+			<column name="FeatId" type="int" jt="4" mandatory="y" >
+				<comment><![CDATA[Paizo Id?]]></comment>
+			</column>
+			<column name="Feat" prior="FeatName" type="varchar" length="100" jt="12" />
+			<column name="FeatBonus" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[TBD - boost, skill, etc]]></comment>
+			</column>
+			<column name="FeatType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[ancestry, archetype, class, skill, general]]></comment>
+			</column>
+			<index name="Pk_Tbl_Feat_FeatId" unique="PRIMARY_KEY" >
+				<column name="FeatId" />
+			</index>
+			<fk name="Fk_Tbl_Feat_Tbl_Feat_Type" to_schema="p2e" to_table="Tbl_Feat_Type" >
+				<fk_column name="FeatType" pk="FeatType" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Feat_Prereq" prior="Tbl" >
+			<column name="FeatPreqId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="FeatId" type="int" jt="4" mandatory="y" >
+				<comment><![CDATA[Paizo Id?]]></comment>
+			</column>
+			<column name="Skill" type="varchar" length="100" jt="12" />
+			<column name="SkillProficiencyLevel" type="int" jt="4" unsigned="y" />
+			<index name="Pk_Tbl_Feat_Prereq_FeatPreqId" unique="PRIMARY_KEY" >
+				<column name="FeatPreqId" />
+			</index>
+			<fk name="Fk_Tbl_Feat_Prereq_Tbl_Feat" to_schema="p2e" to_table="Tbl_Feat" >
+				<fk_column name="FeatId" pk="FeatId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Feat_Type" prior="Tbl" >
+			<column name="FeatType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[ancestry, archetype, class, skill, general]]></comment>
+			</column>
+			<column name="IsGeneral" type="bit" jt="-7" >
+				<comment><![CDATA[skill, general]]></comment>
+			</column>
+			<index name="Unq_Tbl_Feat_Type_FeatType" unique="UNIQUE_KEY" >
+				<column name="FeatType" />
+			</index>
+			<index name="Pk_Tbl_Feat_Type_FeatType" unique="PRIMARY_KEY" >
+				<column name="FeatType" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Hazard" prior="Tbl" >
+			<column name="Hazard" prior="HazardName" type="varchar" length="100" jt="12" mandatory="y" />
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Language" prior="Tbl_Ancestry_Ability" >
+			<comment><![CDATA[can this be combined with Tbl_Skill?]]></comment>
+			<column name="Language" prior="LanguageName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Language_LanguageName" unique="PRIMARY_KEY" >
+				<column name="Language" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Level" prior="Tbl_" >
+			<comment><![CDATA[1-20
+ancestry feats at 1,5,9,13,17
+skill feat every 2nd level
+focus points (1/2 levels rounded up)
+some class have extra skill feat every level (tracked on Class)]]></comment>
+			<column name="Level" type="tinyint" jt="-6" mandatory="y" unsigned="y" >
+				<defo><![CDATA[1]]></defo>
+				<comment><![CDATA[1-20]]></comment>
+			</column>
+			<column name="AddAncestryFeat" type="bit" jt="-7" />
+			<column name="AddSkillFeat" type="bit" jt="-7" />
+			<index name="Pk_Tbl_Level_Level" unique="PRIMARY_KEY" >
+				<column name="Level" />
+			</index>
+			<fk name="Fk_Tbl_Level_Tbl_Skill_Proficiency" to_schema="p2e" to_table="Tbl_Skill_Proficiency" >
+				<fk_column name="Level" pk="MinCharLevel" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Npc" prior="Tbl" >
+			<column name="NpcId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<index name="Pk_Tbl_Npc_NpcId" unique="PRIMARY_KEY" >
+				<column name="NpcId" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Party" prior="Tbl_Session" >
+			<column name="PartyId" prior="SessionId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<index name="Pk_Tbl_Campaign_Session_CampaignSessionId" unique="PRIMARY_KEY" >
+				<column name="PartyId" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Party_Char" prior="Tbl" >
+			<column name="PartyCharId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="PartyId" type="int" jt="4" mandatory="y" />
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Party_Char_PartyCharId" unique="PRIMARY_KEY" >
+				<column name="PartyCharId" />
+			</index>
+			<fk name="Fk_Tbl_Party_Char_Tbl_Party" to_schema="p2e" to_table="Tbl_Party" >
+				<fk_column name="PartyId" pk="PartyId" />
+			</fk>
+			<fk name="Fk_Tbl_Party_Char_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Rarity" prior="Tbl" >
+			<comment><![CDATA[merge into Trait?]]></comment>
+			<column name="RarityLevel" type="tinyint" jt="-6" mandatory="y" >
+				<comment><![CDATA[1-4]]></comment>
+			</column>
+			<column name="Rarity" prior="RarityName" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[common, uncommon, rare, unique]]></comment>
+			</column>
+			<index name="Pk_Tbl_Rarity_RarityLevel" unique="PRIMARY_KEY" >
+				<column name="RarityLevel" />
+			</index>
+			<index name="Unq_Tbl_Rarity_RarityName" unique="UNIQUE_KEY" >
+				<column name="Rarity" />
+			</index>
+			<fk name="Fk_Tbl_Rarity_Tbl_Ancestry" to_schema="p2e" to_table="Tbl_Ancestry" >
+				<fk_column name="RarityLevel" pk="RarityLevel" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Skill" prior="Tbl" >
+			<column name="Skill" prior="SkillName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="IsLore" type="bit" jt="-7" />
+			<column name="Campaign" prior="CampaignName" type="varchar" length="100" jt="12" />
+			<index name="Pk_Tbl_Skill_SkillName" unique="PRIMARY_KEY" >
+				<column name="Skill" />
+			</index>
+			<fk name="Fk_Tbl_Skill_Tbl_Campaign" to_schema="p2e" to_table="Tbl_Campaign" >
+				<fk_column name="Campaign" pk="Campaign" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Skill_Proficiency" prior="Tbl_Skill_P" >
+			<column name="SkillProficiencyLevel" prior="SkillProficiency" type="tinyint" jt="-6" mandatory="y" >
+				<comment><![CDATA[1-5]]></comment>
+			</column>
+			<column name="SkillProficiencyName" prior="SkillProficiency" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[untrained, trained, expert, master, legendary]]></comment>
+			</column>
+			<column name="MinCharLevel" type="tinyint" jt="-6" mandatory="y" >
+				<defo><![CDATA[1]]></defo>
+				<comment><![CDATA[1 for untrained, 1 for trained, 1 for expert, 7 for master, 15 for legendary]]></comment>
+			</column>
+			<index name="Pk_Tbl_Skill_Proficiency_SkillLevel" unique="PRIMARY_KEY" >
+				<column name="SkillProficiencyLevel" />
+			</index>
+			<fk name="Fk_Tbl_Skill_Proficiency_Tbl_Level" to_schema="p2e" to_table="Tbl_Level" >
+				<fk_column name="MinCharLevel" pk="Level" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spell" prior="Tbl" >
+			<column name="SpellId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="SpellName" type="varchar" length="100" jt="12" />
+			<column name="SpellTypeSpecial" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[(regular), focus, innate, cantrip, ritual]]></comment>
+			</column>
+			<column name="MinSpellLevel" type="tinyint" jt="-6" mandatory="y" />
+			<column name="SpellSchool" type="varchar" length="100" jt="12" />
+			<column name="SpellDesc" type="varchar" length="500" jt="12" />
+			<column name="LevelMultiplier" type="float" jt="7" >
+				<comment><![CDATA[TBD]]></comment>
+			</column>
+			<column name="Benefits" type="json" jt="2000" >
+				<comment><![CDATA[likely need separate table]]></comment>
+			</column>
+			<index name="Pk_Tbl_Spell_SpellId" unique="PRIMARY_KEY" >
+				<column name="SpellId" />
+			</index>
+			<fk name="Fk_Tbl_Spell_Tbl_Spell_School" to_schema="p2e" to_table="Tbl_Spell_School" >
+				<fk_column name="SpellSchool" pk="SpellSchool" />
+			</fk>
+			<fk name="Fk_Tbl_Spell_Tbl_Spell_Type_Special" to_schema="p2e" to_table="Tbl_Spell_Type_Special" >
+				<fk_column name="SpellTypeSpecial" pk="SpellTypeSpecial" />
+			</fk>
+			<fk name="Fk_Tbl_Spell_Tbl_Spell_Level" to_schema="p2e" to_table="Tbl_Spell_Level" >
+				<fk_column name="MinSpellLevel" pk="SpellLevel" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spell_Level" prior="Tbl" >
+			<comment><![CDATA[1-10 = power]]></comment>
+			<column name="SpellLevel" type="tinyint" jt="-6" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<index name="Pk_Tbl_Spell_Level_SpellLevel" unique="PRIMARY_KEY" >
+				<column name="SpellLevel" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spell_School" prior="Tbl_Spell" >
+			<comment><![CDATA[8 schools]]></comment>
+			<column name="SpellSchool" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Spell_School_SpellSchool" unique="PRIMARY_KEY" >
+				<column name="SpellSchool" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spell_Trait" prior="Tbl" >
+			<comment><![CDATA[alternative or supporting table for normalized traits]]></comment>
+			<column name="SpellTraitId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="SpellId" type="int" jt="4" mandatory="y" />
+			<column name="TraitName" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Spell_Trait_SpellTraitId" unique="PRIMARY_KEY" >
+				<column name="SpellTraitId" />
+			</index>
+			<fk name="Fk_Tbl_Spell_Trait_Tbl_Spell" to_schema="p2e" to_table="Tbl_Spell" >
+				<fk_column name="SpellId" pk="SpellId" />
+			</fk>
+			<fk name="Fk_Tbl_Spell_Trait_Tbl_Trait" to_schema="p2e" to_table="Tbl_Trait" >
+				<fk_column name="TraitName" pk="Trait" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spell_Traits" prior="Tbl" >
+			<column name="SpellTraitsId" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="SpellId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Spell_Traits_SpellTraitsId" unique="PRIMARY_KEY" >
+				<column name="SpellTraitsId" />
+			</index>
+			<fk name="Fk_Tbl_Spell_Traits_Tbl_Spell" to_schema="p2e" to_table="Tbl_Spell" >
+				<fk_column name="SpellId" pk="SpellId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spell_Type_Special" prior="Tbl" >
+			<column name="SpellTypeSpecial" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[(regular), focus, innate, cantrip, ritual]]></comment>
+			</column>
+			<column name="SpellTypeDesc" type="varchar" length="500" jt="12" />
+			<index name="Pk_Tbl_Spell_Type_Special_SpellTypeSpecial" unique="PRIMARY_KEY" >
+				<column name="SpellTypeSpecial" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spellcasting_Tradition" prior="Tbl" >
+			<comment><![CDATA[arcane, divine, occult, primal]]></comment>
+			<column name="SpellcastingTradition" type="varchar" length="100" jt="12" mandatory="y" />
+			<index name="Pk_Tbl_Spellcasting_Tradition_SpellcastingTradition" unique="PRIMARY_KEY" >
+				<column name="SpellcastingTradition" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Spellcasting_Tradition_Spell" prior="Tbl" >
+			<column name="SpellcastingTraditionSpell" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="SpellcastingTradition" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="SpellId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_Spellcasting_Tradition_Spell_SpellcastingTraditionSpell" unique="PRIMARY_KEY" >
+				<column name="SpellcastingTraditionSpell" />
+			</index>
+			<fk name="Fk_Tbl_Spellcasting_Tradition_Spell_Tbl_Spellcasting_Tradition" to_schema="p2e" to_table="Tbl_Spellcasting_Tradition" >
+				<fk_column name="SpellcastingTradition" pk="SpellcastingTradition" />
+			</fk>
+			<fk name="Fk_Tbl_Spellcasting_Tradition_Spell_Tbl_Spell" to_schema="p2e" to_table="Tbl_Spell" >
+				<fk_column name="SpellId" pk="SpellId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Sub_Class" prior="Tbl" >
+			<column name="SubClass" prior="SubClassName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="Class" prior="ClassName" type="varchar" length="100" jt="12" />
+			<index name="Pk_Tbl_Sub_Class_SubClassName" unique="PRIMARY_KEY" >
+				<column name="SubClass" />
+			</index>
+			<fk name="Fk_Tbl_Sub_Class_Tbl_Class" to_schema="p2e" to_table="Tbl_Class" >
+				<fk_column name="Class" pk="Class" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Trait" prior="Tbl" >
+			<comment><![CDATA[rarity {common, uncommon, rare, unique}
+alignment {LG, N, etc}
+size {tiny, small, medium, large, huge, gargantuan}
+other?]]></comment>
+			<column name="Trait" prior="TraitName" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="TraitType" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[school of magic, rules element, rarity, alignment, size, creature type, etc]]></comment>
+			</column>
+			<column name="TraitDesc" type="varchar" length="500" jt="12" />
+			<index name="Pk_Tbl_Trait_TraitName" unique="PRIMARY_KEY" >
+				<column name="Trait" />
+			</index>
+			<fk name="Fk_Tbl_Trait_Tbl_Trait_Type" to_schema="p2e" to_table="Tbl_Trait_Type" >
+				<fk_column name="TraitType" pk="TraitType" />
+			</fk>
+			<fk name="Fk_Tbl_Trait_Tbl_Rarity" to_schema="p2e" to_table="Tbl_Rarity" >
+				<fk_column name="Trait" pk="Rarity" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_Trait_Type" prior="Tbl_Trait" >
+			<comment><![CDATA[modify Equipment, Spells, Creatures]]></comment>
+			<column name="TraitType" prior="TraitTypeName" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[school of magic, rules element, rarity, alignment, etc]]></comment>
+			</column>
+			<index name="Pk_Tbl_Trait_Type_TraitTypeName" unique="PRIMARY_KEY" >
+				<column name="TraitType" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_User" >
+			<column name="Email" prior="email" type="varchar" length="150" jt="12" mandatory="y" />
+			<column name="UserId" prior="User_Id" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[recommend uuid()]]></comment>
+			</column>
+			<index name="Unq_Tbl_User" unique="UNIQUE_KEY" >
+				<column name="Email" />
+			</index>
+			<index name="Pk_Tbl_User" unique="PRIMARY_KEY" >
+				<column name="UserId" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="Tbl_User_Char" prior="Tbl_UserChar" >
+			<column name="UserCharId" prior="Id" type="int" jt="4" mandatory="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="UserId" type="int" jt="4" mandatory="y" >
+				<comment><![CDATA[recommend uuid()]]></comment>
+			</column>
+			<column name="CharId" type="int" jt="4" mandatory="y" />
+			<index name="Pk_Tbl_User_Char_Id" unique="PRIMARY_KEY" >
+				<column name="UserCharId" />
+			</index>
+			<fk name="Fk_Tbl_User_Char_Tbl_User" to_schema="p2e" to_table="Tbl_User" >
+				<fk_column name="UserId" pk="UserId" />
+			</fk>
+			<fk name="Fk_Tbl_User_Char_Tbl_Char" to_schema="p2e" to_table="Tbl_Char" >
+				<fk_column name="CharId" pk="CharId" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+	</schema>
+	<layout name="Character" id="Layout_206e" show_relation="columns" >
+		<entity schema="p2e" name="Tbl_Char" color="3986C1" x="368" y="288" />
+		<entity schema="p2e" name="Tbl_Char_Ability" color="3986C1" x="368" y="640" />
+		<entity schema="p2e" name="Tbl_Char_Equipment" color="3986C1" x="624" y="288" />
+		<entity schema="p2e" name="Tbl_Char_Language" color="3986C1" x="368" y="64" />
+		<entity schema="p2e" name="Tbl_Char_Level" color="3986C1" x="624" y="640" />
+		<entity schema="p2e" name="Tbl_Char_Level_Feat" color="3986C1" x="912" y="640" />
+		<entity schema="p2e" name="Tbl_Char_Spell_Prepared" color="3986C1" x="64" y="640" />
+		<entity schema="p2e" name="Tbl_Char_Spell_Used" color="3986C1" x="48" y="384" />
+		<entity schema="p2e" name="Tbl_Char_Trait" color="3986C1" x="128" y="48" />
+		<entity schema="p2e" name="Tbl_Party_Char" color="3986C1" x="912" y="880" />
+		<entity schema="p2e" name="Tbl_User_Char" color="3986C1" x="624" y="880" />
+	</layout>
+	<layout name="Default Layout" id="Layout_9d4" show_relation="columns" >
+		<entity schema="p2e" name="Tbl_AbilityCode" color="C1D8EE" x="3152" y="432" />
+		<entity schema="p2e" name="Tbl_Ability_Type" color="3986C1" x="1296" y="704" />
+		<entity schema="p2e" name="Tbl_Action" color="C1D8EE" x="3648" y="928" />
+		<entity schema="p2e" name="Tbl_Action_Req_Skill" color="C1D8EE" x="2384" y="432" />
+		<entity schema="p2e" name="Tbl_Action_Type" color="C1D8EE" x="2688" y="432" />
+		<entity schema="p2e" name="Tbl_Alignment" color="C1D8EE" x="1024" y="704" />
+		<entity schema="p2e" name="Tbl_Ancestry" color="C1D8EE" x="1296" y="432" />
+		<entity schema="p2e" name="Tbl_Ancestry_Ability" color="C1D8EE" x="1008" y="448" />
+		<entity schema="p2e" name="Tbl_Ancestry_Feat" color="C1D8EE" x="3904" y="704" />
+		<entity schema="p2e" name="Tbl_Ancestry_Language" color="C1D8EE" x="4176" y="704" />
+		<entity schema="p2e" name="Tbl_Archetype" color="C1D8EE" x="3648" y="704" />
+		<entity schema="p2e" name="Tbl_Archetype_Feat" color="C1D8EE" x="3904" y="928" />
+		<entity schema="p2e" name="Tbl_Background" color="C1D8EE" x="3024" y="928" />
+		<entity schema="p2e" name="Tbl_Campaign" color="C1D8EE" x="160" y="1536" />
+		<entity schema="p2e" name="Tbl_Campaign_Day" color="C1D8EE" x="560" y="1536" />
+		<entity schema="p2e" name="Tbl_Char" color="BED3F4" x="3232" y="1568" />
+		<entity schema="p2e" name="Tbl_Char_Ability" color="C1D8EE" x="2976" y="1920" />
+		<entity schema="p2e" name="Tbl_Char_Equipment" color="C1D8EE" x="3488" y="1920" />
+		<entity schema="p2e" name="Tbl_Char_Language" color="C1D8EE" x="2960" y="1344" />
+		<entity schema="p2e" name="Tbl_Char_Level" color="BED3F4" x="3488" y="1568" />
+		<entity schema="p2e" name="Tbl_Char_Level_Feat" color="BED3F4" x="3776" y="1568" />
+		<entity schema="p2e" name="Tbl_Char_Spell_Prepared" color="C1D8EE" x="2080" y="656" />
+		<entity schema="p2e" name="Tbl_Char_Spell_Used" color="C1D8EE" x="2944" y="1648" />
+		<entity schema="p2e" name="Tbl_Char_Trait" color="C1D8EE" x="3232" y="1920" />
+		<entity schema="p2e" name="Tbl_Class" color="C1D8EE" x="3312" y="672" />
+		<entity schema="p2e" name="Tbl_Class_Spell" color="C1D8EE" x="1424" y="1344" />
+		<entity schema="p2e" name="Tbl_Combat" color="C1D8EE" x="560" y="1744" />
+		<entity schema="p2e" name="Tbl_Combat_Initiative" color="C1D8EE" x="304" y="1696" />
+		<entity schema="p2e" name="Tbl_Creature" color="C1D8EE" x="768" y="1744" />
+		<entity schema="p2e" name="Tbl_Deity" color="C1D8EE" x="3168" y="208" />
+		<entity schema="p2e" name="Tbl_Domain" color="C1D8EE" x="2944" y="240" />
+		<entity schema="p2e" name="Tbl_Equipment" color="C1D8EE" x="3648" y="432" />
+		<entity schema="p2e" name="Tbl_Equipment_Trait" color="C1D8EE" x="1264" y="208" />
+		<entity schema="p2e" name="Tbl_Equipment_Type" color="C1D8EE" x="1552" y="208" />
+		<entity schema="p2e" name="Tbl_Feat" color="BED3F4" x="3408" y="432" />
+		<entity schema="p2e" name="Tbl_Feat_Prereq" color="C1D8EE" x="1536" y="912" />
+		<entity schema="p2e" name="Tbl_Feat_Type" color="C1D8EE" x="1296" y="912" />
+		<entity schema="p2e" name="Tbl_Hazard" color="C1D8EE" x="368" y="1376" />
+		<entity schema="p2e" name="Tbl_Language" color="C1D8EE" x="3408" y="240" />
+		<entity schema="p2e" name="Tbl_Level" color="BED3F4" x="1792" y="432" />
+		<entity schema="p2e" name="Tbl_Npc" color="C1D8EE" x="2080" y="240" />
+		<entity schema="p2e" name="Tbl_Party" color="C1D8EE" x="368" y="1536" />
+		<entity schema="p2e" name="Tbl_Party_Char" color="C1D8EE" x="144" y="1344" />
+		<entity schema="p2e" name="Tbl_Rarity" color="C1D8EE" x="1552" y="704" />
+		<entity schema="p2e" name="Tbl_Skill" color="C1D8EE" x="3648" y="208" />
+		<entity schema="p2e" name="Tbl_Skill_Proficiency" color="C1D8EE" x="2080" y="432" />
+		<entity schema="p2e" name="Tbl_Spell" color="C1D8EE" x="1680" y="1568" />
+		<entity schema="p2e" name="Tbl_Spell_Level" color="C1D8EE" x="1968" y="1568" />
+		<entity schema="p2e" name="Tbl_Spell_School" color="C1D8EE" x="1968" y="1872" />
+		<entity schema="p2e" name="Tbl_Spell_Trait" color="C1D8EE" x="1680" y="1872" />
+		<entity schema="p2e" name="Tbl_Spell_Traits" color="C1D8EE" x="1280" y="1120" />
+		<entity schema="p2e" name="Tbl_Spell_Type_Special" color="C1D8EE" x="1376" y="1872" />
+		<entity schema="p2e" name="Tbl_Spellcasting_Tradition" color="C1D8EE" x="1360" y="1680" />
+		<entity schema="p2e" name="Tbl_Spellcasting_Tradition_Spell" color="C1D8EE" x="1008" y="1872" />
+		<entity schema="p2e" name="Tbl_Sub_Class" color="C1D8EE" x="3312" y="928" />
+		<entity schema="p2e" name="Tbl_Trait" color="C1D8EE" x="1552" y="432" />
+		<entity schema="p2e" name="Tbl_Trait_Type" color="C1D8EE" x="1792" y="656" />
+		<entity schema="p2e" name="Tbl_User" color="3986C1" x="2736" y="1344" />
+		<entity schema="p2e" name="Tbl_User_Char" color="BED3F4" x="2528" y="1344" />
+		<callout x="144" y="80" pointer="SV" >
+			<comment><![CDATA[function / proc for Campaign_Day_Reset (days int = 1)
+for HP regain, spells reset (spontaneous + prepared)
+skills (craft/sell)
+focus points]]></comment>
+		</callout>
+		<callout x="48" y="192" pointer="SV" >
+			<comment><![CDATA[view char sheet (multiple components)
+char, level, abilities, skills, 
+spell limits (spontaneous), prepared spells (daily), used spells, focus points]]></comment>
+		</callout>
+		<callout x="240" y="320" pointer="SV" >
+			<comment><![CDATA[focus reset
+10 minutes = 1 FP]]></comment>
+		</callout>
+		<callout x="192" y="384" pointer="SV" >
+			<comment><![CDATA[heal / other temporary status]]></comment>
+		</callout>
+		<callout x="208" y="448" pointer="SV" >
+			<comment><![CDATA[turn option for candidate actions
+by action_type
+possible actions]]></comment>
+		</callout>
+		<callout x="192" y="544" pointer="SV" >
+			<comment><![CDATA[round increase
+actions reset]]></comment>
+		</callout>
+		<group name="Group_Web" color="C4E0F9" >
+			<entity schema="p2e" name="Tbl_User_Char" />
+			<entity schema="p2e" name="Tbl_User" />
+		</group>
+		<group name="Group_GM" color="C4E0F9" >
+			<entity schema="p2e" name="Tbl_Campaign" />
+			<entity schema="p2e" name="Tbl_Campaign_Day" />
+			<entity schema="p2e" name="Tbl_Party" />
+			<entity schema="p2e" name="Tbl_Hazard" />
+			<entity schema="p2e" name="Tbl_Creature" />
+			<entity schema="p2e" name="Tbl_Combat_Initiative" />
+			<entity schema="p2e" name="Tbl_Combat" />
+			<entity schema="p2e" name="Tbl_Party_Char" />
+		</group>
+		<group name="Group_Spells" color="C4E0F9" >
+			<entity schema="p2e" name="Tbl_Spell" />
+			<entity schema="p2e" name="Tbl_Spell_Level" />
+			<entity schema="p2e" name="Tbl_Spell_School" />
+			<entity schema="p2e" name="Tbl_Spell_Trait" />
+			<entity schema="p2e" name="Tbl_Spell_Type_Special" />
+			<entity schema="p2e" name="Tbl_Spellcasting_Tradition" />
+			<entity schema="p2e" name="Tbl_Spellcasting_Tradition_Spell" />
+			<entity schema="p2e" name="Tbl_Class_Spell" />
+		</group>
+		<group name="Group_Char" color="C4E0F9" >
+			<entity schema="p2e" name="Tbl_Char" />
+			<entity schema="p2e" name="Tbl_Char_Language" />
+			<entity schema="p2e" name="Tbl_Char_Level" />
+			<entity schema="p2e" name="Tbl_Char_Level_Feat" />
+			<entity schema="p2e" name="Tbl_Char_Trait" />
+			<entity schema="p2e" name="Tbl_Char_Ability" />
+			<entity schema="p2e" name="Tbl_Char_Equipment" />
+			<entity schema="p2e" name="Tbl_Char_Spell_Used" />
+		</group>
+		<group name="Group_Glossary" color="C4E0F9" >
+			<entity schema="p2e" name="Tbl_Skill" />
+			<entity schema="p2e" name="Tbl_Equipment" />
+			<entity schema="p2e" name="Tbl_Background" />
+			<entity schema="p2e" name="Tbl_Class" />
+			<entity schema="p2e" name="Tbl_Archetype" />
+			<entity schema="p2e" name="Tbl_Sub_Class" />
+			<entity schema="p2e" name="Tbl_Feat" />
+			<entity schema="p2e" name="Tbl_Ancestry_Feat" />
+			<entity schema="p2e" name="Tbl_AbilityCode" />
+			<entity schema="p2e" name="Tbl_Deity" />
+			<entity schema="p2e" name="Tbl_Language" />
+			<entity schema="p2e" name="Tbl_Ancestry_Language" />
+			<entity schema="p2e" name="Tbl_Domain" />
+			<entity schema="p2e" name="Tbl_Archetype_Feat" />
+			<entity schema="p2e" name="Tbl_Action" />
+		</group>
+	</layout>
+	<layout name="Group_Ref" id="Layout_493" show_relation="columns" >
+		<entity schema="p2e" name="Tbl_AbilityCode" color="3986C1" x="1456" y="544" />
+		<entity schema="p2e" name="Tbl_Ability_Type" color="3986C1" x="1712" y="544" />
+		<entity schema="p2e" name="Tbl_Alignment" color="3986C1" x="1712" y="784" />
+		<entity schema="p2e" name="Tbl_Ancestry" color="3986C1" x="1184" y="272" />
+		<entity schema="p2e" name="Tbl_Ancestry_Feat" color="3986C1" x="912" y="48" />
+		<entity schema="p2e" name="Tbl_Ancestry_Language" color="3986C1" x="1184" y="48" />
+		<entity schema="p2e" name="Tbl_Archetype" color="3986C1" x="608" y="752" />
+		<entity schema="p2e" name="Tbl_Archetype_Feat" color="3986C1" x="880" y="976" />
+		<entity schema="p2e" name="Tbl_Class" color="3986C1" x="608" y="496" />
+		<entity schema="p2e" name="Tbl_Deity" color="3986C1" x="1984" y="784" />
+		<entity schema="p2e" name="Tbl_Domain" color="3986C1" x="2240" y="784" />
+		<entity schema="p2e" name="Tbl_Equipment" color="3986C1" x="336" y="752" />
+		<entity schema="p2e" name="Tbl_Equipment_Trait" color="3986C1" x="336" y="1040" />
+		<entity schema="p2e" name="Tbl_Equipment_Type" color="3986C1" x="48" y="1040" />
+		<entity schema="p2e" name="Tbl_Feat" color="3986C1" x="944" y="272" />
+		<entity schema="p2e" name="Tbl_Feat_Prereq" color="3986C1" x="2240" y="1008" />
+		<entity schema="p2e" name="Tbl_Language" color="3986C1" x="1184" y="720" />
+		<entity schema="p2e" name="Tbl_Level" color="3986C1" x="656" y="272" />
+		<entity schema="p2e" name="Tbl_Rarity" color="3986C1" x="1456" y="272" />
+		<entity schema="p2e" name="Tbl_Skill" color="3986C1" x="1968" y="1008" />
+		<entity schema="p2e" name="Tbl_Sub_Class" color="3986C1" x="336" y="544" />
+		<entity schema="p2e" name="Tbl_Trait" color="3986C1" x="944" y="496" />
+		<entity schema="p2e" name="Tbl_Trait_Type" color="3986C1" x="944" y="720" />
+	</layout>
+</project>
