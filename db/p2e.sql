@@ -51,25 +51,32 @@ ALTER TABLE p2e.Class MODIFY IsSpellcastingSpontaneous bit     COMMENT 'consider
 
 ALTER TABLE p2e.Class MODIFY SkillBonus varchar(500)     COMMENT 'add more details';
 
-CREATE TABLE p2e.ClassArchetype ( 
-	ClassArchetype       varchar(100)  NOT NULL    PRIMARY KEY,
-	Class                varchar(100)  NOT NULL    
- ) engine=InnoDB;
-
-ALTER TABLE p2e.ClassArchetype COMMENT 'Class is primary, Archetype (Class) is secondary';
-
 CREATE TABLE p2e.Combat ( 
 	CombatId             int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY
  ) engine=InnoDB;
 
-CREATE TABLE p2e.Creature ( 
-	CreatureId           int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY
+CREATE TABLE p2e.CreatureType ( 
+	CreatureType         varchar(100)  NOT NULL    PRIMARY KEY
  ) engine=InnoDB;
 
-ALTER TABLE p2e.Creature COMMENT 'creature_type: humanoid, spirit, drago, construct, etc\nknowledge DC, family, level\nskills + language\nabilities, interactions, perception\nrarity, alignment, size, other\nequipment, AC, melee, ranged, speed, HP\nsaving throws, weakness, resistances, immunities\nautomatic abilities, reactice abilities\nspells, innate spells, focus spells, rituals\noffensive/proactice abilities';
+CREATE TABLE p2e.Deity ( 
+	Deity                varchar(100)  NOT NULL    PRIMARY KEY,
+	Alignment            varchar(2)  NOT NULL    ,
+	EquipmentId          int UNSIGNED NOT NULL    ,
+	IsHarm               bit      ,
+	IsHeal               bit      ,
+	DeityCategory        varchar(100)      
+ ) engine=InnoDB;
+
+ALTER TABLE p2e.Deity MODIFY Alignment varchar(2)  NOT NULL   COMMENT 'LG, LN, LE, NG, N, NE, CG, CN, CE';
+
+ALTER TABLE p2e.Deity MODIFY EquipmentId int UNSIGNED NOT NULL   COMMENT 'favored weapon';
+
+ALTER TABLE p2e.Deity MODIFY DeityCategory varchar(100)     COMMENT 'Gods of the Inner Sea, Demon Lords, etc';
 
 CREATE TABLE p2e.Domain ( 
-	Domain               varchar(100)  NOT NULL    PRIMARY KEY
+	Domain               varchar(100)  NOT NULL    PRIMARY KEY,
+	DomainDesc           varchar(100)      
  ) engine=InnoDB;
 
 CREATE TABLE p2e.EquipmentType ( 
@@ -91,7 +98,7 @@ ALTER TABLE p2e.FeatType MODIFY FeatType varchar(100)  NOT NULL   COMMENT 'ances
 ALTER TABLE p2e.FeatType MODIFY IsGeneral bit     COMMENT 'skill, general';
 
 CREATE TABLE p2e.Hazard ( 
-	Hazard               varchar(100)  NOT NULL    
+	Hazard               varchar(100)  NOT NULL    PRIMARY KEY
  ) engine=InnoDB;
 
 CREATE TABLE p2e.Language ( 
@@ -147,9 +154,10 @@ ALTER TABLE p2e.SpellcastingTradition COMMENT 'arcane, divine, occult, primal';
 
 CREATE TABLE p2e.SubClass ( 
 	SubClass             varchar(100)  NOT NULL    PRIMARY KEY,
-	Class                varchar(100)      ,
+	Class                varchar(100)  NOT NULL    ,
 	RequiresAnimal       bit  NOT NULL DEFAULT 0   ,
-	RequiresDragonType   bit  NOT NULL DEFAULT 0   
+	RequiresDragonType   bit  NOT NULL DEFAULT 0   ,
+	RequiresDeity        bit  NOT NULL DEFAULT 0   
  ) engine=InnoDB;
 
 ALTER TABLE p2e.SubClass COMMENT 'Bomber: Research Field\nBarbarian: Instinct (must pick Animal, Dragon Type/Color)\nBard: Muse\nChampion: Deity / Cause\nCleric: Deity / Doctrine\nDruid: Druidic Order\nHunter: Hunter''s Edge\nRogue: Rogue''s Racket\nSorcerer: Bloodline\nWizard: Arcane School\nFighter, Monk: none';
@@ -198,21 +206,68 @@ CREATE TABLE p2e.Campaign_Day (
 	PartyId              int  NOT NULL    
  ) engine=InnoDB;
 
-CREATE TABLE p2e.Deity ( 
-	Deity                varchar(100)  NOT NULL    PRIMARY KEY,
-	Domain               varchar(100)  NOT NULL    ,
+CREATE TABLE p2e.`Char` ( 
+	CharId               int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	CharName             varchar(100)  NOT NULL    ,
+	CreatureType         varchar(30)  NOT NULL DEFAULT 'Humanoid'   ,
+	Ancestry             varchar(100)  NOT NULL    ,
+	BackgroundId         int      ,
+	Heritage             varchar(100)      ,
+	Size                 varchar(20)   DEFAULT 'medium'   ,
+	IsNpc                bit  NOT NULL DEFAULT 0   ,
+	IsCreature           bit  NOT NULL DEFAULT 0   ,
+	Deity                varchar(100)      ,
 	Alignment            varchar(2)  NOT NULL    ,
-	EquipmentId          int UNSIGNED NOT NULL    ,
-	IsHarm               bit      ,
-	IsHeal               bit      ,
-	DeityCategory        varchar(100)      
+	Rarity               varchar(100)  NOT NULL    ,
+	Class                varchar(100)  NOT NULL    ,
+	SubClass             varchar(100)      ,
+	CreatureId           int      
  ) engine=InnoDB;
 
-ALTER TABLE p2e.Deity MODIFY Alignment varchar(2)  NOT NULL   COMMENT 'LG, LN, LE, NG, N, NE, CG, CN, CE';
+ALTER TABLE p2e.`Char` MODIFY CreatureType varchar(30)  NOT NULL DEFAULT 'Humanoid'  COMMENT 'Humanoid, Construct, Dragon';
 
-ALTER TABLE p2e.Deity MODIFY EquipmentId int UNSIGNED NOT NULL   COMMENT 'favored weapon';
+ALTER TABLE p2e.`Char` MODIFY Alignment varchar(2)  NOT NULL   COMMENT 'LG, LN, LE, NG, N, NE, CG, CN, CE';
 
-ALTER TABLE p2e.Deity MODIFY DeityCategory varchar(100)     COMMENT 'Gods of the Inner Sea, Demon Lords, etc';
+ALTER TABLE p2e.`Char` MODIFY Rarity varchar(100)  NOT NULL   COMMENT 'common, uncommon, rare, unique';
+
+ALTER TABLE p2e.`Char` MODIFY CreatureId int     COMMENT 'animal familiar/companion';
+
+CREATE TABLE p2e.Char_Ability ( 
+	CharAbilityId        int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	CharId               int  NOT NULL    ,
+	AbilityCode          char(3)  NOT NULL    ,
+	AbilityType          varchar(100)  NOT NULL    ,
+	AbilityScore         smallint UNSIGNED NOT NULL    
+ ) engine=InnoDB;
+
+ALTER TABLE p2e.Char_Ability COMMENT 'base ability when starting out\nancestry cannot mod base ability >12, <8\nlimit 2 background boost\nlimit 4 determine scores';
+
+ALTER TABLE p2e.Char_Ability MODIFY AbilityCode char(3)  NOT NULL   COMMENT 'STR, DEX, CON, INT, WIS, CHA';
+
+ALTER TABLE p2e.Char_Ability MODIFY AbilityType varchar(100)  NOT NULL   COMMENT 'ancestry, background, class, determine (choice)';
+
+CREATE TABLE p2e.Char_Language ( 
+	CharLanguageId       int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	Language             varchar(100)  NOT NULL    ,
+	CharId               int  NOT NULL    
+ ) engine=InnoDB;
+
+ALTER TABLE p2e.Char_Language COMMENT 'similar to Char_Skills\nlimited by Feat & Ancestry';
+
+CREATE TABLE p2e.Combat_CharInitiative ( 
+	CombatInitativeId    int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	CharId               int  NOT NULL    ,
+	InitiativeTotal      int      ,
+	CombatId             int  NOT NULL    
+ ) engine=InnoDB;
+
+ALTER TABLE p2e.Combat_CharInitiative COMMENT 'how will creatures show?';
+
+CREATE TABLE p2e.Deity_Domain ( 
+	Deity                varchar(100)  NOT NULL    ,
+	Domain               varchar(100)  NOT NULL    ,
+	CONSTRAINT Pk_Deity_Domain PRIMARY KEY ( Deity, Domain )
+ ) engine=InnoDB;
 
 CREATE TABLE p2e.Equipment ( 
 	EquipmentId          int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -262,6 +317,12 @@ CREATE TABLE p2e.Feat_SkillReq (
 
 ALTER TABLE p2e.Feat_SkillReq MODIFY FeatId int  NOT NULL   COMMENT 'Paizo Id?';
 
+CREATE TABLE p2e.Party_Char ( 
+	PartyId              int  NOT NULL    ,
+	CharId               int  NOT NULL    ,
+	CONSTRAINT Pk_Party_Char PRIMARY KEY ( PartyId, CharId )
+ ) engine=InnoDB;
+
 CREATE TABLE p2e.Spell ( 
 	SpellId              int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	SpellName            varchar(100)      ,
@@ -294,6 +355,14 @@ CREATE TABLE p2e.Trait (
 ALTER TABLE p2e.Trait COMMENT 'rarity {common, uncommon, rare, unique}\nalignment {LG, N, etc}\nsize {tiny, small, medium, large, huge, gargantuan}\nother?';
 
 ALTER TABLE p2e.Trait MODIFY TraitType varchar(100)  NOT NULL   COMMENT 'school of magic, rules element, rarity, alignment, size, creature type, etc';
+
+CREATE TABLE p2e.User_Char ( 
+	UserId               int  NOT NULL    ,
+	CharId               int  NOT NULL    ,
+	CONSTRAINT Pk_User_Char PRIMARY KEY ( UserId, CharId )
+ ) engine=InnoDB;
+
+ALTER TABLE p2e.User_Char MODIFY UserId int  NOT NULL   COMMENT 'recommend uuid()';
 
 CREATE TABLE p2e.Ancestry ( 
 	Ancestry             varchar(100)  NOT NULL    PRIMARY KEY,
@@ -336,86 +405,10 @@ CREATE TABLE p2e.Char_Equipment (
 	CharEquipmentId      int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	CharId               int  NOT NULL    ,
 	EquipmentId          int  NOT NULL    ,
-	IsEquipped           int      ,
-	CONSTRAINT Unq_Tbl_Char_Equipment_CharId UNIQUE ( CharId ) 
+	IsEquipped           int      
  ) engine=InnoDB;
 
-ALTER TABLE p2e.Char_Equipment COMMENT 'unique rules based on equipment';
-
-CREATE TABLE p2e.ClassArchetype_Feat ( 
-	FeatId               int  NOT NULL    ,
-	ClassArchetype       varchar(100)  NOT NULL    ,
-	CONSTRAINT Pk_ClassArchetype_Feat PRIMARY KEY ( FeatId, ClassArchetype )
- ) engine=InnoDB;
-
-ALTER TABLE p2e.ClassArchetype_Feat MODIFY FeatId int  NOT NULL   COMMENT 'Paizo Id?';
-
-CREATE TABLE p2e.Class_Spell ( 
-	Class                varchar(100)  NOT NULL    ,
-	SpellId              int  NOT NULL    ,
-	CONSTRAINT Pk_Class_Spell PRIMARY KEY ( Class, SpellId )
- ) engine=InnoDB;
-
-CREATE TABLE p2e.Equipment_Trait ( 
-	EquipmentId          int  NOT NULL    ,
-	Trait                varchar(100)  NOT NULL    ,
-	CONSTRAINT Pk_Equipment_Trait PRIMARY KEY ( EquipmentId, Trait )
- ) engine=InnoDB;
-
-CREATE TABLE p2e.SpellTrait ( 
-	SpellTraitId         int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	SpellId              int  NOT NULL    ,
-	Trait                varchar(100)  NOT NULL    
- ) engine=InnoDB;
-
-ALTER TABLE p2e.SpellTrait COMMENT 'alternative or supporting table for normalized traits';
-
-CREATE TABLE p2e.`Char` ( 
-	CharId               int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	CharName             varchar(100)  NOT NULL    ,
-	CreatureType         varchar(30)  NOT NULL DEFAULT 'humanoid'   ,
-	Ancestry             varchar(100)  NOT NULL    ,
-	BackgroundId         int      ,
-	Heritage             varchar(100)      ,
-	Size                 varchar(20)   DEFAULT 'medium'   ,
-	IsNpc                bit      ,
-	Deity                varchar(100)      ,
-	Alignment            varchar(2)  NOT NULL    ,
-	Rarity               varchar(100)  NOT NULL    ,
-	Class                varchar(100)  NOT NULL    ,
-	SubClass             varchar(100)  NOT NULL    ,
-	CreatureId           int      
- ) engine=InnoDB;
-
-ALTER TABLE p2e.`Char` MODIFY CreatureType varchar(30)  NOT NULL DEFAULT 'humanoid'  COMMENT 'Humanoid, Construct, Dragon';
-
-ALTER TABLE p2e.`Char` MODIFY Alignment varchar(2)  NOT NULL   COMMENT 'LG, LN, LE, NG, N, NE, CG, CN, CE';
-
-ALTER TABLE p2e.`Char` MODIFY Rarity varchar(100)  NOT NULL   COMMENT 'common, uncommon, rare, unique';
-
-ALTER TABLE p2e.`Char` MODIFY CreatureId int     COMMENT 'animal familiar/companion';
-
-CREATE TABLE p2e.Char_Ability ( 
-	CharAbilityId        int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	CharId               int  NOT NULL    ,
-	AbilityCode          char(3)  NOT NULL    ,
-	AbilityType          varchar(100)  NOT NULL    ,
-	AbilityScore         smallint UNSIGNED NOT NULL    
- ) engine=InnoDB;
-
-ALTER TABLE p2e.Char_Ability COMMENT 'base ability when starting out\nancestry cannot mod base ability >12, <8\nlimit 2 background boost\nlimit 4 determine scores';
-
-ALTER TABLE p2e.Char_Ability MODIFY AbilityCode char(3)  NOT NULL   COMMENT 'STR, DEX, CON, INT, WIS, CHA';
-
-ALTER TABLE p2e.Char_Ability MODIFY AbilityType varchar(100)  NOT NULL   COMMENT 'ancestry, background, class, determine (choice)';
-
-CREATE TABLE p2e.Char_Language ( 
-	CharLanguageId       int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	Language             varchar(100)  NOT NULL    ,
-	CharId               int  NOT NULL    
- ) engine=InnoDB;
-
-ALTER TABLE p2e.Char_Language COMMENT 'similar to Char_Skills\nlimited by Feat & Ancestry';
+ALTER TABLE p2e.Char_Equipment COMMENT 'unique rules based on equipment\nchanging isequipped true may force other equipment isequipped false';
 
 CREATE TABLE p2e.Char_SpellPrepared ( 
 	CharSpellPreparedId  int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
@@ -448,28 +441,33 @@ ALTER TABLE p2e.Char_Trait COMMENT 'alternative to storing denormalized';
 
 ALTER TABLE p2e.Char_Trait MODIFY TraitType varchar(100)  NOT NULL   COMMENT 'school of magic, rules element, rarity, alignment, etc';
 
-CREATE TABLE p2e.Combat_CharInitiative ( 
-	CombatInitativeId    int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	CharId               int  NOT NULL    ,
-	InitiativeTotal      int      ,
-	CombatId             int  NOT NULL    
+CREATE TABLE p2e.ClassArchetype_Feat ( 
+	FeatId               int  NOT NULL    ,
+	ClassArchetype       varchar(100)  NOT NULL    ,
+	CONSTRAINT Pk_ClassArchetype_Feat PRIMARY KEY ( FeatId, ClassArchetype )
  ) engine=InnoDB;
 
-ALTER TABLE p2e.Combat_CharInitiative COMMENT 'how will creatures show?';
+ALTER TABLE p2e.ClassArchetype_Feat MODIFY FeatId int  NOT NULL   COMMENT 'Paizo Id?';
 
-CREATE TABLE p2e.Party_Char ( 
-	PartyId              int  NOT NULL    ,
-	CharId               int  NOT NULL    ,
-	CONSTRAINT Pk_Party_Char PRIMARY KEY ( PartyId, CharId )
+CREATE TABLE p2e.Class_Spell ( 
+	Class                varchar(100)  NOT NULL    ,
+	SpellId              int  NOT NULL    ,
+	CONSTRAINT Pk_Class_Spell PRIMARY KEY ( Class, SpellId )
  ) engine=InnoDB;
 
-CREATE TABLE p2e.User_Char ( 
-	UserId               int  NOT NULL    ,
-	CharId               int  NOT NULL    ,
-	CONSTRAINT Pk_User_Char PRIMARY KEY ( UserId, CharId )
+CREATE TABLE p2e.Equipment_Trait ( 
+	EquipmentId          int  NOT NULL    ,
+	Trait                varchar(100)  NOT NULL    ,
+	CONSTRAINT Pk_Equipment_Trait PRIMARY KEY ( EquipmentId, Trait )
  ) engine=InnoDB;
 
-ALTER TABLE p2e.User_Char MODIFY UserId int  NOT NULL   COMMENT 'recommend uuid()';
+CREATE TABLE p2e.SpellTrait ( 
+	SpellTraitId         int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	SpellId              int  NOT NULL    ,
+	Trait                varchar(100)  NOT NULL    
+ ) engine=InnoDB;
+
+ALTER TABLE p2e.SpellTrait COMMENT 'alternative or supporting table for normalized traits';
 
 CREATE TABLE p2e.Action_SkillReq ( 
 	Action               varchar(100)  NOT NULL    ,
@@ -491,7 +489,7 @@ ALTER TABLE p2e.CharLevel COMMENT '1-20\nancestry feats at 1,5,9,13,17\nskill fe
 ALTER TABLE p2e.CharLevel MODIFY CharLevel tinyint UNSIGNED NOT NULL DEFAULT 1  COMMENT '1-20';
 
 CREATE TABLE p2e.Char_LevelUp ( 
-	CharLevelId          int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	CharLevelUpId        int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	CharId               int  NOT NULL    ,
 	CharLevel            tinyint UNSIGNED NOT NULL DEFAULT 1   ,
 	BonusAbilityCode     int      ,
@@ -500,15 +498,15 @@ CREATE TABLE p2e.Char_LevelUp (
 
 ALTER TABLE p2e.Char_LevelUp MODIFY CharLevel tinyint UNSIGNED NOT NULL DEFAULT 1  COMMENT '1-20';
 
-CREATE TABLE p2e.Char_Level_Feat ( 
+CREATE TABLE p2e.Char_LevelUp_Feat ( 
 	CharLevelFeatId      int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	CharLevelId          int  NOT NULL    ,
+	CharLevelUpId        int  NOT NULL    ,
 	FeatId               int  NOT NULL    
  ) engine=InnoDB;
 
-ALTER TABLE p2e.Char_Level_Feat COMMENT 'can have more than one feat per level\ncan sub skill feat for general feat';
+ALTER TABLE p2e.Char_LevelUp_Feat COMMENT 'can have more than one feat per level\ncan sub skill feat for general feat';
 
-ALTER TABLE p2e.Char_Level_Feat MODIFY FeatId int  NOT NULL   COMMENT 'Paizo Id?';
+ALTER TABLE p2e.Char_LevelUp_Feat MODIFY FeatId int  NOT NULL   COMMENT 'Paizo Id?';
 
 CREATE TABLE p2e.SkillProficiency ( 
 	SkillProficiencyLevel tinyint  NOT NULL    PRIMARY KEY,
@@ -556,8 +554,6 @@ ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Tbl_Char_Tbl_Deity FOREIGN KEY ( Deity 
 
 ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Tbl_Char_Tbl_Alignment FOREIGN KEY ( Alignment ) REFERENCES p2e.Alignment( AlignmentCode ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Tbl_Char_Tbl_Char_Equipment FOREIGN KEY ( CharId ) REFERENCES p2e.Char_Equipment( CharId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Char_Rarity FOREIGN KEY ( Rarity ) REFERENCES p2e.Rarity( Rarity ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Char_Background FOREIGN KEY ( BackgroundId ) REFERENCES p2e.Background( BackgroundId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -565,6 +561,8 @@ ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Char_Background FOREIGN KEY ( Backgroun
 ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Char_Class FOREIGN KEY ( Class ) REFERENCES p2e.Class( Class ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Char_SubClass FOREIGN KEY ( SubClass ) REFERENCES p2e.SubClass( SubClass ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE p2e.`Char` ADD CONSTRAINT Fk_Char_CreatureType FOREIGN KEY ( CreatureType ) REFERENCES p2e.CreatureType( CreatureType ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.CharLevel ADD CONSTRAINT Fk_Tbl_Level_Tbl_Skill_Proficiency FOREIGN KEY ( CharLevel ) REFERENCES p2e.SkillProficiency( MinCharLevel ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -576,6 +574,8 @@ ALTER TABLE p2e.Char_Ability ADD CONSTRAINT Fk_Tbl_Char_Ability_Tbl_Ability_Type
 
 ALTER TABLE p2e.Char_Equipment ADD CONSTRAINT Fk_Tbl_Char_Equipment_Tbl_Equipment FOREIGN KEY ( EquipmentId ) REFERENCES p2e.Equipment( EquipmentId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+ALTER TABLE p2e.Char_Equipment ADD CONSTRAINT Fk_Char_Equipment_Char FOREIGN KEY ( CharId ) REFERENCES p2e.`Char`( CharId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
 ALTER TABLE p2e.Char_Language ADD CONSTRAINT Fk_Tbl_Char_Language_Tbl_Language FOREIGN KEY ( Language ) REFERENCES p2e.Language( Language ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.Char_Language ADD CONSTRAINT Fk_Tbl_Char_Language_Tbl_Char FOREIGN KEY ( CharId ) REFERENCES p2e.`Char`( CharId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -586,9 +586,9 @@ ALTER TABLE p2e.Char_LevelUp ADD CONSTRAINT Fk_Tbl_Char_Level_Tbl_Level FOREIGN 
 
 ALTER TABLE p2e.Char_LevelUp ADD CONSTRAINT Fk_Char_LevelUp_Class FOREIGN KEY ( Class ) REFERENCES p2e.Class( Class ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE p2e.Char_Level_Feat ADD CONSTRAINT Fk_Tbl_Char_Level_Feat_Tbl_Char_Level FOREIGN KEY ( CharLevelId ) REFERENCES p2e.Char_LevelUp( CharLevelId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE p2e.Char_LevelUp_Feat ADD CONSTRAINT Fk_Tbl_Char_Level_Feat_Tbl_Char_Level FOREIGN KEY ( CharLevelUpId ) REFERENCES p2e.Char_LevelUp( CharLevelUpId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE p2e.Char_Level_Feat ADD CONSTRAINT Fk_Tbl_Char_Level_Feat_Tbl_Feat FOREIGN KEY ( FeatId ) REFERENCES p2e.Feat( FeatId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE p2e.Char_LevelUp_Feat ADD CONSTRAINT Fk_Tbl_Char_Level_Feat_Tbl_Feat FOREIGN KEY ( FeatId ) REFERENCES p2e.Feat( FeatId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.Char_SpellPrepared ADD CONSTRAINT Fk_Tbl_Char_Spell_Prepared_Tbl_Char FOREIGN KEY ( CharId ) REFERENCES p2e.`Char`( CharId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -608,13 +608,9 @@ ALTER TABLE p2e.Char_Trait ADD CONSTRAINT Fk_Tbl_Char_Trait_Tbl_Trait FOREIGN KE
 
 ALTER TABLE p2e.Char_Trait ADD CONSTRAINT Fk_Tbl_Char_Trait_Tbl_Trait_Type FOREIGN KEY ( TraitType ) REFERENCES p2e.TraitType( TraitType ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE p2e.ClassArchetype ADD CONSTRAINT Fk_ClassArchetype_Class FOREIGN KEY ( Class ) REFERENCES p2e.Class( Class ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE p2e.ClassArchetype ADD CONSTRAINT Fk_ClassArchetype_Class_0 FOREIGN KEY ( ClassArchetype ) REFERENCES p2e.Class( Class ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 ALTER TABLE p2e.ClassArchetype_Feat ADD CONSTRAINT Fk_Tbl_Archetype_Feat_Tbl_Feat FOREIGN KEY ( FeatId ) REFERENCES p2e.Feat( FeatId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE p2e.ClassArchetype_Feat ADD CONSTRAINT Fk_Archetype_Feat_ClassArchetype FOREIGN KEY ( ClassArchetype ) REFERENCES p2e.ClassArchetype( ClassArchetype ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE p2e.ClassArchetype_Feat ADD CONSTRAINT Fk_ClassArchetype_Feat_Class FOREIGN KEY ( ClassArchetype ) REFERENCES p2e.Class( Class ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.Class_Spell ADD CONSTRAINT Fk_Tbl_Class_Spell_Tbl_Class FOREIGN KEY ( Class ) REFERENCES p2e.Class( Class ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -624,9 +620,11 @@ ALTER TABLE p2e.Combat_CharInitiative ADD CONSTRAINT Fk_Tbl_Session_Initiative_T
 
 ALTER TABLE p2e.Combat_CharInitiative ADD CONSTRAINT Fk_Tbl_Combat_Initiative_Tbl_Combat FOREIGN KEY ( CombatId ) REFERENCES p2e.Combat( CombatId ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE p2e.Deity ADD CONSTRAINT Fk_Tbl_Deity_Tbl_Domain FOREIGN KEY ( Domain ) REFERENCES p2e.Domain( Domain ) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 ALTER TABLE p2e.Deity ADD CONSTRAINT Fk_Tbl_Deity_Tbl_Alignment FOREIGN KEY ( Alignment ) REFERENCES p2e.Alignment( AlignmentCode ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE p2e.Deity_Domain ADD CONSTRAINT Fk_Deity_Domain_Deity FOREIGN KEY ( Deity ) REFERENCES p2e.Deity( Deity ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE p2e.Deity_Domain ADD CONSTRAINT Fk_Deity_Domain_Domain FOREIGN KEY ( Domain ) REFERENCES p2e.Domain( Domain ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE p2e.Equipment ADD CONSTRAINT Fk_Equipment_EquipmentType FOREIGN KEY ( EquipmentType ) REFERENCES p2e.EquipmentType( EquipmentType ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
