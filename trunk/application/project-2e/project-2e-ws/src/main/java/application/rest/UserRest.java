@@ -13,10 +13,10 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.Logger;
 
-import application.entity.ToDo;
-import application.entity.User;
+import application.data.StatusResp;
 import application.session.UserSLS;
 import application.utils.DunGenLogger;
+import application.utils.MiscUtils;
 
 @Path(value = "user")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -30,25 +30,33 @@ public class UserRest {
 	// localhost:8080/project-2e-ws/api/v1/user/new
 	@Path("new")
 	@POST
-	public Response createUser(final String name) {
-		String method = this.className + ".createUser";
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createUser(final String email) {
+		String method = this.className + ".createUser: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
-			logger.debug(method + "name: " + name);
+			logger.debug(method + "email: " + email);
 		}
-		User user = null;
 		try {
-			user = this.userSLS.createUser(name);
+			StatusResp resp = this.userSLS.createUser(email);
+			return MiscUtils.buildResponse(resp);
 		} catch (Exception ex) {
-			System.out.println("Crap");
+			return MiscUtils.buildResponse(ex);
 		}
-		return Response.ok(user).build();
 	}
 
 	// localhost:8080/project-2e-ws/api/v1/user/list
 	@Path("list")
 	@GET
 	public Response listUser() {
-		return Response.ok(this.userSLS.getUsers()).build();
+		String method = this.className + ".listUser: ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "entering");
+		}
+		try {
+			return MiscUtils.buildResponse(this.userSLS.getUsers());
+		} catch (Exception e) {
+			return MiscUtils.buildResponse(e);
+		}
 	}
 }

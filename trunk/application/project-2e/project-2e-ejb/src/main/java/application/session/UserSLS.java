@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import org.apache.logging.log4j.Logger;
 
+import application.data.StatusResp;
 import application.entity.User;
 import application.utils.DunGenLogger;
 
@@ -33,16 +34,17 @@ public class UserSLS {
 		// return the persisted object to the client
 	}
 
-	public User createUser(final String name)
+	public StatusResp createUser(final String email)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + ".createUser: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
-			logger.debug(method + "name: " + name);
+			logger.debug(method + "name: " + email);
 		}
 		User user = new User();
-		user.setName(name);
-		return this.persistenceSLS.persistUser(user);
+		user.setEmail(email);
+		user = this.persistenceSLS.persistUser(user);
+		return new StatusResp(user);
 	}
 
 	public User updateUser(final User user) {
@@ -57,9 +59,9 @@ public class UserSLS {
 		return user.get();
 	}
 
-	public List<User> getUsers() {
+	public StatusResp getUsers() {
 		List<User> UserList = this.persistenceSLS.getDataList(User.queryByAll, User.class, null, "getUsers");
-		return UserList;
+		return new StatusResp(UserList);
 	}
 
 	public Optional<User> getUserById(final Long id) {

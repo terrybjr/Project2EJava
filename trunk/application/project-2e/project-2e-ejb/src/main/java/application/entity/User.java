@@ -3,6 +3,7 @@ package application.entity;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -39,7 +41,10 @@ public class User implements HandleItemInf {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
+	@Email
+
+	@Column(name = "Email", unique = true, nullable = false, length = 150)
+	private String email;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonManagedReference
@@ -54,7 +59,7 @@ public class User implements HandleItemInf {
 	public User(final Long pId, final String pName, final List<PlayerCharacter> pCharacters) {
 		super();
 		this.id = pId;
-		this.name = pName;
+		this.email = pName;
 		this.characters = pCharacters;
 	}
 
@@ -66,17 +71,17 @@ public class User implements HandleItemInf {
 		this.id = pId;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getEmail() {
+		return this.email;
 	}
 
-	public void setName(final String pName) {
-		this.name = pName;
+	public void setEmail(final String pEmail) {
+		this.email = pEmail;
 	}
 
 	public void copyFields(final User item) {
 		this.id = item.id;
-		this.setName(item.getName());
+		this.setEmail(item.getEmail());
 	}
 
 	@Override
