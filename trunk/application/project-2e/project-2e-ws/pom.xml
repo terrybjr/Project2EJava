@@ -25,6 +25,18 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.14.1</version>
+		     <scope>provided</scope>
+	  </dependency>
+	 	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.12.3</version>
+	    <scope>provided</scope>
+		</dependency>
+        <dependency>
         	<groupId>com.temp</groupId>
     		<artifactId>project-2e-ejb</artifactId>
     		<version>${project.version}</version>
