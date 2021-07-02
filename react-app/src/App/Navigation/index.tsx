@@ -18,11 +18,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
+import { ViewTypes } from '../Views';
 
 interface Props {
   authState: { isSignedIn: boolean; username?: string };
   children: ReactElement;
   onSignOut: () => void;
+  onSetView: (view: ViewTypes) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -88,10 +90,12 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 const Navigation = (props: Props) => {
-  const { authState, children, onSignOut } = props;
+  const { authState, children, onSetView, onSignOut } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+
+  const views: ViewTypes[] = ['ANCESTRY', 'BACKGROUND', 'CLASSES', 'ABILITIES', 'FEATS'];
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -151,15 +155,13 @@ const Navigation = (props: Props) => {
           </div>
           <Divider />
           <List>
-            {['Ancestry', 'Background', 'Classes', 'Abilities', 'Feats', 'Etc.'].map(
-              (text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-                // eslint-disable-next-line @typescript-eslint/comma-dangle
-              )
-            )}
+            {views.map((text, index) => (
+              <ListItem button key={text} onClick={() => onSetView(text)}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+              // eslint-disable-next-line @typescript-eslint/comma-dangle
+            ))}
           </List>
           <Divider />
           <List>
