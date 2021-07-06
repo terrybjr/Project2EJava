@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { Container } from '@material-ui/core';
 import Auth from './Auth';
 import Navigation from './Navigation';
+import Ancestry from './Ancestry';
 
 type AuthState = {
   isSignedIn: boolean;
@@ -22,9 +23,11 @@ const App = (): ReactElement => {
   };
 
   return (
+
     <Navigation authState={authState} onSignOut={onSignOut}>
       <Container>{authState.isSignedIn ? <>App</> : <Auth onSignOn={onSignOn} />}</Container>
     </Navigation>
+
   );
 };
 
