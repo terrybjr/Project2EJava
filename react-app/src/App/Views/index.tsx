@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import Ancestry from '../Ancestry';
 
 export type DefaultView = '';
 export type AncestryView = 'ANCESTRY';
@@ -22,7 +23,7 @@ const Views = (props: Props) => {
   const { view } = props;
   switch (view) {
     case 'ANCESTRY':
-      return <>Ancestry View</>;
+      return <Ancestry />;
     case 'BACKGROUND':
       return <>Background View</>;
     case 'CLASSES':
