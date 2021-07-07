@@ -12,6 +12,12 @@
     <packaging>ejb</packaging>
    
     <dependencies>
+    <dependency>
+		        <groupId>com.github.phillip-kruger</groupId>
+		        <artifactId>apiee-core</artifactId>
+		        <version>1.0.9</version>
+		        <scope>provided</scope>
+		 </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

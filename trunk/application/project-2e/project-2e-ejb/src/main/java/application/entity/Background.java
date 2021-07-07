@@ -1,43 +1,41 @@
 package application.entity;
 
-import java.io.Serializable;
+
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import application.data.HandleItemInf;
 
 @Entity
-public class Background implements HandleItemInf, Serializable {
+public class Background implements HandleItemInf {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
 	private Long id;
 
 	@OneToOne
-	@JoinColumn(name = "player_character_id")
-	@JsonbTransient
-	private PlayerCharacter playerCharacter;
+	@JoinColumn(name = "character_id")
+	@JsonBackReference // stops the JSON from looping to infinity
+	private Character character;
 
 	public Background() {
 		super();
 	}
 
-	public Background(final Long pId, final PlayerCharacter pPlayerCharacter) {
+	public Background(final Long pId, final Character pCharacter) {
 		super();
 		this.id = pId;
-		this.playerCharacter = pPlayerCharacter;
+		this.character = pCharacter;
 	}
 
 	public Long getId() {
@@ -48,17 +46,17 @@ public class Background implements HandleItemInf, Serializable {
 		this.id = pId;
 	}
 
-	public PlayerCharacter getPlayerCharacter() {
-		return this.playerCharacter;
+	public Character getCharacter() {
+		return this.character;
 	}
 
-	public void setPlayerCharacter(final PlayerCharacter pPlayerCharacter) {
-		this.playerCharacter = pPlayerCharacter;
+	public void setCharacter(final Character pCharacter) {
+		this.character = pCharacter;
 	}
 
 	public void copyFields(final Background item) {
 		this.id = item.id;
-		this.playerCharacter = item.playerCharacter;
+		this.character = item.character;
 	}
 
 	@Override

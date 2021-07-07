@@ -15,7 +15,7 @@ import javax.persistence.TypedQuery;
 import application.entity.Background;
 import application.entity.Inventory;
 import application.entity.Level;
-import application.entity.PlayerCharacter;
+import application.entity.Character;
 import application.entity.ToDo;
 import application.entity.User;
 import application.utils.MiscUtils;
@@ -96,7 +96,7 @@ public class PersistenceSLS extends SLSBase {
 		return this.persistItem(toDo, toDo.methodGetKey(), "persistToDo");
 	}
 
-	public PlayerCharacter persistPlayerCharacter(final PlayerCharacter character)
+	public Character persistPlayerCharacter(final Character character)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return this.persistItem(character, character.methodGetKey(), "persistPlayerCharacter");
 	}
