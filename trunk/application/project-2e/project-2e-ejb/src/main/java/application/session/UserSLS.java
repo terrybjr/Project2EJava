@@ -39,7 +39,7 @@ public class UserSLS {
 		String method = this.className + ".createUser: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
-			logger.debug(method + "name: " + email);
+			logger.debug(method + "email: " + email);
 		}
 		User user = new User();
 		user.setEmail(email);

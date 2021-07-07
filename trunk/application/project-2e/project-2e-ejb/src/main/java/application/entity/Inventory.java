@@ -15,13 +15,13 @@ import application.data.HandleItemInf;
 public class Inventory implements HandleItemInf {
 
 	@Id
-	@Column(name = "player_character_id")
+	@Column(name = "character_id")
 	private Long id;
 
 	@OneToOne
 	@MapsId
-	@JoinColumn(name = "player_character_id")
-	private PlayerCharacter playerCharacter;
+	@JoinColumn(name = "character_id")
+	private Character character;
 
 	public Inventory() {
 		super();
@@ -40,17 +40,17 @@ public class Inventory implements HandleItemInf {
 		this.id = pId;
 	}
 
-	public PlayerCharacter getPlayerCharacter() {
-		return this.playerCharacter;
+	public Character getCharacter() {
+		return this.character;
 	}
 
-	public void setPlayerCharacter(final PlayerCharacter pPlayerCharacter) {
-		this.playerCharacter = pPlayerCharacter;
+	public void setCharacter(final Character pCharacter) {
+		this.character = pCharacter;
 	}
 
 	public void copyFields(final Inventory item) {
 		this.id = item.id;
-		this.playerCharacter = item.playerCharacter;
+		this.character = item.character;
 	}
 
 	@Override

@@ -9,10 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -20,13 +16,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import application.data.HandleItemInf;
+import io.swagger.annotations.ApiModel;
 
 @Entity
-@Table(name = "user")
+@ApiModel
+@Table(name = "User")
 @NamedQueries ({
 	@NamedQuery(name = "User.findAll", query = " SELECT T FROM User T"),
 	@NamedQuery(name = "User.byId", query = " SELECT T FROM User T WHERE t.id = :id"),
@@ -47,7 +44,7 @@ public class User implements HandleItemInf {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonManagedReference
-	private final  List<PlayerCharacter> characters;
+	private final  List<Character> characters;
 
 	public User() {
 		super();
@@ -55,7 +52,7 @@ public class User implements HandleItemInf {
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(final Long pId, final String pName, final List<PlayerCharacter> pCharacters) {
+	public User(final Long pId, final String pName, final List<Character> pCharacters) {
 		super();
 		this.id = pId;
 		this.email = pName;

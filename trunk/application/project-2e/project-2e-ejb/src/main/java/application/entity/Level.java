@@ -19,8 +19,8 @@ public class Level implements HandleItemInf {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "player_character_id", nullable = false)
-	private PlayerCharacter playerCharacter;
+	@JoinColumn(name = "character_id", nullable = false)
+	private Character character;
 
 	public Level() {
 		super();
@@ -39,17 +39,17 @@ public class Level implements HandleItemInf {
 		this.id = pId;
 	}
 
-	public PlayerCharacter getPlayerCharacter() {
-		return this.playerCharacter;
+	public Character getCharacter() {
+		return this.character;
 	}
 
-	public void setPlayerCharacter(final PlayerCharacter pPlayerCharacter) {
-		this.playerCharacter = pPlayerCharacter;
+	public void setCharacter(final Character pCharacter) {
+		this.character = pCharacter;
 	}
 
 	public void copyFields(final Level item) {
 		this.id = item.id;
-		this.playerCharacter = item.playerCharacter;
+		this.character = item.character;
 	}
 
 	@Override
