@@ -76,8 +76,8 @@ class Ancestry extends React.Component {
   get_List() {
     return (
       <div>
-        <Grid container spacing={5}>
-          <Grid item>
+        <Grid container spacing={5} xs={6} alignItems="center">
+          <Grid item xs={6}>
       <List>
       {['Dwarf', 'Elf', 'Gnome', 'Halfling', 'Human', 'Orc'].map((text, index) => (
         <ListItem button key={text}>
@@ -87,7 +87,7 @@ class Ancestry extends React.Component {
       ))}
     </List>
     </Grid>
-    <Grid item>
+    <Grid container xs={6}>
     {this.get_Abilities()}
     </Grid>
     </Grid>
@@ -97,26 +97,44 @@ class Ancestry extends React.Component {
 
   get_Abilities() {
     return (
-      <div>
-      <div className="row">
-        <div className="column">Strength: {this.get_str()}</div>
-      </div>
-      <div className="row">
-        <div className="column">Dexterity: {this.get_dex()}</div>
-      </div>
-      <div className="row">
-        <div className="column">Constitution: {this.get_con()}</div>
-      </div>
-      <div className="row">
-        <div className="column">Intelligence: {this.get_int()}</div>
-      </div>
-      <div className="row">
-        <div className="column">Wisdom: {this.get_wis()}</div>
-      </div>
-      <div className="row">
-        <div className="column">Charisma: {this.get_cha()}</div>
-      </div>      
-      </div>
+      <Grid container spacing={5} xs={9}>
+        <Grid item xs={6}>
+          Strength: 
+          </Grid>
+        <Grid item xs={3}>
+          {this.get_str()}
+        </Grid>          
+      <Grid item xs={6}>
+        <div>Dexterity: </div>
+        </Grid>
+        <Grid item xs={3}>
+        <div>{this.get_dex()}</div>
+        </Grid>        
+      <Grid item xs={6}>
+        <div>Constitution: </div>
+        </Grid>
+        <Grid item xs={3}>
+        <div>{this.get_con()}</div>
+        </Grid>
+      <Grid item xs={6}>
+        <div>Intelligence: </div>
+        </Grid>
+        <Grid item xs={3}>
+        <div>{this.get_int()}</div>
+        </Grid>
+      <Grid item xs={6}>
+        <div className="column">Wisdom: </div>
+        </Grid>
+        <Grid item xs={3}>
+        <div className="column">{this.get_wis()}</div>
+        </Grid>
+      <Grid item xs={6}>
+        <div className="column">Charisma: </div>
+        </Grid>
+        <Grid item xs={3}>
+        <div className="column">{this.get_cha()}</div>
+        </Grid>             
+      </Grid>
     );
   }
 
