@@ -21,6 +21,9 @@
   		<type>war</type>
   	</dependency>
   </dependencies>
+  <build>
+  <finalName>project-2e</finalName>
+  </build>
  <!-- <build>
   	<plugins>
 		<plugin>

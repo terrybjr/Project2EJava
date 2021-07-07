@@ -20,12 +20,17 @@ import application.entity.Character;
 import application.entity.User;
 import application.entity.ref.RefAncestry;
 import application.utils.DunGenLogger;
+import application.utils.exception.ErrorMessageException;
 import application.entity.Character;
 
 @Stateless
 @EJB(name = "java:global/CharacterSLS", beanInterface = CharacterSLS.class)
 @LocalBean
 public class CharacterSLS {
+	private static final String UNABLE_TO_FIND_ANCESTRY = "Unable to find Ancestry: ";
+
+	private static final String UNABLE_TO_FIND_CHARACTER_WITH_ID = "Unable to find Character with Id: ";
+
 	@EJB
 	PersistenceSLS persistenceSLS;
 	@EJB
@@ -47,7 +52,7 @@ public class CharacterSLS {
 	 */
 	public StatusResp createCharacter(final Long userId, final String characterName)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		String method = this.className + ".createCharacter: ";
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
@@ -64,43 +69,59 @@ public class CharacterSLS {
 	}
 
 	public Character findCharacter(final Long id) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		Optional<Character> character = this.getCharacterById(id);
 		return character.get();
 	}
 
 	public StatusResp getCharacters() {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ":";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		List<Character> characterList = this.persistenceSLS.getDataList(Character.queryByAll, Character.class, null,
-				"getPlayerCharacters");
+				method);
 		return new StatusResp(characterList);
 	}
 
 	public Optional<Character> getCharacterById(final Long id) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("id", id);
-		return this.persistenceSLS.getData("PlayerCharacter.byId", Character.class, parameters,
-				"getCharacterById");
+		return this.persistenceSLS.getData(Character.queryById, Character.class, parameters,
+				method);
 	}
 
 	public Optional<RefAncestry> getAncestryByName(final String ancestryName) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", ancestryName);
-		return this.persistenceSLS.getData(RefAncestry.queryByName, RefAncestry.class, parameters, "getAncestryByName");
+		return this.persistenceSLS.getData(RefAncestry.queryByName, RefAncestry.class, parameters, method);
 	}
 
 
 	public StatusResp setAncestry(final Long characterId, final String ancestryName) throws Exception {
-		String method = this.className + ".setAncestry: ";
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
 		Optional<Character> pcOpt = this.getCharacterById(characterId);
 		if (!pcOpt.isPresent()) {
-			throw new Exception("crap");
+			throw new ErrorMessageException(UNABLE_TO_FIND_CHARACTER_WITH_ID + characterId);
 		}
 		Character pc = pcOpt.get();
 		Optional<RefAncestry> ancestryOpt = this.getAncestryByName(ancestryName);
 		if (!ancestryOpt.isPresent()) {
-			throw new Exception("crap");
+			throw new ErrorMessageException(UNABLE_TO_FIND_ANCESTRY + ancestryName);
 		}
 		RefAncestry ancestry = ancestryOpt.get();
 		pc.setAncestry(ancestry);

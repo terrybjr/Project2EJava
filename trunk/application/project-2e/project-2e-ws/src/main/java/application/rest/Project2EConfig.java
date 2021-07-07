@@ -10,6 +10,15 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.annotations.Info;
 
+/**
+ * Get to the swagger page by using the following url
+ * http://localhost:8080/project-2e-ws/api/apiee 
+ * Access Rest points by using the following path 
+ * localhost:8080/project-2e-ws/api/...
+ * 
+ * @author brianterry
+ *
+ */
 @ApplicationPath("/api")
 public class Project2EConfig extends Application {
 
