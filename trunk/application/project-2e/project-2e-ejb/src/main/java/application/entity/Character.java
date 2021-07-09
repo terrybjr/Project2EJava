@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import application.data.HandleItemInf;
+import application.entity.ref.RefAlignment;
 import application.entity.ref.RefAncestry;
 import application.entity.ref.RefBackground;
 import application.entity.ref.RefCreatureType;
@@ -72,6 +73,9 @@ public class Character implements HandleItemInf {
 	@ManyToOne
 	@JoinColumn(name = "CreatureType", nullable = true)
 	private RefCreatureType creatureType;
+	@ManyToOne
+	@JoinColumn(name = "Alignment", nullable = true)
+	private RefAlignment alignment;
 
 
 
