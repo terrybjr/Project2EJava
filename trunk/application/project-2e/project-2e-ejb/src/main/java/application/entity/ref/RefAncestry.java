@@ -1,27 +1,42 @@
 package application.entity.ref;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
+import application.data.StaticDataInterface;
 import application.entity.Character;
+import application.entity.ref.links.LinkAncestryAbilityBoost;
+import application.entity.ref.links.LinkAncestryAbilityFlaw;
 
 @Entity
 @Table(name = "ref_Ancestry")
 @NamedQueries ({
-	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT T FROM RefAncestry T"),
+	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT DISTINCT T FROM RefAncestry T"),
+	@NamedQuery(name = "RefAncestry.findAllAbilityBoosts", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityBoostsList"),
+	@NamedQuery(name = "RefAncestry.findAllAbilityFlaws", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityFlawsList"),
 	@NamedQuery(name = "RefAncestry.byName", query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
 })
-public final class RefAncestry implements HandleItemInf {
+public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	@Transient
 	public static String queryByAll = "RefAncestry.findAll";
 	@Transient
 	public static String queryByName = "RefAncestry.byName";
+	@Transient
+	public static String queryByAllAbilityBoost = "RefAncestry.findAllAbilityBoosts";
+	@Transient
+	public static String queryByAllAbilityFlaw = "RefAncestry.findAllAbilityFlaws";
 
 	/**
 	 * Make this class unable to be created via code.
@@ -33,6 +48,28 @@ public final class RefAncestry implements HandleItemInf {
 	@Id
 	@Column(name = "Name", length = 50)
 	private String name;
+	// TODO: Size should also be a ref table? How deal with that?
+	@Column(name = "Size", nullable = false)
+	private String size;
+	@Column(name = "Speed")
+	private int speed;
+	// TODO: should be a linking table between, abilities
+	@OneToMany(mappedBy = "ancestry")
+	private List<LinkAncestryAbilityBoost> abilityBoostsList;
+	// TODO: should be a linking table between, abilities
+	@OneToMany(mappedBy = "ancestry")
+	private List<LinkAncestryAbilityFlaw> abilityFlawsList;
+	//	// TODO: should be a linking table between, languages
+	//	@Column(name = "List_Languages")
+	//	ArrayList<String> languagesList;
+	//	// TODO: Not correct.. need update
+	//	@Column(name = "Traits", length = 50)
+	//	private String Traits;
+	//	@Column(name = "List_Heritages")
+	//	ArrayList<String> heritagesList;
+	//	// TODO: should be a linking table between, ancestrytFeats
+	//	@Column(name = "List_Ancestry_Feats")
+	//	ArrayList<String> ancestryFeatsList;
 
 	public String getName() {
 		return this.name;
@@ -40,6 +77,38 @@ public final class RefAncestry implements HandleItemInf {
 
 	public void setName(final String pName) {
 		this.name = pName;
+	}
+
+	public String getSize() {
+		return this.size;
+	}
+
+	public void setSize(final String pSize) {
+		this.size = pSize;
+	}
+
+	public int getSpeed() {
+		return this.speed;
+	}
+
+	public void setSpeed(final int pSpeed) {
+		this.speed = pSpeed;
+	}
+
+	public List<LinkAncestryAbilityBoost> getAbilityBoostsList() {
+		return this.abilityBoostsList;
+	}
+
+	public void setAbilityBoostsList(final List<LinkAncestryAbilityBoost> pAbilityBoostsList) {
+		this.abilityBoostsList = pAbilityBoostsList;
+	}
+
+	public List<LinkAncestryAbilityFlaw> getAbilityFlawsList() {
+		return this.abilityFlawsList;
+	}
+
+	public void setAbilityFlawsList(final List<LinkAncestryAbilityFlaw> pAbilityFlawsList) {
+		this.abilityFlawsList = pAbilityFlawsList;
 	}
 
 	@Override
@@ -50,6 +119,7 @@ public final class RefAncestry implements HandleItemInf {
 
 	public void copyFields(final RefAncestry item) {
 		this.setName(item.getName());
+		this.setSize(item.getSize());
 	}
 
 	@Override
@@ -57,6 +127,12 @@ public final class RefAncestry implements HandleItemInf {
 		RefAncestry newItem = (RefAncestry) pNewItem;
 		this.copyFields(newItem);
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "RefAncestry [name=" + this.name + ", size=" + this.size + ", speed=" + this.speed + ", abilityBoostsList="
+				+ this.abilityBoostsList + ", abilityFlawsList=" + this.abilityFlawsList + "]";
 	}
 
 }
