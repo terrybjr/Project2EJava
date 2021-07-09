@@ -12,6 +12,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import application.data.HandleItemInf;
 import application.entity.composite_key.LinkAncestryAbilityKey;
 import application.entity.ref.RefAbility;
@@ -31,6 +33,7 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	@ManyToOne
 	@MapsId("name")
 	@JoinColumn(name = "Ancestry")
+	@JsonBackReference
 	RefAncestry ancestry;
 
 	@ManyToOne
@@ -103,5 +106,9 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 		return this;
 	}
 
+	@Override
+	public String toString() {
+		return "LinkAncestryAbilityFlaw [key=" + this.key + ", ability=" + this.ability + ", quantity=" + this.quantity + "]";
+	}
 
 }

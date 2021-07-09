@@ -9,12 +9,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
+import application.data.StaticDataInterface;
 
 @Entity
 @Table(name = "ref_Alignment")
 @NamedQueries({ @NamedQuery(name = "RefAlignment.findAll", query = " SELECT T FROM RefAlignment T"),
 	@NamedQuery(name = "RefAlignment.byName", query = " SELECT T FROM RefAlignment T WHERE t.name = :name"), })
-public final class RefAlignment implements HandleItemInf {
+public final class RefAlignment implements HandleItemInf, StaticDataInterface {
 	@Transient
 	public static String queryByAll = "RefAlignment.findAll";
 	@Transient

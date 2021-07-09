@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
+import application.data.StaticDataInterface;
 import application.entity.Character;
 import application.entity.ref.links.LinkAncestryAbilityBoost;
 import application.entity.ref.links.LinkAncestryAbilityFlaw;
@@ -22,14 +23,20 @@ import application.entity.ref.links.LinkAncestryAbilityFlaw;
 @Entity
 @Table(name = "ref_Ancestry")
 @NamedQueries ({
-	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT T FROM RefAncestry T"),
+	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT DISTINCT T FROM RefAncestry T"),
+	@NamedQuery(name = "RefAncestry.findAllAbilityBoosts", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityBoostsList"),
+	@NamedQuery(name = "RefAncestry.findAllAbilityFlaws", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityFlawsList"),
 	@NamedQuery(name = "RefAncestry.byName", query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
 })
-public final class RefAncestry implements HandleItemInf {
+public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	@Transient
 	public static String queryByAll = "RefAncestry.findAll";
 	@Transient
 	public static String queryByName = "RefAncestry.byName";
+	@Transient
+	public static String queryByAllAbilityBoost = "RefAncestry.findAllAbilityBoosts";
+	@Transient
+	public static String queryByAllAbilityFlaw = "RefAncestry.findAllAbilityFlaws";
 
 	/**
 	 * Make this class unable to be created via code.
@@ -120,6 +127,12 @@ public final class RefAncestry implements HandleItemInf {
 		RefAncestry newItem = (RefAncestry) pNewItem;
 		this.copyFields(newItem);
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "RefAncestry [name=" + this.name + ", size=" + this.size + ", speed=" + this.speed + ", abilityBoostsList="
+				+ this.abilityBoostsList + ", abilityFlawsList=" + this.abilityFlawsList + "]";
 	}
 
 }
