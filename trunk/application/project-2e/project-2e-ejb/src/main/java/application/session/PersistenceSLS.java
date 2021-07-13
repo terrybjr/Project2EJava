@@ -16,7 +16,6 @@ import application.entity.Background;
 import application.entity.Inventory;
 import application.entity.Level;
 import application.entity.Character;
-import application.entity.ToDo;
 import application.entity.User;
 import application.utils.MiscUtils;
 
@@ -89,11 +88,6 @@ public class PersistenceSLS extends SLSBase {
 	public Background persistBackground(final Background item)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return this.persistItem(item, item.methodGetKey(), "persistBackground");
-	}
-
-	public ToDo persistToDo(final ToDo toDo)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return this.persistItem(toDo, toDo.methodGetKey(), "persistToDo");
 	}
 
 	public Character persistPlayerCharacter(final Character character)

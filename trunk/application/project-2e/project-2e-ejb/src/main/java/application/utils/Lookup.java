@@ -6,5 +6,6 @@ public abstract class Lookup {
 	public static final String STATIC_DATA_ANCESTRY = "ancestry";
 	public static final String STATIC_DATA_ALIGNMENT = "alignment";
 	public static final String STATIC_DATA_SIZE = "size";
+	public static final String STATIC_DATA_LANGUAGE = "language";
 
 }

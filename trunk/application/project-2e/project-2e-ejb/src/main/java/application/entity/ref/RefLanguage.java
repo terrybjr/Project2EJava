@@ -13,19 +13,19 @@ import application.data.StaticDataInterface;
 import application.utils.MiscUtils;
 
 @Entity
-@Table(name = "ref_Alignment")
-@NamedQueries({ @NamedQuery(name = "RefAlignment.findAll", query = " SELECT T FROM RefAlignment T"),
-	@NamedQuery(name = "RefAlignment.byName", query = " SELECT T FROM RefAlignment T WHERE t.name = :name"), })
-public final class RefAlignment implements HandleItemInf, StaticDataInterface {
+@Table(name = "ref_Language")
+@NamedQueries({ @NamedQuery(name = "RefLanguage.findAll", query = " SELECT T FROM RefLanguage T"),
+	@NamedQuery(name = "RefLanguage.byName", query = " SELECT T FROM RefLanguage T WHERE t.name = :name"), })
+public class RefLanguage implements HandleItemInf, StaticDataInterface {
 	@Transient
-	public static String queryByAll = "RefAlignment.findAll";
+	public static String queryByAll = "RefLanguage.findAll";
 	@Transient
-	public static String queryByName = "RefAlignment.byName";
+	public static String queryByName = "RefLanguage.byName";
 
 	/**
 	 * Make this class unable to be created via code.
 	 */
-	private RefAlignment() {
+	private RefLanguage() {
 		super();
 	}
 
@@ -47,13 +47,13 @@ public final class RefAlignment implements HandleItemInf, StaticDataInterface {
 		return "getName";
 	}
 
-	public void copyFields(final RefBackground item) {
+	public void copyFields(final RefLanguage item) {
 		this.setName(item.getName());
 	}
 
 	@Override
 	public HandleItemInf updateItem(final HandleItemInf pNewItem) {
-		RefBackground newItem = (RefBackground) pNewItem;
+		RefLanguage newItem = (RefLanguage) pNewItem;
 		this.copyFields(newItem);
 		return this;
 	}

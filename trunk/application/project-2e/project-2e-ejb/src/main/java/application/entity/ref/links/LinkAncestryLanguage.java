@@ -1,9 +1,7 @@
 package application.entity.ref.links;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -15,21 +13,21 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import application.data.HandleItemInf;
-import application.entity.composite_key.LinkAncestryAbilityKey;
-import application.entity.ref.RefAbility;
+import application.entity.composite_key.LinkAncestryLanguageKey;
 import application.entity.ref.RefAncestry;
+import application.entity.ref.RefLanguage;
 import application.utils.MiscUtils;
 
 @Entity
-@Table(name = "Ancestry_Ability_Flaw")
+@Table(name = "Ancestry_Language")
 @NamedQueries({
-	@NamedQuery(name = "LinkAncestryAbilityFlaw.findAll", query = " SELECT T FROM LinkAncestryAbilityFlaw T"), })
-public class LinkAncestryAbilityFlaw implements HandleItemInf {
+	@NamedQuery(name = "LinkAncestryLanguage.findAll", query = " SELECT T FROM LinkAncestryLanguage T"), })
+public class LinkAncestryLanguage implements HandleItemInf {
 	@Transient
-	public static String queryByAll = "LinkAncestryAbilityBoost.findAll";
+	public static String queryByAll = "LinkAncestryLanguage.findAll";
 
 	@EmbeddedId
-	LinkAncestryAbilityKey key;
+	private LinkAncestryLanguageKey key;
 
 	@ManyToOne
 	@MapsId("name")
@@ -38,25 +36,22 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	private RefAncestry ancestry;
 
 	@ManyToOne
-	@MapsId("code")
-	@JoinColumn(name = "Ability")
-	private RefAbility ability;
+	@MapsId("name")
+	@JoinColumn(name = "language")
+	private RefLanguage language;
 
-	@Column(name = "Quantity")
-	private int quantity;
+	public LinkAncestryLanguageKey getKey() {
+		return this.key;
+	}
 
 	/**
 	 * Make this class unable to be created via code.
 	 */
-	private LinkAncestryAbilityFlaw() {
+	private LinkAncestryLanguage() {
 		super();
 	}
 
-	public LinkAncestryAbilityKey getKey() {
-		return this.key;
-	}
-
-	public void setKey(final LinkAncestryAbilityKey pKey) {
+	public void setKey(final LinkAncestryLanguageKey pKey) {
 		this.key = pKey;
 	}
 
@@ -68,24 +63,13 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 		this.ancestry = pAncestry;
 	}
 
-
-	public RefAbility getAbility() {
-		return this.ability;
+	public RefLanguage getLanguage() {
+		return this.language;
 	}
 
-	public void setAbility(final RefAbility pAbility) {
-		this.ability = pAbility;
+	public void setLanguage(final RefLanguage pLanguage) {
+		this.language = pLanguage;
 	}
-
-
-	public int getQuantity() {
-		return this.quantity;
-	}
-
-	public void setQuantity(final int pQuantity) {
-		this.quantity = pQuantity;
-	}
-
 
 	@Override
 	public String methodGetKey() {
@@ -93,16 +77,15 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 		return "getKey";
 	}
 
-	public void copyFields(final LinkAncestryAbilityFlaw item) {
-		this.setAbility(item.getAbility());
+	public void copyFields(final LinkAncestryLanguage item) {
 		this.setAncestry(item.getAncestry());
-		this.setQuantity(item.getQuantity());
-		this.setKey(item.getKey());
+		this.setKey(this.getKey());
+		this.setLanguage(this.getLanguage());
 	}
 
 	@Override
 	public HandleItemInf updateItem(final HandleItemInf pNewItem) {
-		LinkAncestryAbilityFlaw newItem = (LinkAncestryAbilityFlaw) pNewItem;
+		LinkAncestryLanguage newItem = (LinkAncestryLanguage) pNewItem;
 		this.copyFields(newItem);
 		return this;
 	}
@@ -111,5 +94,4 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	public String toString() {
 		return MiscUtils.objToJson(this);
 	}
-
 }
