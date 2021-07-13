@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import application.data.StaticDataInterface;
 import application.entity.ref.RefAlignment;
 import application.entity.ref.RefAncestry;
+import application.entity.ref.RefLanguage;
 import application.entity.ref.RefSize;
 import application.utils.DunGenLogger;
 import application.utils.Lookup;
@@ -39,14 +40,15 @@ public class StaticDataSLS extends SLSBase {
 					RefAncestry.class, parameters, method);
 			ancestryList = this.persistenceSLS.getDataList(RefAncestry.queryByAllAbilityFlaw, RefAncestry.class,
 					parameters, method);
-			logger.debug("THE THING: " + ancestryList);
+			ancestryList = this.persistenceSLS.getDataList(RefAncestry.queryByAllLanguages, RefAncestry.class,
+					parameters, method);
 			return ancestryList;
-			// return this.persistenceSLS.getDataList(RefAncestry.queryByAll,
-			// RefAncestry.class, parameters, method);
 		case Lookup.STATIC_DATA_ALIGNMENT:
 			return this.persistenceSLS.getDataList(RefAlignment.queryByAll, RefAlignment.class, parameters, method);
 		case Lookup.STATIC_DATA_SIZE:
 			return this.persistenceSLS.getDataList(RefSize.queryByAll, RefSize.class, parameters, method);
+		case Lookup.STATIC_DATA_LANGUAGE:
+			return this.persistenceSLS.getDataList(RefLanguage.queryByAll, RefLanguage.class, parameters, method);
 		}
 		return null;
 	}

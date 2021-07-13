@@ -19,6 +19,8 @@ import application.data.StaticDataInterface;
 import application.entity.Character;
 import application.entity.ref.links.LinkAncestryAbilityBoost;
 import application.entity.ref.links.LinkAncestryAbilityFlaw;
+import application.entity.ref.links.LinkAncestryLanguage;
+import application.utils.MiscUtils;
 
 @Entity
 @Table(name = "ref_Ancestry")
@@ -26,6 +28,7 @@ import application.entity.ref.links.LinkAncestryAbilityFlaw;
 	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT DISTINCT T FROM RefAncestry T"),
 	@NamedQuery(name = "RefAncestry.findAllAbilityBoosts", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityBoostsList"),
 	@NamedQuery(name = "RefAncestry.findAllAbilityFlaws", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityFlawsList"),
+	@NamedQuery(name = "RefAncestry.findAllLanguages", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.languagesList"),
 	@NamedQuery(name = "RefAncestry.byName", query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
 })
 public final class RefAncestry implements HandleItemInf, StaticDataInterface {
@@ -37,6 +40,8 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	public static String queryByAllAbilityBoost = "RefAncestry.findAllAbilityBoosts";
 	@Transient
 	public static String queryByAllAbilityFlaw = "RefAncestry.findAllAbilityFlaws";
+	@Transient
+	public static String queryByAllLanguages = "RefAncestry.findAllLanguages";
 
 	/**
 	 * Make this class unable to be created via code.
@@ -48,6 +53,8 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	@Id
 	@Column(name = "Name", length = 50)
 	private String name;
+	@Column(name = "Hitpoints")
+	private int hitpoints;
 	// TODO: Size should also be a ref table? How deal with that?
 	@Column(name = "Size", nullable = false)
 	private String size;
@@ -59,8 +66,8 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	// TODO: should be a linking table between, abilities
 	@OneToMany(mappedBy = "ancestry")
 	private List<LinkAncestryAbilityFlaw> abilityFlawsList;
-	//	// TODO: should be a linking table between, languages
-	//	@Column(name = "List_Languages")
+	@OneToMany(mappedBy = "ancestry")
+	private List<LinkAncestryLanguage> languagesList;
 	//	ArrayList<String> languagesList;
 	//	// TODO: Not correct.. need update
 	//	@Column(name = "Traits", length = 50)
@@ -77,6 +84,14 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 
 	public void setName(final String pName) {
 		this.name = pName;
+	}
+
+	public int getHitpoints() {
+		return this.hitpoints;
+	}
+
+	public void setHitpoints(final int pHitpoints) {
+		this.hitpoints = pHitpoints;
 	}
 
 	public String getSize() {
@@ -111,6 +126,14 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 		this.abilityFlawsList = pAbilityFlawsList;
 	}
 
+	public List<LinkAncestryLanguage> getLanguagesList() {
+		return this.languagesList;
+	}
+
+	public void setLanguagesList(final List<LinkAncestryLanguage> pLanguagesList) {
+		this.languagesList = pLanguagesList;
+	}
+
 	@Override
 	public String methodGetKey() {
 		// TODO Auto-generated method stub
@@ -131,8 +154,7 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 
 	@Override
 	public String toString() {
-		return "RefAncestry [name=" + this.name + ", size=" + this.size + ", speed=" + this.speed + ", abilityBoostsList="
-				+ this.abilityBoostsList + ", abilityFlawsList=" + this.abilityFlawsList + "]";
+		return MiscUtils.objToJson(this);
 	}
 
 }

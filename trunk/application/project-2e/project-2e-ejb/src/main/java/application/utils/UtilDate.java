@@ -25,10 +25,7 @@ public class UtilDate {
 			+ " format.";
 	public static final int AGE_MISSING_DATE = -1;
 
-	/**
-	 * This formatter should be used to ensure consistency in date formatting within
-	 * HILOB.
-	 */
+
 	public static DateTimeFormatter UTIL_DATE = MM_DD_YYYY_SLASH;
 	// public static final int UNK = 0; // should never happen...
 	public static final int VALID = 1;
@@ -221,16 +218,6 @@ public class UtilDate {
 	public static UtilDate now() {
 		UtilDate date = new UtilDate(LocalDate.now());
 		return date;
-	}
-
-	/**
-	 * returns true if the date is less than (earlier) or equal to today. So, today
-	 * is retro...
-	 * 
-	 * @return
-	 */
-	public boolean isRetro() {
-		return !this.isSameOrAfter(UtilDate.now());
 	}
 
 	/**
@@ -636,8 +623,7 @@ public class UtilDate {
 	}
 
 	/**
-	 * In health insurance, we often need the start of the month for an existing
-	 * date and this is it...
+	 *
 	 * 
 	 * @return a LocalDate for the 1st day of the next month.
 	 */
@@ -770,7 +756,7 @@ public class UtilDate {
 	/**
 	 * Should be used to ensure consistent date formatting.
 	 * 
-	 * @return a string version of the localDate in the default HILOB format.
+	 * @return
 	 */
 	@Override
 	public String toString() {

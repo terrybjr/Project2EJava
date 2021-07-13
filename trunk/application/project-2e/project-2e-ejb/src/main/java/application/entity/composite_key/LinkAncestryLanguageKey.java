@@ -3,15 +3,10 @@ package application.entity.composite_key;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Id;
 
-import application.entity.ref.RefAbility;
-import application.entity.ref.RefAncestry;
 import application.utils.MiscUtils;
 
-@Embeddable
-public class LinkAncestryAbilityKey implements Serializable {
+public class LinkAncestryLanguageKey implements Serializable {
 
 	/**
 	 * 
@@ -21,12 +16,8 @@ public class LinkAncestryAbilityKey implements Serializable {
 	@Column(name = "Ancestry", length = 50)
 	private String ancestry;
 
-	@Column(name = "Ability")
-	private char ability;
-
-	public LinkAncestryAbilityKey() {
-		// TODO Auto-generated constructor stub
-	}
+	@Column(name = "Language", length = 50)
+	private String ability;
 
 	public String getAncestry() {
 		return this.ancestry;
@@ -36,11 +27,11 @@ public class LinkAncestryAbilityKey implements Serializable {
 		this.ancestry = pAncestry;
 	}
 
-	public char getAbility() {
+	public String getAbility() {
 		return this.ability;
 	}
 
-	public void setAbility(final char pAbility) {
+	public void setAbility(final String pAbility) {
 		this.ability = pAbility;
 	}
 
