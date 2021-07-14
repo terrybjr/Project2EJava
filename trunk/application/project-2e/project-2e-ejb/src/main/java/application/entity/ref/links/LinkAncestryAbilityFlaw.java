@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import application.data.HandleItemInf;
 import application.entity.composite_key.LinkAncestryAbilityKey;
@@ -29,6 +30,7 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	public static String queryByAll = "LinkAncestryAbilityBoost.findAll";
 
 	@EmbeddedId
+	@JsonIgnore
 	LinkAncestryAbilityKey key;
 
 	@ManyToOne
