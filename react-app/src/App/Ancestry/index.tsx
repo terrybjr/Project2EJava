@@ -1,4 +1,5 @@
 import React from 'react';
+import Abilities from '../Classes/Abilities';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -8,24 +9,12 @@ type Props = {};
 
 class Ancestry extends React.Component {
   chosenCd: string;
-  str: number;
-  dex: number;
-  con: number;
-  int: number;
-  wis: number;
-  cha: number;
-
+  oAbilities : Abilities;
 
   constructor(props: Props) {
     super(props);
     this.chosenCd = 'Dwf';
-    this.str = 10;
-    this.dex = 10;
-    this.con = 10;
-    this.int = 10;
-    this.wis = 10;
-    this.cha = 10;
-
+    this.oAbilities = new Abilities();
   }
 
   set_chosenCd(value: string) {
@@ -36,42 +25,6 @@ class Ancestry extends React.Component {
     return this.chosenCd;
   }
 
-  get_str() {
-    return this.str;
-  }
-  set_str(value: number) {
-    this.str = value;
-  }
-  get_dex() {
-    return this.dex;
-  }
-  set_dex(value: number) {
-    this.dex = value;
-  }
-  get_con() {
-    return this.con;
-  }
-  set_con(value: number) {
-    this.con = value;
-  }
-  get_int() {
-    return this.int;
-  }
-  set_int(value: number) {
-    this.int = value;
-  }
-  get_wis() {
-    return this.wis;
-  }
-  set_wis(value: number) {
-    this.wis = value;
-  }
-  get_cha() {
-    return this.cha;
-  }
-  set_cha(value: number) {
-    this.cha = value;
-  }
 
   get_List() {
     return (
@@ -102,37 +55,37 @@ class Ancestry extends React.Component {
           Strength: 
           </Grid>
         <Grid item xs={3}>
-          {this.get_str()}
+          {this.oAbilities.get_str()}
         </Grid>          
       <Grid item xs={6}>
         <div>Dexterity: </div>
         </Grid>
         <Grid item xs={3}>
-        <div>{this.get_dex()}</div>
+        <div>{this.oAbilities.get_dex()}</div>
         </Grid>        
       <Grid item xs={6}>
         <div>Constitution: </div>
         </Grid>
         <Grid item xs={3}>
-        <div>{this.get_con()}</div>
+        <div>{this.oAbilities.get_con()}</div>
         </Grid>
       <Grid item xs={6}>
         <div>Intelligence: </div>
         </Grid>
         <Grid item xs={3}>
-        <div>{this.get_int()}</div>
+        <div>{this.oAbilities.get_int()}</div>
         </Grid>
       <Grid item xs={6}>
         <div className="column">Wisdom: </div>
         </Grid>
         <Grid item xs={3}>
-        <div className="column">{this.get_wis()}</div>
+        <div className="column">{this.oAbilities.get_wis()}</div>
         </Grid>
       <Grid item xs={6}>
         <div className="column">Charisma: </div>
         </Grid>
         <Grid item xs={3}>
-        <div className="column">{this.get_cha()}</div>
+        <div className="column">{this.oAbilities.get_cha()}</div>
         </Grid>             
       </Grid>
     );
