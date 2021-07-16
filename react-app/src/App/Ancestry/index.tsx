@@ -4,6 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import { textChangeRangeIsUnchanged } from 'typescript';
 
 type Props = {};
 
@@ -13,7 +14,7 @@ class Ancestry extends React.Component {
 
   constructor(props: Props) {
     super(props);
-    this.chosenCd = 'Dwf';
+    this.chosenCd = 'Dwarf';
     this.oAbilities = new Abilities();
   }
 
@@ -25,25 +26,34 @@ class Ancestry extends React.Component {
     return this.chosenCd;
   }
 
+  renderRow(text: string) {
+    return (
+      <ListItem button key={text}>
+        <ListItemText primary={text} />
+      </ListItem>
+    )
+  }
 
   get_List() {
     return (
       <div>
-        <Grid container spacing={5} xs={6} alignItems="center">
-          <Grid item xs={6}>
-      <List>
-      {['Dwarf', 'Elf', 'Gnome', 'Halfling', 'Human', 'Orc'].map((text, index) => (
-        <ListItem button key={text}>
-          <ListItemText primary={text} />
-        </ListItem>
-        // eslint-disable-next-line @typescript-eslint/comma-dangle
-      ))}
-    </List>
-    </Grid>
-    <Grid container xs={6}>
-    {this.get_Abilities()}
-    </Grid>
-    </Grid>
+        <form className="ui form">
+          <Grid container spacing={5} xs={6} alignItems="center">
+            <Grid item xs={6}>
+              <List>
+                {['Dwarf', 'Elf', 'Gnome', 'Halfling', 'Human', 'Orc'].map((text, index) => (
+                <ListItem onClick={(e) => this.onSelect(text)} button key={text}>
+                  <ListItemText primary={text} />
+                </ListItem>
+            // eslint-disable-next-line @typescript-eslint/comma-dangle
+                ))}
+              </List>
+           </Grid>
+          <Grid container xs={6}>
+            {this.get_Abilities()}
+          </Grid>
+        </Grid>
+      </form>
     </div>
     );
   }
@@ -91,8 +101,9 @@ class Ancestry extends React.Component {
     );
   }
 
-  onSelect() {
-    this.set_chosenCd('Dwarf');
+  onSelect(text: string) {
+    this.set_chosenCd(text);
+    console.log(this.get_chosenCd());
   }
 
   render() {
