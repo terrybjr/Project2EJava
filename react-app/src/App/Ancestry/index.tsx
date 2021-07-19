@@ -16,6 +16,8 @@ class Ancestry extends React.Component {
     oAbilities: new Abilities(),
   };
   ancestryTypes: string[] = ['Dwarf', 'Elf', 'Gnome', 'Halfling', 'Human', 'Orc'];
+  ability_names: string[] = this.state.oAbilities.get_AbilityNames();
+  ability_scores: number[] = this.state.oAbilities.get_AbilityScores();
 
   is_selected_item(ancestryType: string): boolean {
     return ancestryType === this.state.chosenCd;
@@ -41,43 +43,31 @@ class Ancestry extends React.Component {
   }
 
   get_Abilities() {
+    this.ability_scores = this.state.oAbilities.get_AbilityScores();
+
     return (
       <Grid container spacing={5}>
         <Grid item xs={6}>
-          Strength:
+          <List>
+            {this.ability_names.map((text) => (
+              <ListItem
+                key={text}
+              >
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
         </Grid>
         <Grid item xs={3}>
-          {this.state.oAbilities.get_str()}
-        </Grid>
-        <Grid item xs={6}>
-          <div>Dexterity: </div>
-        </Grid>
-        <Grid item xs={3}>
-          <div>{this.state.oAbilities.get_dex()}</div>
-        </Grid>
-        <Grid item xs={6}>
-          <div>Constitution: </div>
-        </Grid>
-        <Grid item xs={3}>
-          <div>{this.state.oAbilities.get_con()}</div>
-        </Grid>
-        <Grid item xs={6}>
-          <div>Intelligence: </div>
-        </Grid>
-        <Grid item xs={3}>
-          <div>{this.state.oAbilities.get_int()}</div>
-        </Grid>
-        <Grid item xs={6}>
-          <div className="column">Wisdom: </div>
-        </Grid>
-        <Grid item xs={3}>
-          <div className="column">{this.state.oAbilities.get_wis()}</div>
-        </Grid>
-        <Grid item xs={6}>
-          <div className="column">Charisma: </div>
-        </Grid>
-        <Grid item xs={3}>
-          <div className="column">{this.state.oAbilities.get_cha()}</div>
+          <List>
+            {this.ability_scores.map((text) => (
+              <ListItem
+                key={text}
+              >
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
         </Grid>
       </Grid>
     );
