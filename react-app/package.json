@@ -12,6 +12,7 @@
     "@types/node": "^12.20.13",
     "@types/react": "^17.0.8",
     "@types/react-dom": "^17.0.5",
+    "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -32,10 +33,17 @@
       "react-app/jest"
     ],
     "parserOptions": {
-      "project": ["./tsconfig.json"]
+      "project": [
+        "./tsconfig.json"
+      ]
     },
     "rules": {
-      "object-curly-newline": ["error", { "multiline": true} ]
+      "object-curly-newline": [
+        "error",
+        {
+          "multiline": true
+        }
+      ]
     }
   },
   "prettier": {

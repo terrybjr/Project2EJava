@@ -4,6 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import { fetchAncestryData } from '../../api/static-data';
 
 type State = {
   chosenCd: string;
@@ -18,6 +19,15 @@ class Ancestry extends React.Component {
   ancestryTypes: string[] = ['Dwarf', 'Elf', 'Gnome', 'Halfling', 'Human', 'Orc'];
   ability_names: string[] = this.state.oAbilities.get_AbilityNames();
   ability_scores: number[] = this.state.oAbilities.get_AbilityScores();
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  async fetchData() {
+    const res = await fetchAncestryData();
+    console.log(res);
+  }
 
   is_selected_item(ancestryType: string): boolean {
     return ancestryType === this.state.chosenCd;
@@ -50,9 +60,7 @@ class Ancestry extends React.Component {
         <Grid item xs={6}>
           <List>
             {this.ability_names.map((text) => (
-              <ListItem
-                key={text}
-              >
+              <ListItem key={text}>
                 <ListItemText primary={text} />
               </ListItem>
             ))}
@@ -61,9 +69,7 @@ class Ancestry extends React.Component {
         <Grid item xs={3}>
           <List>
             {this.ability_scores.map((text) => (
-              <ListItem
-                key={text}
-              >
+              <ListItem key={text}>
                 <ListItemText primary={text} />
               </ListItem>
             ))}
