@@ -19,7 +19,6 @@ class Ancestry extends React.Component {
     chosenCd: 'Dwarf',
     oAbilities: new Abilities(),
   };
-  ancestryTypes: string[] = ['Dwarf', 'Elf', 'Gnome', 'Halfling', 'Human', 'Orc'];
   ability_names: string[] = this.state.oAbilities.get_AbilityNames();
   ability_scores: number[] = this.state.oAbilities.get_AbilityScores();
 
