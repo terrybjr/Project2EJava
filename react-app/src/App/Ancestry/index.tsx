@@ -11,7 +11,7 @@ type State = {
   ancestryTypes: AncestryInterface[];
   chosenCd: string;
   oAbilities: Abilities;
-  mouseOn: string;
+  mouseOn: number;
 };
 
 class Ancestry extends React.Component {
@@ -19,7 +19,7 @@ class Ancestry extends React.Component {
     ancestryTypes: [],
     chosenCd: '',
     oAbilities: new Abilities(),
-    mouseOn: '',
+    mouseOn: 100,
   };
   ability_names: string[] = this.state.oAbilities.get_AbilityNames();
   ability_scores: number[] = this.state.oAbilities.get_AbilityScores();
@@ -50,9 +50,13 @@ class Ancestry extends React.Component {
   }
 
   renderDescription() {
-    if(this.state.mouseOn > '') {
-      return <div><h1>{this.state.mouseOn}</h1><p/>
-      Hit Dice: 1d{this.state.ancestryTypes[0].hitpoints}</div>;
+    if(this.state.mouseOn !== 100) {
+      return <div>
+        <h1>{this.state.ancestryTypes[this.state.mouseOn].name}</h1><p/>
+      Hit Points: {this.state.ancestryTypes[this.state.mouseOn].hitpoints}<br />
+      Speed: {this.state.ancestryTypes[this.state.mouseOn].speed} feet per round<br />
+      Size: {this.state.ancestryTypes[this.state.mouseOn].size}<br />
+      </div>;
     }
     return <div>Put mouse over an Ancestry for description</div>;
   }
@@ -93,12 +97,12 @@ class Ancestry extends React.Component {
       <Grid container spacing={5} alignItems="center">
         <Grid item xs={6}>
           <List>
-            {this.state.ancestryTypes.map((ancestry) => (
+            {this.state.ancestryTypes.map((ancestry, index) => (
               <ListItem
                 selected={this.is_selected_item(ancestry.name)}
                 onClick={() => this.onSelect(ancestry.name)}
-                onMouseEnter={() => this.setState({mouseOn: ancestry.name})}
-                onMouseLeave={() => this.setState({mouseOn: ''})}
+                onMouseEnter={() => this.setState({mouseOn: index})}
+                onMouseLeave={() => this.setState({mouseOn: 100})}
                 button
                 key={ancestry.name}
               >
