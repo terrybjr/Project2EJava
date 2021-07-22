@@ -5,14 +5,17 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import { fetchAncestryData } from '../../api/static-data';
+import { Ancestry as AncestryInterface } from '../../models/Ancestry.model';
 
 type State = {
+  ancestryTypes: AncestryInterface[];
   chosenCd: string;
   oAbilities: Abilities;
 };
 
 class Ancestry extends React.Component {
   state: State = {
+    ancestryTypes: [],
     chosenCd: 'Dwarf',
     oAbilities: new Abilities(),
   };
@@ -25,8 +28,9 @@ class Ancestry extends React.Component {
   }
 
   async fetchData() {
-    const res = await fetchAncestryData();
-    console.log(res);
+    await fetchAncestryData()
+      .then((res) => this.setState({ ...this.state, ancestryTypes: res.data }))
+      .catch((e) => console.error(e));
   }
 
   is_selected_item(ancestryType: string): boolean {
@@ -88,14 +92,14 @@ class Ancestry extends React.Component {
       <Grid container spacing={5} alignItems="center">
         <Grid item xs={6}>
           <List>
-            {this.ancestryTypes.map((text) => (
+            {this.state.ancestryTypes.map((ancestry) => (
               <ListItem
-                selected={this.is_selected_item(text)}
-                onClick={() => this.onSelect(text)}
+                selected={this.is_selected_item(ancestry.name)}
+                onClick={() => this.onSelect(ancestry.name)}
                 button
-                key={text}
+                key={ancestry.name}
               >
-                <ListItemText primary={text} />
+                <ListItemText primary={ancestry.name} />
               </ListItem>
             ))}
           </List>
