@@ -11,13 +11,15 @@ type State = {
   ancestryTypes: AncestryInterface[];
   chosenCd: string;
   oAbilities: Abilities;
+  mouseOn: string;
 };
 
 class Ancestry extends React.Component {
   state: State = {
     ancestryTypes: [],
-    chosenCd: 'Dwarf',
+    chosenCd: '',
     oAbilities: new Abilities(),
+    mouseOn: '',
   };
   ability_names: string[] = this.state.oAbilities.get_AbilityNames();
   ability_scores: number[] = this.state.oAbilities.get_AbilityScores();
@@ -47,12 +49,12 @@ class Ancestry extends React.Component {
     return this.state.chosenCd;
   }
 
-  renderRow(text: string) {
-    return (
-      <ListItem button key={text}>
-        <ListItemText primary={text} />
-      </ListItem>
-    );
+  renderDescription() {
+    if(this.state.mouseOn > '') {
+      return <div><h1>{this.state.mouseOn}</h1><p/>
+      Hit Dice: 1d{this.state.ancestryTypes[0].hitpoints}</div>;
+    }
+    return <div>Put mouse over an Ancestry for description</div>;
   }
 
   get_Abilities() {
@@ -95,6 +97,8 @@ class Ancestry extends React.Component {
               <ListItem
                 selected={this.is_selected_item(ancestry.name)}
                 onClick={() => this.onSelect(ancestry.name)}
+                onMouseEnter={() => this.setState({mouseOn: ancestry.name})}
+                onMouseLeave={() => this.setState({mouseOn: ''})}
                 button
                 key={ancestry.name}
               >
@@ -105,6 +109,9 @@ class Ancestry extends React.Component {
         </Grid>
         <Grid item xs={6}>
           {this.get_Abilities()}
+        </Grid>
+          <Grid item xs={9}>
+              {this.renderDescription()}
         </Grid>
       </Grid>
     );
