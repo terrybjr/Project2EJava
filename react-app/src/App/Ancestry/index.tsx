@@ -1,16 +1,16 @@
 import React from 'react';
-import Abilities from '../Classes/Abilities';
+import { Card } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
 import { fetchAncestryData } from '../../api/static-data';
 import { Ancestry as AncestryInterface } from '../../models/Ancestry.model';
+import './index.css';
 
 type State = {
   ancestryTypes: AncestryInterface[];
   chosenCd: string;
-  oAbilities: Abilities;
   mouseOn: number;
 };
 
@@ -18,11 +18,8 @@ class Ancestry extends React.Component {
   state: State = {
     ancestryTypes: [],
     chosenCd: '',
-    oAbilities: new Abilities(),
     mouseOn: 100,
   };
-  ability_names: string[] = this.state.oAbilities.get_AbilityNames();
-  ability_scores: number[] = this.state.oAbilities.get_AbilityScores();
 
   componentDidMount() {
     this.fetchData();
@@ -50,72 +47,74 @@ class Ancestry extends React.Component {
   }
 
   renderDescription() {
-    if(this.state.mouseOn !== 100) {
-      return <div>
-        <h1>{this.state.ancestryTypes[this.state.mouseOn].name}</h1><p/>
-      Hit Points: {this.state.ancestryTypes[this.state.mouseOn].hitpoints}<br />
-      Speed: {this.state.ancestryTypes[this.state.mouseOn].speed} feet per round<br />
-      Size: {this.state.ancestryTypes[this.state.mouseOn].size}<br />
-      </div>;
+    if (this.state.mouseOn !== 100) {
+      return (
+        <div className="description">
+          <h1>{this.state.ancestryTypes[this.state.mouseOn].name}</h1>
+          <p />
+          Hit Points: {this.state.ancestryTypes[this.state.mouseOn].hitpoints}
+          <br />
+          Speed: {this.state.ancestryTypes[this.state.mouseOn].speed} feet per round
+          <br />
+          Size: {this.state.ancestryTypes[this.state.mouseOn].size}
+          <br />
+        </div>
+      );
     }
-    return <div>Put mouse over an Ancestry for description</div>;
-  }
-
-  get_Abilities() {
-    this.ability_scores = this.state.oAbilities.get_AbilityScores();
-
-    return (
-      <Grid container spacing={5}>
-        <Grid item xs={6}>
-          <List>
-            {this.ability_names.map((text) => (
-              <ListItem key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-        </Grid>
-        <Grid item xs={3}>
-          <List>
-            {this.ability_scores.map((text) => (
-              <ListItem key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-        </Grid>
-      </Grid>
-    );
+    return <></>;
   }
 
   onSelect(text: string) {
     this.set_chosenCd(text);
   }
 
+  getShortDescription(ancestry: AncestryInterface): string {
+    const size = `Size: ${ancestry.size[0]}`;
+    const hp = `HP: ${ancestry.hitpoints}`;
+    const speed = `Speed: ${ancestry.speed}`;
+    const boosts = ancestry.abilityBoostsList.reduce(
+      (acc, boost) => `${acc} +${boost.quantity * 2}${boost.ability.code}`,
+      ''
+    );
+    const flaws = ancestry.abilityFlawsList.reduce(
+      (acc, flaw) => `${acc} -${flaw.quantity * 2}${flaw.ability.code}`,
+      ''
+    );
+    return `${size} ${hp} ${speed} Modifiers: ${boosts} ${flaws}`;
+  }
+
   render() {
     return (
-      <Grid container spacing={5} alignItems="center">
-        <Grid item xs={6}>
-          <List>
-            {this.state.ancestryTypes.map((ancestry, index) => (
-              <ListItem
-                selected={this.is_selected_item(ancestry.name)}
-                onClick={() => this.onSelect(ancestry.name)}
-                onMouseEnter={() => this.setState({mouseOn: index})}
-                onMouseLeave={() => this.setState({mouseOn: 100})}
-                button
-                key={ancestry.name}
-              >
-                <ListItemText primary={ancestry.name} />
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Card>
+            <List>
+              <ListItem>
+                <ListItemText primary="Select an Ancestry" />
               </ListItem>
-            ))}
-          </List>
+              {this.state.ancestryTypes.map((ancestry, index) => (
+                <ListItem
+                  selected={this.is_selected_item(ancestry.name)}
+                  onClick={() => this.onSelect(ancestry.name)}
+                  onMouseEnter={() => this.setState({ mouseOn: index })}
+                  onMouseLeave={() => this.setState({ mouseOn: 100 })}
+                  button
+                  key={ancestry.name}
+                >
+                  <ListItemText
+                    primary={ancestry.name}
+                    secondary={this.getShortDescription(ancestry)}
+                  />
+                </ListItem>
+              ))}
+              <ListItem>
+                <ListItemText secondary="Hover over an Ancestry for more description" />
+              </ListItem>
+            </List>
+          </Card>
         </Grid>
-        <Grid item xs={6}>
-          {this.get_Abilities()}
-        </Grid>
-          <Grid item xs={9}>
-              {this.renderDescription()}
+        <Grid item xs={12}>
+          <Card>{this.renderDescription()}</Card>
         </Grid>
       </Grid>
     );

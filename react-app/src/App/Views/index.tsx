@@ -1,4 +1,6 @@
-import { Fragment } from 'react';
+import { Grid } from '@material-ui/core';
+import { Component, Fragment } from 'react';
+import Abilities from '../Abilities';
 import Ancestry from '../Ancestry';
 
 export type DefaultView = '';
@@ -19,18 +21,32 @@ type Props = {
   view: ViewTypes;
 };
 
-const Views = (props: Props) => {
-  const { view } = props;
-  switch (view) {
-    case 'ANCESTRY':
-      return <Ancestry />;
-    case 'BACKGROUND':
-      return <>Background View</>;
-    case 'CLASSES':
-      return <>Classes View</>;
-    default:
-      return <>Default View</>;
+class Views extends Component<Props> {
+  renderStep() {
+    switch (this.props.view) {
+      case 'ANCESTRY':
+        return <Ancestry />;
+      case 'BACKGROUND':
+        return <>Background View</>;
+      case 'CLASSES':
+        return <>Classes View</>;
+      default:
+        return <>Default View</>;
+    }
   }
-};
+
+  render() {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={9}>
+          {this.renderStep()}
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Abilities />
+        </Grid>
+      </Grid>
+    );
+  }
+}
 
 export default Views;
