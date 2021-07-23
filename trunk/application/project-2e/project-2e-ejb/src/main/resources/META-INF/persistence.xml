@@ -3,12 +3,12 @@
      <jta-data-source>java:/MySqlDS</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-        	<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
-	        <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-	        <!--   this is for prod it actually creates the FK constraints.
+        	<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+	        <property name="hibernate.hbm2ddl.auto" value="create-drop"/> -->
+	        <!--   this is for prod it actually creates the FK constraints. -->
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-	        <property name="hibernate.hbm2ddl.auto" value="update"/>
-	        -->
+	        <property name="hibernate.hbm2ddl.auto" value="create"/>
+	     
 	        <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
 	        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://24.242.87.134:3306/project2e"/>
         </properties>

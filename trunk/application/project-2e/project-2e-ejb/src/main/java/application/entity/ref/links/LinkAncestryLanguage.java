@@ -14,12 +14,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import application.data.HandleItemInf;
+import application.entity.composite_key.LinkAncestryAbilityKey;
 import application.entity.composite_key.LinkAncestryLanguageKey;
 import application.entity.ref.RefAncestry;
 import application.entity.ref.RefLanguage;
 import application.utils.MiscUtils;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "Ancestry_Language")
 @NamedQueries({
 	@NamedQuery(name = "LinkAncestryLanguage.findAll", query = " SELECT T FROM LinkAncestryLanguage T"), })
@@ -51,26 +54,6 @@ public class LinkAncestryLanguage implements HandleItemInf {
 	 */
 	private LinkAncestryLanguage() {
 		super();
-	}
-
-	public void setKey(final LinkAncestryLanguageKey pKey) {
-		this.key = pKey;
-	}
-
-	public RefAncestry getAncestry() {
-		return this.ancestry;
-	}
-
-	public void setAncestry(final RefAncestry pAncestry) {
-		this.ancestry = pAncestry;
-	}
-
-	public RefLanguage getLanguage() {
-		return this.language;
-	}
-
-	public void setLanguage(final RefLanguage pLanguage) {
-		this.language = pLanguage;
 	}
 
 	@Override

@@ -9,14 +9,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
-import application.data.StaticDataInterface;
+import application.data.StaticData;
 import application.utils.MiscUtils;
 
 @Entity
 @Table(name = "ref_Language")
 @NamedQueries({ @NamedQuery(name = "RefLanguage.findAll", query = " SELECT T FROM RefLanguage T"),
 	@NamedQuery(name = "RefLanguage.byName", query = " SELECT T FROM RefLanguage T WHERE t.name = :name"), })
-public class RefLanguage implements HandleItemInf, StaticDataInterface {
+public class RefLanguage extends StaticData implements HandleItemInf {
 	@Transient
 	public static String queryByAll = "RefLanguage.findAll";
 	@Transient

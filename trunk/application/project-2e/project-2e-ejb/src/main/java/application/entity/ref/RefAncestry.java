@@ -3,26 +3,35 @@ package application.entity.ref;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
-import application.data.StaticDataInterface;
+import application.data.StaticData;
 import application.entity.Character;
+import application.entity.ref.data.RefAncestryData;
 import application.entity.ref.links.LinkAncestryAbilityBoost;
 import application.entity.ref.links.LinkAncestryAbilityFlaw;
 import application.entity.ref.links.LinkAncestryLanguage;
 import application.utils.MiscUtils;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "ref_Ancestry")
 @NamedQueries ({
 	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT DISTINCT T FROM RefAncestry T"),
@@ -31,7 +40,7 @@ import application.utils.MiscUtils;
 	@NamedQuery(name = "RefAncestry.findAllLanguages", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.languagesList"),
 	@NamedQuery(name = "RefAncestry.byName", query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
 })
-public final class RefAncestry implements HandleItemInf, StaticDataInterface {
+public final class RefAncestry extends StaticData implements HandleItemInf {
 	@Transient
 	public static String queryByAll = "RefAncestry.findAll";
 	@Transient
@@ -68,6 +77,12 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	private List<LinkAncestryAbilityFlaw> abilityFlawsList;
 	@OneToMany(mappedBy = "ancestry")
 	private List<LinkAncestryLanguage> languagesList;
+
+// uncomment to make data part of the DS
+	//	@OneToOne(mappedBy = "ancestry", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	//	@PrimaryKeyJoinColumn
+	//	private RefAncestryData ancestryData;
+
 	//	ArrayList<String> languagesList;
 	//	// TODO: Not correct.. need update
 	//	@Column(name = "Traits", length = 50)
@@ -77,63 +92,6 @@ public final class RefAncestry implements HandleItemInf, StaticDataInterface {
 	//	// TODO: should be a linking table between, ancestrytFeats
 	//	@Column(name = "List_Ancestry_Feats")
 	//	ArrayList<String> ancestryFeatsList;
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(final String pName) {
-		this.name = pName;
-	}
-
-	public int getHitpoints() {
-		return this.hitpoints;
-	}
-
-	public void setHitpoints(final int pHitpoints) {
-		this.hitpoints = pHitpoints;
-	}
-
-	public String getSize() {
-		return this.size;
-	}
-
-	public void setSize(final String pSize) {
-		this.size = pSize;
-	}
-
-	public int getSpeed() {
-		return this.speed;
-	}
-
-	public void setSpeed(final int pSpeed) {
-		this.speed = pSpeed;
-	}
-
-	public List<LinkAncestryAbilityBoost> getAbilityBoostsList() {
-		return this.abilityBoostsList;
-	}
-
-	public void setAbilityBoostsList(final List<LinkAncestryAbilityBoost> pAbilityBoostsList) {
-		this.abilityBoostsList = pAbilityBoostsList;
-	}
-
-	public List<LinkAncestryAbilityFlaw> getAbilityFlawsList() {
-		return this.abilityFlawsList;
-	}
-
-	public void setAbilityFlawsList(final List<LinkAncestryAbilityFlaw> pAbilityFlawsList) {
-		this.abilityFlawsList = pAbilityFlawsList;
-	}
-
-	public List<LinkAncestryLanguage> getLanguagesList() {
-		return this.languagesList;
-	}
-
-	public void setLanguagesList(final List<LinkAncestryLanguage> pLanguagesList) {
-		this.languagesList = pLanguagesList;
-	}
-
 	@Override
 	public String methodGetKey() {
 		// TODO Auto-generated method stub

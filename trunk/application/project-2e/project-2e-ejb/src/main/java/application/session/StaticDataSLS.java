@@ -10,11 +10,12 @@ import javax.ejb.Stateless;
 
 import org.apache.logging.log4j.Logger;
 
-import application.data.StaticDataInterface;
+import application.data.StaticData;
 import application.entity.ref.RefAlignment;
 import application.entity.ref.RefAncestry;
 import application.entity.ref.RefLanguage;
 import application.entity.ref.RefSize;
+import application.entity.ref.data.RefAncestryData;
 import application.utils.DunGenLogger;
 import application.utils.Lookup;
 
@@ -28,7 +29,7 @@ public class StaticDataSLS extends SLSBase {
 	@EJB
 	PersistenceSLS persistenceSLS;
 
-	public List<? extends StaticDataInterface> getStaticData(final String value) {
+	public List<? extends StaticData> getStaticData(final String value) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
@@ -49,6 +50,20 @@ public class StaticDataSLS extends SLSBase {
 			return this.persistenceSLS.getDataList(RefSize.queryByAll, RefSize.class, parameters, method);
 		case Lookup.STATIC_DATA_LANGUAGE:
 			return this.persistenceSLS.getDataList(RefLanguage.queryByAll, RefLanguage.class, parameters, method);
+		}
+		return null;
+	}
+
+	public StaticData getDataObject(final String value, final String key) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
+		final Map<String, String> parameters = new HashMap<>();
+		switch (value) {
+		case Lookup.STATIC_DATA_ANCESTRY:
+			parameters.put("name", key);
+			return this.persistenceSLS.getData(RefAncestryData.queryByAncestry, RefAncestryData.class, parameters, method).get();
 		}
 		return null;
 	}

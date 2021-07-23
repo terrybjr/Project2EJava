@@ -19,8 +19,12 @@ import application.data.HandleItemInf;
 import application.entity.composite_key.LinkAncestryAbilityKey;
 import application.entity.ref.RefAbility;
 import application.entity.ref.RefAncestry;
+import application.entity.ref.data.RefAncestryData;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@Data
 @Table(name = "Ancestry_Ability_Boost")
 @NamedQueries({
 	@NamedQuery(name = "LinkAncestryAbilityBoost.findAll", query = " SELECT T FROM LinkAncestryAbilityBoost T"), })
@@ -29,7 +33,6 @@ public class LinkAncestryAbilityBoost implements HandleItemInf {
 	public static String queryByAll = "LinkAncestryAbilityBoost.findAll";
 
 	@EmbeddedId
-	@JsonIgnore
 	LinkAncestryAbilityKey key;
 
 	@ManyToOne
@@ -52,41 +55,6 @@ public class LinkAncestryAbilityBoost implements HandleItemInf {
 	private LinkAncestryAbilityBoost() {
 		super();
 	}
-
-	public LinkAncestryAbilityKey getKey() {
-		return this.key;
-	}
-
-	public void setKey(final LinkAncestryAbilityKey pKey) {
-		this.key = pKey;
-	}
-
-	public RefAncestry getAncestry() {
-		return this.ancestry;
-	}
-
-	public void setAncestry(final RefAncestry pAncestry) {
-		this.ancestry = pAncestry;
-	}
-
-
-	public RefAbility getAbility() {
-		return this.ability;
-	}
-
-	public void setAbility(final RefAbility pAbility) {
-		this.ability = pAbility;
-	}
-
-
-	public int getQuantity() {
-		return this.quantity;
-	}
-
-	public void setQuantity(final int pQuantity) {
-		this.quantity = pQuantity;
-	}
-
 
 	@Override
 	public String methodGetKey() {

@@ -20,8 +20,10 @@ import application.entity.composite_key.LinkAncestryAbilityKey;
 import application.entity.ref.RefAbility;
 import application.entity.ref.RefAncestry;
 import application.utils.MiscUtils;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "Ancestry_Ability_Flaw")
 @NamedQueries({
 	@NamedQuery(name = "LinkAncestryAbilityFlaw.findAll", query = " SELECT T FROM LinkAncestryAbilityFlaw T"), })
@@ -53,41 +55,6 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	private LinkAncestryAbilityFlaw() {
 		super();
 	}
-
-	public LinkAncestryAbilityKey getKey() {
-		return this.key;
-	}
-
-	public void setKey(final LinkAncestryAbilityKey pKey) {
-		this.key = pKey;
-	}
-
-	public RefAncestry getAncestry() {
-		return this.ancestry;
-	}
-
-	public void setAncestry(final RefAncestry pAncestry) {
-		this.ancestry = pAncestry;
-	}
-
-
-	public RefAbility getAbility() {
-		return this.ability;
-	}
-
-	public void setAbility(final RefAbility pAbility) {
-		this.ability = pAbility;
-	}
-
-
-	public int getQuantity() {
-		return this.quantity;
-	}
-
-	public void setQuantity(final int pQuantity) {
-		this.quantity = pQuantity;
-	}
-
 
 	@Override
 	public String methodGetKey() {

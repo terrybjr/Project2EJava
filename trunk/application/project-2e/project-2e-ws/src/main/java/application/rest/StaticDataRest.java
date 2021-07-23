@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.Logger;
 
-import application.data.StaticDataInterface;
+import application.data.StaticData;
 import application.data.StatusResp;
 import application.session.StaticDataSLS;
 import application.utils.DunGenLogger;
@@ -49,13 +49,37 @@ public class StaticDataRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		List<? extends StaticDataInterface> staticData;
+		List<? extends StaticData> staticData;
 		try {
 			staticData = this.staticDataSLS.getStaticData(value);
 			if (logger.isDebugEnabled()) {
 				logger.debug(method + "staticData: " + staticData);
 			}
 			return MiscUtils.buildResponse(new StatusResp(staticData));
+		} catch (Exception ex) {
+			return MiscUtils.buildResponse(ex);
+		}
+	}
+	@GET
+	@Path("getDataObject/{value}/{key}")
+	@ApiOperation(value = "Get Data Object")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
+	public Response getDataObject(
+			@PathParam("value") final String value,
+			@PathParam("key") final String key,
+			@Context final HttpServletRequest request,
+			@Context final HttpServletResponse response) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
+		StaticData data;
+		try {
+			data = this.staticDataSLS.getDataObject(value, key);
+			if (logger.isDebugEnabled()) {
+				logger.debug(method + "data: " + data);
+			}
+			return MiscUtils.buildResponse(new StatusResp(data));
 		} catch (Exception ex) {
 			return MiscUtils.buildResponse(ex);
 		}

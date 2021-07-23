@@ -9,13 +9,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
-import application.data.StaticDataInterface;
+import application.data.StaticData;
 
 @Entity
 @Table(name = "ref_Size")
 @NamedQueries({ @NamedQuery(name = "RefSize.findAll", query = " SELECT T FROM RefSize T"),
 	@NamedQuery(name = "RefSize.byCode", query = " SELECT T FROM RefSize T WHERE t.code = :code"), })
-public class RefSize implements HandleItemInf, StaticDataInterface {
+public class RefSize extends StaticData implements HandleItemInf {
 
 	@Transient
 	public static String queryByAll = "RefSize.findAll";

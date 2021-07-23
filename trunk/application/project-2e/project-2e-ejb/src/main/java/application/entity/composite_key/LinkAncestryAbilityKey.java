@@ -8,9 +8,13 @@ import javax.persistence.Id;
 
 import application.entity.ref.RefAbility;
 import application.entity.ref.RefAncestry;
+import application.entity.ref.data.RefAncestryData;
 import application.utils.MiscUtils;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Embeddable
+@Data
 public class LinkAncestryAbilityKey implements Serializable {
 
 	/**
@@ -25,27 +29,6 @@ public class LinkAncestryAbilityKey implements Serializable {
 	private char ability;
 
 	public LinkAncestryAbilityKey() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public String getAncestry() {
-		return this.ancestry;
-	}
-
-	public void setAncestry(final String pAncestry) {
-		this.ancestry = pAncestry;
-	}
-
-	public char getAbility() {
-		return this.ability;
-	}
-
-	public void setAbility(final char pAbility) {
-		this.ability = pAbility;
-	}
-
-	@Override
-	public String toString() {
-		return MiscUtils.objToJson(this);
-	}
 }
