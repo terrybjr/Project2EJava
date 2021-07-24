@@ -215,3 +215,5 @@ Temporary Items
 
 *.ignore.*
 .pem
+
+!/trunk/application/project-2e/project-2e-ejb/src/main/resources/*.jar
