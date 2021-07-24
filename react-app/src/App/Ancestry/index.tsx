@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Card } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -6,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { fetchAncestryData } from '../../api/static-data';
 import { Ancestry as AncestryInterface } from '../../models/Ancestry.model';
+import { updateAncestry } from '../../redux/actions/ancestry.actions';
 import './index.css';
 
 type State = {
@@ -14,7 +16,14 @@ type State = {
   mouseOn: number;
 };
 
-class Ancestry extends React.Component {
+type Props = {
+  updateAncestry: (ancestry: AncestryInterface) => {
+    type: string;
+    payload: AncestryInterface;
+  };
+};
+
+class Ancestry extends React.Component<Props> {
   state: State = {
     ancestryTypes: [],
     chosenCd: '',
@@ -64,8 +73,9 @@ class Ancestry extends React.Component {
     return <></>;
   }
 
-  onSelect(text: string) {
-    this.set_chosenCd(text);
+  onSelect(ancestry: AncestryInterface) {
+    this.set_chosenCd(ancestry.name);
+    this.props.updateAncestry(ancestry);
   }
 
   getShortDescription(ancestry: AncestryInterface): string {
@@ -95,7 +105,7 @@ class Ancestry extends React.Component {
               {this.state.ancestryTypes.map((ancestry, index) => (
                 <ListItem
                   selected={this.is_selected_item(ancestry.name)}
-                  onClick={() => this.onSelect(ancestry.name)}
+                  onClick={() => this.onSelect(ancestry)}
                   onMouseEnter={() => this.setState({ mouseOn: index })}
                   onMouseLeave={() => this.setState({ mouseOn: 100 })}
                   button
@@ -121,4 +131,4 @@ class Ancestry extends React.Component {
   }
 }
 
-export default Ancestry;
+export default connect(null, { updateAncestry })(Ancestry);
