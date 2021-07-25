@@ -42,7 +42,8 @@ class Views extends Component<Props> {
           {this.renderStep()}
         </Grid>
         <Grid item xs={12} sm={3}>
-          <Abilities />
+          {this.props.view === 'ANCESTRY' ?
+          <Abilities /> : <div/>}
         </Grid>
       </Grid>
     );

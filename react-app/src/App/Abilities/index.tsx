@@ -38,7 +38,7 @@ class AbilitiesComponent extends React.Component<Props, State> {
     const boosts = this.props.ancestry.abilityBoostsList;
     const flaws = this.props.ancestry.abilityFlawsList;
     const abilities = this.state.ability_names.map((name, i) => ({
-      code: name[0],
+      code: name === 'Charisma' ? 'A' : name[0],
       score: this.state.oAbilities.get_AbilityScores()[i],
     }));
     const newScores = abilities.map((ability) => {
