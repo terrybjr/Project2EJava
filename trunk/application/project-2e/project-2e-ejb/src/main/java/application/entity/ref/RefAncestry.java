@@ -1,27 +1,19 @@
 package application.entity.ref;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
 import application.data.StaticData;
-import application.entity.Character;
-import application.entity.ref.data.RefAncestryData;
 import application.entity.ref.links.LinkAncestryAbilityBoost;
 import application.entity.ref.links.LinkAncestryAbilityFlaw;
 import application.entity.ref.links.LinkAncestryLanguage;
@@ -40,7 +32,8 @@ import lombok.EqualsAndHashCode;
 	@NamedQuery(name = "RefAncestry.findAllLanguages", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.languagesList"),
 	@NamedQuery(name = "RefAncestry.byName", query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
 })
-public final class RefAncestry extends StaticData implements HandleItemInf {
+public class RefAncestry extends StaticData implements HandleItemInf, Serializable {
+	private static final long serialVersionUID = 1L;
 	@Transient
 	public static String queryByAll = "RefAncestry.findAll";
 	@Transient
@@ -51,13 +44,6 @@ public final class RefAncestry extends StaticData implements HandleItemInf {
 	public static String queryByAllAbilityFlaw = "RefAncestry.findAllAbilityFlaws";
 	@Transient
 	public static String queryByAllLanguages = "RefAncestry.findAllLanguages";
-
-	/**
-	 * Make this class unable to be created via code.
-	 */
-	private RefAncestry() {
-		super();
-	}
 
 	@Id
 	@Column(name = "Name", length = 50)
@@ -78,7 +64,7 @@ public final class RefAncestry extends StaticData implements HandleItemInf {
 	@OneToMany(mappedBy = "ancestry")
 	private List<LinkAncestryLanguage> languagesList;
 
-// uncomment to make data part of the DS
+	// uncomment to make data part of the DS
 	//	@OneToOne(mappedBy = "ancestry", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	//	@PrimaryKeyJoinColumn
 	//	private RefAncestryData ancestryData;

@@ -14,14 +14,13 @@ import javax.ejb.Stateless;
 import org.apache.logging.log4j.Logger;
 
 import application.data.StatusResp;
-import application.entity.Background;
 import application.entity.Inventory;
+import application.entity.Level;
 import application.entity.Character;
 import application.entity.User;
 import application.entity.ref.RefAncestry;
 import application.utils.DunGenLogger;
 import application.utils.exception.ErrorMessageException;
-import application.entity.Character;
 
 @Stateless
 @EJB(name = "java:global/CharacterSLS", beanInterface = CharacterSLS.class)
@@ -61,8 +60,7 @@ public class CharacterSLS {
 			throw new Error("crap");
 		}
 		User user = optUser.get();
-		Character newCharacter = new Character(characterName, user, new Inventory(), new Background(),
-				new ArrayList());
+		Character newCharacter = new Character(characterName, user, new Inventory(), null, new ArrayList<Level>());
 		newCharacter = this.persistenceSLS.persistPlayerCharacter(newCharacter);
 		// return the persisted object to the client
 		return new StatusResp(newCharacter);

@@ -36,25 +36,18 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	LinkAncestryAbilityKey key;
 
 	@ManyToOne
-	@MapsId("name")
+	@MapsId("ancestry")
 	@JoinColumn(name = "Ancestry")
 	@JsonBackReference
 	private RefAncestry ancestry;
 
 	@ManyToOne
-	@MapsId("code")
+	@MapsId("ability")
 	@JoinColumn(name = "Ability")
 	private RefAbility ability;
 
 	@Column(name = "Quantity")
 	private int quantity;
-
-	/**
-	 * Make this class unable to be created via code.
-	 */
-	private LinkAncestryAbilityFlaw() {
-		super();
-	}
 
 	@Override
 	public String methodGetKey() {

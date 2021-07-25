@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -42,7 +41,7 @@ public class RefAncestryData extends StaticData implements HandleItemInf, Serial
 	private String name;
 
 	@OneToOne()
-	@MapsId("name")
+
 	@JoinColumn(name = "Ancestry_Name")
 	@JsonBackReference
 	private RefAncestry ancestry;

@@ -1,5 +1,7 @@
 package application.entity.ref;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,36 +12,23 @@ import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
 import application.data.StaticData;
-import application.utils.MiscUtils;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "ref_Alignment")
 @NamedQueries({ @NamedQuery(name = "RefAlignment.findAll", query = " SELECT T FROM RefAlignment T"),
 	@NamedQuery(name = "RefAlignment.byName", query = " SELECT T FROM RefAlignment T WHERE t.name = :name"), })
-public final class RefAlignment extends StaticData implements HandleItemInf {
+public class RefAlignment extends StaticData implements HandleItemInf, Serializable {
+	private static final long serialVersionUID = 1L;
 	@Transient
 	public static String queryByAll = "RefAlignment.findAll";
 	@Transient
 	public static String queryByName = "RefAlignment.byName";
 
-	/**
-	 * Make this class unable to be created via code.
-	 */
-	private RefAlignment() {
-		super();
-	}
-
 	@Id
 	@Column(name = "Name", length = 50)
 	private String name;
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(final String pName) {
-		this.name = pName;
-	}
 
 	@Override
 	public String methodGetKey() {
@@ -56,11 +45,6 @@ public final class RefAlignment extends StaticData implements HandleItemInf {
 		RefBackground newItem = (RefBackground) pNewItem;
 		this.copyFields(newItem);
 		return this;
-	}
-
-	@Override
-	public String toString() {
-		return MiscUtils.objToJson(this);
 	}
 
 }

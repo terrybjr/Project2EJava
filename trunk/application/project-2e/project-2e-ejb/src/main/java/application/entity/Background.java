@@ -2,7 +2,8 @@ package application.entity;
 
 
 
-import javax.json.bind.annotation.JsonbTransient;
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,9 +15,12 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import application.data.HandleItemInf;
+import lombok.Data;
 
 @Entity
-public class Background implements HandleItemInf {
+@Data
+public class Background implements HandleItemInf, Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,32 +31,6 @@ public class Background implements HandleItemInf {
 	@JoinColumn(name = "character_id")
 	@JsonBackReference // stops the JSON from looping to infinity
 	private Character character;
-
-	public Background() {
-		super();
-	}
-
-	public Background(final Long pId, final Character pCharacter) {
-		super();
-		this.id = pId;
-		this.character = pCharacter;
-	}
-
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(final Long pId) {
-		this.id = pId;
-	}
-
-	public Character getCharacter() {
-		return this.character;
-	}
-
-	public void setCharacter(final Character pCharacter) {
-		this.character = pCharacter;
-	}
 
 	public void copyFields(final Background item) {
 		this.id = item.id;

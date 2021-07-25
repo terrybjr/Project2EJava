@@ -1,5 +1,6 @@
 package application.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -20,15 +21,18 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import application.data.HandleItemInf;
 import io.swagger.annotations.ApiModel;
+import lombok.Data;
 
 @Entity
+@Data
 @ApiModel
 @Table(name = "User")
 @NamedQueries ({
 	@NamedQuery(name = "User.findAll", query = " SELECT T FROM User T"),
 	@NamedQuery(name = "User.byId", query = " SELECT T FROM User T WHERE t.id = :id"),
 })
-public class User implements HandleItemInf {
+public class User implements HandleItemInf, Serializable {
+	private static final long serialVersionUID = 1L;
 	@Transient
 	public static String queryByAll = "User.findAll";
 	@Transient
@@ -44,36 +48,7 @@ public class User implements HandleItemInf {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonManagedReference
-	private final  List<Character> characters;
-
-	public User() {
-		super();
-		this.characters = null;
-		// TODO Auto-generated constructor stub
-	}
-
-	public User(final Long pId, final String pName, final List<Character> pCharacters) {
-		super();
-		this.id = pId;
-		this.email = pName;
-		this.characters = pCharacters;
-	}
-
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(final Long pId) {
-		this.id = pId;
-	}
-
-	public String getEmail() {
-		return this.email;
-	}
-
-	public void setEmail(final String pEmail) {
-		this.email = pEmail;
-	}
+	private List<Character> characters;
 
 	public void copyFields(final User item) {
 		this.id = item.id;

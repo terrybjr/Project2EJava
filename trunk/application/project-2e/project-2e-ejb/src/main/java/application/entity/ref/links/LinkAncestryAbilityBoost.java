@@ -1,9 +1,10 @@
 package application.entity.ref.links;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -13,22 +14,19 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import application.data.HandleItemInf;
 import application.entity.composite_key.LinkAncestryAbilityKey;
 import application.entity.ref.RefAbility;
 import application.entity.ref.RefAncestry;
-import application.entity.ref.data.RefAncestryData;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
 @Table(name = "Ancestry_Ability_Boost")
 @NamedQueries({
 	@NamedQuery(name = "LinkAncestryAbilityBoost.findAll", query = " SELECT T FROM LinkAncestryAbilityBoost T"), })
-public class LinkAncestryAbilityBoost implements HandleItemInf {
+public class LinkAncestryAbilityBoost implements HandleItemInf, Serializable {
+	private static final long serialVersionUID = 1L;
 	@Transient
 	public static String queryByAll = "LinkAncestryAbilityBoost.findAll";
 
@@ -36,25 +34,18 @@ public class LinkAncestryAbilityBoost implements HandleItemInf {
 	LinkAncestryAbilityKey key;
 
 	@ManyToOne
-	@MapsId("name")
+	@MapsId("ancestry")
 	@JoinColumn(name = "Ancestry")
 	@JsonBackReference
 	RefAncestry ancestry;
 
 	@ManyToOne
-	@MapsId("code")
+	@MapsId("ability")
 	@JoinColumn(name = "Ability")
 	RefAbility ability;
 
 	@Column(name = "Quantity")
 	private int quantity;
-
-	/**
-	 * Make this class unable to be created via code.
-	 */
-	private LinkAncestryAbilityBoost() {
-		super();
-	}
 
 	@Override
 	public String methodGetKey() {
@@ -75,10 +66,4 @@ public class LinkAncestryAbilityBoost implements HandleItemInf {
 		this.copyFields(newItem);
 		return this;
 	}
-
-	@Override
-	public String toString() {
-		return "LinkAncestryAbilityBoost [key=" + this.key + ", ability=" + this.ability + ", quantity=" + this.quantity + "]";
-	}
-
 }
