@@ -19,6 +19,7 @@ public class StatusResp {
 	public static final int STAT_OK = 200;
 	public static final int STAT_ACCEPTED = 202; // for async jobs
 	public static final int STAT_USER = 400;
+	public static final int STAT_UNAUTHORIZED = 401;
 	public static final int STAT_FORBIDDEN = 403;
 	public static final int STAT_INTERNAL = 500;
 

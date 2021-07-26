@@ -23,7 +23,35 @@
   </dependencies>
   <build>
   <finalName>project-2e</finalName>
-  </build>
+   <plugins>
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-ear-plugin</artifactId>
+    <version>2.6</version>
+	    <configuration>
+	        <!-- Tell Maven we are using Java EE 6 -->
+	        <version>6</version>
+	        <!-- Use Java EE ear libraries as needed. Java EE ear libraries are 
+	            in easy way to package any libraries needed in the ear, and automatically 
+	            have any modules (EJB-JARs and WARs) use them -->
+	        <defaultLibBundleDir>lib</defaultLibBundleDir>
+	        <modules>
+	            <ejbModule>
+	                <groupId>com.temp</groupId>
+	                <artifactId>project-2e-ejb</artifactId>
+	                <bundleFileName>project-2e-ejb.jar</bundleFileName>
+	            </ejbModule>
+	            <webModule>
+	                <groupId>com.temp</groupId>
+	                <artifactId>project-2e-ws</artifactId>
+	                <context-root>/project-2e-ws</context-root>
+	                <bundleFileName>project-2e-ws.war</bundleFileName>
+	            </webModule>
+	        </modules>
+	    </configuration>
+	</plugin>
+	</plugins>
+ </build>
  <!-- <build>
   	<plugins>
 		<plugin>

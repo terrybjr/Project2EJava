@@ -1,7 +1,5 @@
 package application.rest;
 
-import java.util.List;
-
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,9 +20,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Contact;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.SwaggerDefinition;
 
 @Path(value = "user")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -45,14 +40,37 @@ public class UserRest {
 		@ApiResponse(code = 200, message = "Success")
 	})
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createUser(final User email) {
-		String method = this.className + ".createUser: ";
+	public Response createUser(final User user) {
+		logger.debug("apples");
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
-			logger.debug(method + "email: " + email);
+			logger.debug(method + "user: " + user);
 		}
 		try {
-			StatusResp resp = this.userSLS.createUser(email.getEmail());
+			StatusResp resp = this.userSLS.createUser(user);
+			return MiscUtils.buildResponse(resp);
+		} catch (Exception ex) {
+			return MiscUtils.buildResponse(ex);
+		}
+	}
+
+	@Path("login")
+	@POST
+	@ApiOperation(value = "Login To A User")
+	@ApiResponse(code = 200, message = "Success")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response login(final User user) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
+		System.out.println(method + "entering");
+		try {
+			StatusResp resp = this.userSLS.login(user);
+			if(resp.allOK()) {
+				return MiscUtils.buildResponse(resp, (String) resp.getRetObj());
+			}
 			return MiscUtils.buildResponse(resp);
 		} catch (Exception ex) {
 			return MiscUtils.buildResponse(ex);

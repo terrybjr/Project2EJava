@@ -1,17 +1,26 @@
 package application.utils;
 
 import java.lang.reflect.Method;
+import java.security.Key;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.shiro.codec.Hex;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.Sha512Hash;
+import org.apache.shiro.util.ByteSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.net.HttpHeaders;
 
 import application.data.StatusResp;
+import application.entity.User;
 
 /**
  * Credit goes to Joseph Witherspoon for the majority of the utils in this file.
@@ -110,6 +119,16 @@ public class MiscUtils {
 	}
 
 	/**
+	 * Adds Auth Header if neccessary
+	 * 
+	 * @param valResp
+	 * @return
+	 */
+	public static Response buildResponse(final StatusResp valResp, final String token) {
+		return buildResponse(valResp, false, token);
+	}
+
+	/**
 	 * Builds a Response based on the error type. It will also return a message if
 	 * it exist.
 	 * 
@@ -117,7 +136,7 @@ public class MiscUtils {
 	 * @return
 	 */
 	public static Response buildResponse(final StatusResp valResp) {
-		return buildResponse(valResp, false);
+		return buildResponse(valResp, false, null);
 	}
 
 	/**
@@ -126,7 +145,7 @@ public class MiscUtils {
 	 */
 	public static final boolean SKIP_LOG_OBJ = true;
 
-	public static Response buildResponse(final StatusResp valResp, final boolean skipLogObj) {
+	public static Response buildResponse(final StatusResp valResp, final boolean skipLogObj, final String token) {
 		final String method = className + ".buildResponse(StatusResp)";
 		if (logger.isDebugEnabled()) {
 			if (skipLogObj) {
@@ -150,6 +169,9 @@ public class MiscUtils {
 		// returning a message if it exist... may be informative...
 		if (MiscUtils.hasValue(valResp.getErrMsg())) {
 			return Response.status(valResp.getHttpStatusCd()).entity(valResp.getErrMsg()).build();
+		}
+		if (token != null) {
+			return Response.ok(valResp.getRetObj()).header(HttpHeaders.AUTHORIZATION, "Bearer" + token).build();
 		}
 		return Response.ok(valResp.getRetObj()).build();
 	}
@@ -226,6 +248,33 @@ public class MiscUtils {
 			}
 		}
 		return null;
+	}
+
+	public static Map<String, String> hashPassword(final String password) {
+		org.apache.shiro.util.ByteSource salt = MiscUtils.getSalt();
+
+		Map<String, String> credMap = new HashMap<String, String>();
+		credMap.put("hashedPassword", MiscUtils.hashAndSaltPassword(password, salt));
+		credMap.put("salt", salt.toHex());
+		return credMap;
+	}
+
+	public static String hashAndSaltPassword(final String password, final org.apache.shiro.util.ByteSource salt) {
+		return new Sha512Hash(password, salt, 2000000).toHex();
+	}
+
+	public static org.apache.shiro.util.ByteSource getSalt() {
+		return new SecureRandomNumberGenerator().nextBytes();
+	}
+
+	public static boolean authenticateUser(final User user, final String password) {
+		ByteSource salt = ByteSource.Util.bytes(Hex.decode(user.getSalt()));
+		String hashedPassword = hashAndSaltPassword(password, salt);
+		return hashedPassword.equals(user.getPassword());
+	}
+
+	public static Key generateKey(final String keyString) {
+		return new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
 	}
 
 }
