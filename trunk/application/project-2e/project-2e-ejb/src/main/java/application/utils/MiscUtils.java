@@ -2,7 +2,10 @@ package application.utils;
 
 import java.lang.reflect.Method;
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,7 +174,8 @@ public class MiscUtils {
 			return Response.status(valResp.getHttpStatusCd()).entity(valResp.getErrMsg()).build();
 		}
 		if (token != null) {
-			return Response.ok(valResp.getRetObj()).header(HttpHeaders.AUTHORIZATION, "Bearer" + token).build();
+			return Response.ok(valResp.getRetObj()).header(HttpHeaders.AUTHORIZATION, SecurityFilter.BEARER + token)
+					.build();
 		}
 		return Response.ok(valResp.getRetObj()).build();
 	}
@@ -275,6 +279,10 @@ public class MiscUtils {
 
 	public static Key generateKey(final String keyString) {
 		return new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
+	}
+
+	public static Date toDate(final LocalDateTime localDateTime) {
+		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 }

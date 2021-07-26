@@ -1,8 +1,6 @@
 package application.session;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.Key;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -19,12 +16,8 @@ import org.apache.logging.log4j.Logger;
 
 import application.data.StatusResp;
 import application.entity.User;
-import application.state.ApplicationState;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
-import application.utils.UtilDate;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Stateless
 @EJB(name = "java:global/UserSLS", beanInterface = UserSLS.class)
@@ -32,8 +25,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class UserSLS {
 	@EJB
 	PersistenceSLS persistenceSLS;
-	@Inject
-	ApplicationState applicationState;
 	@Context
 	private UriInfo uriInfo;
 
@@ -54,7 +45,6 @@ public class UserSLS {
 		user.setSalt(credMap.get("salt"));
 		newUser.copyFields(user);
 		newUser.setId(null);
-		System.err.println(logger);
 		return new StatusResp(this.persistenceSLS.persistUser(newUser));
 	}
 
@@ -63,45 +53,30 @@ public class UserSLS {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		System.out.println(method + "entering");
-
 		// get user if exists
-		Optional<User> optUser = this.getUserById(user.getId());
+		Optional<User> optUser = this.getUserByEmail(user.getEmail());
 
 		if (!optUser.isPresent()) {
 			return new StatusResp(StatusResp.STAT_UNAUTHORIZED, "Invalid Credentials");
 		}
 
 		User foundUser = optUser.get();
-		System.out.println(method + "foundUser: " + foundUser);
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "foundUser: " + foundUser);
+		}
 
 		if (MiscUtils.authenticateUser(foundUser, user.getPassword())) {
-			this.applicationState.setEmail(user.getEmail());
-			String token = this.getToken(user.getEmail());
-			return new StatusResp(token);
+			return new StatusResp();
 		}
 
 		return new StatusResp(StatusResp.STAT_UNAUTHORIZED, "Invalid Credentials");
 	}
 
-	public String getToken(final String email) {
+	public User updateUser(final User user) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		Key key = MiscUtils.generateKey(email);
-		String token = Jwts.builder().setSubject(email).setIssuer(this.uriInfo.getAbsolutePath().toString())
-				.setIssuedAt(UtilDate.now().toSqlDate())
-				.setExpiration(new UtilDate(LocalDateTime.now().plusMinutes(15).toLocalDate()).toSqlDate())
-				.signWith(SignatureAlgorithm.HS512, key).setAudience(this.uriInfo.getBaseUri().toString())
-				.compact();
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "token =" + token);
-		}
-		return token;
-	}
-
-	public User updateUser(final User user) {
 		Optional<User> UserOpt = this.getUserById(user.getId());
 		User entUser = UserOpt.get();
 		entUser.updateItem(user);
@@ -109,18 +84,40 @@ public class UserSLS {
 	}
 
 	public User findUser(final Long id) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		Optional<User> user = this.getUserById(id);
 		return user.get();
 	}
 
 	public StatusResp getUsers() {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		List<User> UserList = this.persistenceSLS.getDataList(User.QUERY_FIND_ALL, User.class, null, "getUsers");
 		return new StatusResp(UserList);
 	}
 
 	public Optional<User> getUserById(final Long id) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("id", id);
-		return this.persistenceSLS.getData(User.QUERY_BY_ID, User.class, parameters, "getUserById");
+		return this.persistenceSLS.getData(User.QUERY_BY_ID, User.class, parameters, method);
+	}
+
+	public Optional<User> getUserByEmail(final String email) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering, email: " + email);
+		}
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("email", email);
+		return this.persistenceSLS.getData(User.QUERY_BY_EMAIL, User.class, parameters, method);
 	}
 }
