@@ -1,3 +1,8 @@
+# Software needed
+
+You'll need a JavaScript/TypeScript editor. We are using VSCode.
+You'll also need to install Node.js
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
