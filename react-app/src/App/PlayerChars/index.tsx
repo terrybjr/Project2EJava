@@ -9,8 +9,8 @@ import { Button } from '@material-ui/core';
 import { Character as CharacterInterface } from '../../models/Character.model';
 /* import { fetchAncestryData } from '../../api/static-data';
 import { Ancestry as AncestryInterface } from '../../models/Ancestry.model';
-import { updateAncestry } from '../../redux/actions/ancestry.actions';
-import './index.css'; */
+import { updateAncestry } from '../../redux/actions/ancestry.actions'; */
+import './index.css';
 
 type State = {
    characters: CharacterInterface[];
@@ -27,7 +27,7 @@ class PlayerChars extends React.Component {
       return (
          // <div>Player_Chars</div>
          <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Card>
             <List>
               <ListItem>
@@ -54,9 +54,9 @@ class PlayerChars extends React.Component {
             </List>
           </Card>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Card> Click on Character to view or update
-                <Button variant="outlined" size="medium">Create New Character</Button><p></p>
+                <Button className="button" variant="contained">Create New Character</Button><p></p>
           </Card>
         </Grid>
       </Grid>
