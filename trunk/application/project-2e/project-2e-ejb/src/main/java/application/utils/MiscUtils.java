@@ -174,7 +174,8 @@ public class MiscUtils {
 			return Response.status(valResp.getHttpStatusCd()).entity(valResp.getErrMsg()).build();
 		}
 		if (token != null) {
-			return Response.ok(valResp.getRetObj()).header(HttpHeaders.AUTHORIZATION, SecurityFilter.BEARER + token)
+			return Response.ok(valResp.getRetObj())
+					.header(HttpHeaders.AUTHORIZATION, SecurityFilter.BEARER + " " + token)
 					.build();
 		}
 		return Response.ok(valResp.getRetObj()).build();

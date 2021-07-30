@@ -2,6 +2,7 @@ package application.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import application.data.HandleItemInf;
+import application.security.Authority;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
@@ -58,6 +60,9 @@ public class User implements HandleItemInf, Serializable {
 	private String password;
 
 	private String salt;
+
+	@Transient
+	private Set<Authority> authorities;
 
 	public void copyFields(final User item) {
 		this.id = item.id;

@@ -4,8 +4,13 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
@@ -24,7 +30,6 @@ import application.session.UserSLS;
 import application.state.ApplicationState;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
-import application.utils.Secure;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.Api;
@@ -41,12 +46,16 @@ public class UserRest {
 	UserSLS userSLS;
 	@Context
 	private UriInfo uriInfo;
+	@Context
+	private SecurityContext securityContext;
+
 	@Inject
 	ApplicationState applicationState;
 	String className = this.getClass().getSimpleName();
 	static Logger logger = DunGenLogger.getLogger();
 
 	// localhost:8080/project-2e-ws/api/user/new
+	@PermitAll
 	@Path("new")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -70,6 +79,7 @@ public class UserRest {
 		}
 	}
 
+	@PermitAll
 	@Path("login")
 	@POST
 	@ApiOperation(value = "Login To A User")
@@ -81,12 +91,13 @@ public class UserRest {
 			logger.debug(method + "Entering");
 		}
 		try {
+			//			StatusResp resp = this.userSLS.login(user);
+			//			if (resp.statusOK()) {
+			//				this.applicationState.setEmail(user.getEmail());
+			//				String token = this.getToken(user.getEmail());
+			//				return MiscUtils.buildResponse(resp, token);
+			//			}
 			StatusResp resp = this.userSLS.login(user);
-			if (resp.statusOK()) {
-				this.applicationState.setEmail(user.getEmail());
-				String token = this.getToken(user.getEmail());
-				return MiscUtils.buildResponse(resp, token);
-			}
 			return MiscUtils.buildResponse(resp);
 		} catch (Exception ex) {
 			return MiscUtils.buildResponse(ex);
@@ -97,19 +108,56 @@ public class UserRest {
 	@Path("list")
 	@GET
 	@ApiOperation(value = "List Users")
-	@Secure
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
-	public Response listUser() {
+	public Response listUser(
+			@Context final HttpServletRequest request,
+			@Context final HttpServletResponse response) {
 		String method = this.className + ".listUser: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
 		}
+		Cookie cookie = request.getCookies()[0];
+		logger.debug("WASSAP");
+		logger.debug("logged in user: " + this.securityContext.getUserPrincipal().getName());
+		logger.debug("logged in user: " + cookie.getValue());
 		try {
 			return MiscUtils.buildResponse(this.userSLS.getUsers());
 		} catch (Exception e) {
 			return MiscUtils.buildResponse(e);
 		}
 	}
+
+	@Path("adminSecure")
+	@GET
+	@RolesAllowed("ADMIN")
+	@ApiOperation(value = "AdminSecure")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
+	public Response adminSecure(
+			@Context final HttpServletRequest request,
+			@Context final HttpServletResponse response) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
+		return MiscUtils.buildResponse(new StatusResp("wohoo admin"));
+	}
+
+	@Path("userSecure")
+	@GET
+	@RolesAllowed("USER")
+	@ApiOperation(value = "UserSecure")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
+	public Response userSecure(
+			@Context final HttpServletRequest request,
+			@Context final HttpServletResponse response) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
+		return MiscUtils.buildResponse(new StatusResp("wohoo admin and user"));
+	}
+
+
 
 	public String getToken(final String email) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
@@ -130,4 +178,5 @@ public class UserRest {
 		}
 		return token;
 	}
+
 }

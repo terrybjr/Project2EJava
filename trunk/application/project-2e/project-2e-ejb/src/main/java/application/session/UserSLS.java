@@ -2,13 +2,16 @@ package application.session;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -16,8 +19,12 @@ import org.apache.logging.log4j.Logger;
 
 import application.data.StatusResp;
 import application.entity.User;
+import application.security.AuthenticationToken;
+import application.security.AuthenticationTokenService;
+import application.security.Authority;
+import application.security.UsernamePasswordValidator;
+import application.security.exception.PasswordEncoder;
 import application.utils.DunGenLogger;
-import application.utils.MiscUtils;
 
 @Stateless
 @EJB(name = "java:global/UserSLS", beanInterface = UserSLS.class)
@@ -25,6 +32,12 @@ import application.utils.MiscUtils;
 public class UserSLS {
 	@EJB
 	PersistenceSLS persistenceSLS;
+	@Inject
+	private PasswordEncoder passwordEncoder;
+	@Inject
+	UsernamePasswordValidator validator;
+	@Inject
+	AuthenticationTokenService authService;
 	@Context
 	private UriInfo uriInfo;
 
@@ -39,10 +52,11 @@ public class UserSLS {
 			logger.debug(method + "Entering");
 		}
 		// persist into db
-		Map<String, String> credMap = MiscUtils.hashPassword(user.getPassword());
+
+		// Map<String, String> credMap = MiscUtils.hashPassword(user.getPassword());
 		User newUser = new User();
-		user.setPassword(credMap.get("hashedPassword"));
-		user.setSalt(credMap.get("salt"));
+		user.setPassword(this.passwordEncoder.hashPassword(user.getPassword()));
+		// user.setSalt(credMap.get("salt"));
 		newUser.copyFields(user);
 		newUser.setId(null);
 		return new StatusResp(this.persistenceSLS.persistUser(newUser));
@@ -53,23 +67,14 @@ public class UserSLS {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		// get user if exists
-		Optional<User> optUser = this.getUserByEmail(user.getEmail());
-
-		if (!optUser.isPresent()) {
-			return new StatusResp(StatusResp.STAT_UNAUTHORIZED, "Invalid Credentials");
-		}
-
-		User foundUser = optUser.get();
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "foundUser: " + foundUser);
-		}
-
-		if (MiscUtils.authenticateUser(foundUser, user.getPassword())) {
-			return new StatusResp();
-		}
-
-		return new StatusResp(StatusResp.STAT_UNAUTHORIZED, "Invalid Credentials");
+		User validUser = this.validator.validateCredentials(user.getEmail(), user.getPassword());
+		Set<Authority> authSet = new HashSet<Authority>();
+		authSet.add(Authority.ADMIN);
+		validUser.setAuthorities(authSet);
+		String token = this.authService.issueToken(validUser.getEmail(), user.getAuthorities());
+		AuthenticationToken authenticationToken = new AuthenticationToken();
+		authenticationToken.setToken(token);
+		return new StatusResp(token);
 	}
 
 	public User updateUser(final User user) {
