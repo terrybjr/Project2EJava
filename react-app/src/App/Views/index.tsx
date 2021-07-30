@@ -2,6 +2,7 @@ import { Grid } from '@material-ui/core';
 import { Component, Fragment } from 'react';
 import Abilities from '../Abilities';
 import Ancestry from '../Ancestry';
+import PlayerChars from '../PlayerChars';
 
 export type DefaultView = '';
 export type AncestryView = 'ANCESTRY';
@@ -31,7 +32,7 @@ class Views extends Component<Props> {
       case 'CLASSES':
         return <>Classes View</>;
       default:
-        return <>Default View</>;
+        return <PlayerChars />;
     }
   }
 
@@ -43,7 +44,7 @@ class Views extends Component<Props> {
         </Grid>
         <Grid item xs={12} sm={3}>
           {this.props.view === 'ANCESTRY' ?
-          <Abilities /> : <div/>}
+          <Abilities /> : <div /> }
         </Grid>
       </Grid>
     );
