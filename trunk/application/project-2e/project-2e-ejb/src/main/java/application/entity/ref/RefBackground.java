@@ -16,15 +16,15 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "ref_Background")
-@NamedQueries({ @NamedQuery(name = "RefBackground.findAll", query = " SELECT T FROM RefBackground T"),
-	@NamedQuery(name = "RefBackground.byName", query = " SELECT T FROM RefBackground T WHERE t.name = :name"), })
+@NamedQueries({ @NamedQuery(name = RefBackground.QUERY_BY_ALL, query = " SELECT T FROM RefBackground T"),
+	@NamedQuery(name = RefBackground.QUERY_BY_NAME, query = " SELECT T FROM RefBackground T WHERE t.name = :name"), })
 public class RefBackground implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Transient
-	public static String queryByAll = "RefBackground.findAll";
+	public static final String QUERY_BY_ALL = "RefBackground.findAll";
 	@Transient
-	public static String queryByName = "RefBackground.byName";
+	public static final String QUERY_BY_NAME = "RefBackground.byName";
 
 	@Id
 	@Column(name = "Name", length = 50)

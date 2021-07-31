@@ -26,24 +26,24 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "ref_Ancestry")
 @NamedQueries ({
-	@NamedQuery(name = "RefAncestry.findAll", query = " SELECT DISTINCT T FROM RefAncestry T"),
-	@NamedQuery(name = "RefAncestry.findAllAbilityBoosts", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityBoostsList"),
-	@NamedQuery(name = "RefAncestry.findAllAbilityFlaws", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityFlawsList"),
-	@NamedQuery(name = "RefAncestry.findAllLanguages", query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.languagesList"),
-	@NamedQuery(name = "RefAncestry.byName", query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
+	@NamedQuery(name = RefAncestry.QUERY_BY_ALL, query = " SELECT DISTINCT T FROM RefAncestry T"),
+	@NamedQuery(name = RefAncestry.QUERY_BY_ALL_ABILITY_BOOST, query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityBoostsList"),
+	@NamedQuery(name = RefAncestry.QUERY_BY_ALL_ABILITY_FLAW, query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.abilityFlawsList"),
+	@NamedQuery(name = RefAncestry.QUERY_BY_ALL_LANGUAGES, query = " SELECT DISTINCT T FROM RefAncestry T LEFT JOIN FETCH T.languagesList"),
+	@NamedQuery(name = RefAncestry.QUER_BY_NAME, query = " SELECT T FROM RefAncestry T WHERE t.name = :name"),
 })
 public class RefAncestry extends StaticData implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "RefAncestry.findAll";
+	public static final String QUERY_BY_ALL = "RefAncestry.findAll";
 	@Transient
-	public static String queryByName = "RefAncestry.byName";
+	public static final String QUER_BY_NAME = "RefAncestry.byName";
 	@Transient
-	public static String queryByAllAbilityBoost = "RefAncestry.findAllAbilityBoosts";
+	public static final String QUERY_BY_ALL_ABILITY_BOOST = "RefAncestry.findAllAbilityBoosts";
 	@Transient
-	public static String queryByAllAbilityFlaw = "RefAncestry.findAllAbilityFlaws";
+	public static final String QUERY_BY_ALL_ABILITY_FLAW = "RefAncestry.findAllAbilityFlaws";
 	@Transient
-	public static String queryByAllLanguages = "RefAncestry.findAllLanguages";
+	public static final String QUERY_BY_ALL_LANGUAGES = "RefAncestry.findAllLanguages";
 
 	@Id
 	@Column(name = "Name", length = 50)
@@ -85,8 +85,13 @@ public class RefAncestry extends StaticData implements HandleItemInf, Serializab
 	}
 
 	public void copyFields(final RefAncestry item) {
-		this.setName(item.getName());
-		this.setSize(item.getSize());
+		this.name = item.name;
+		this.hitpoints = item.hitpoints;
+		this.size = item.size;
+		this.speed = item.speed;
+		this.abilityBoostsList = item.abilityBoostsList;
+		this.abilityFlawsList = item.abilityFlawsList;
+		this.languagesList = item.languagesList;
 	}
 
 	@Override
@@ -95,10 +100,4 @@ public class RefAncestry extends StaticData implements HandleItemInf, Serializab
 		this.copyFields(newItem);
 		return this;
 	}
-
-	@Override
-	public String toString() {
-		return MiscUtils.objToJson(this);
-	}
-
 }

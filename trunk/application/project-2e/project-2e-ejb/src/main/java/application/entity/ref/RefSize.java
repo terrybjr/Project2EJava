@@ -13,19 +13,21 @@ import javax.persistence.Transient;
 import application.data.HandleItemInf;
 import application.data.StaticData;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "ref_Size")
-@NamedQueries({ @NamedQuery(name = "RefSize.findAll", query = " SELECT T FROM RefSize T"),
-	@NamedQuery(name = "RefSize.byCode", query = " SELECT T FROM RefSize T WHERE t.code = :code"), })
+@NamedQueries({ @NamedQuery(name = RefSize.QUERY_BY_ALL, query = " SELECT T FROM RefSize T"),
+	@NamedQuery(name = RefSize.QUERY_BY_NAME, query = " SELECT T FROM RefSize T WHERE t.code = :code"), })
 public class RefSize extends StaticData implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Transient
-	public static String queryByAll = "RefSize.findAll";
+	public static final String QUERY_BY_ALL = "RefSize.findAll";
 	@Transient
-	public static String queryByName = "RefSize.byCode";
+	public static final String QUERY_BY_NAME = "RefSize.byCode";
 
 	@Id
 	@Column(name = "Code")
@@ -38,7 +40,7 @@ public class RefSize extends StaticData implements HandleItemInf, Serializable {
 	}
 
 	public void copyFields(final RefSize item) {
-		this.setCode(item.getCode());
+		this.code = item.code;
 	}
 
 	@Override

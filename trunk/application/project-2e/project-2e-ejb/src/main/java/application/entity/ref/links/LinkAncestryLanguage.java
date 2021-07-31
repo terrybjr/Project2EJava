@@ -18,16 +18,18 @@ import application.entity.composite_key.LinkAncestryLanguageKey;
 import application.entity.ref.RefAncestry;
 import application.entity.ref.RefLanguage;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "ancestry")
 @Table(name = "Ancestry_Language")
 @NamedQueries({
-	@NamedQuery(name = "LinkAncestryLanguage.findAll", query = " SELECT T FROM LinkAncestryLanguage T"), })
+	@NamedQuery(name = LinkAncestryLanguage.QUERY_BY_ALL, query = " SELECT T FROM LinkAncestryLanguage T"), })
 public class LinkAncestryLanguage implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "LinkAncestryLanguage.findAll";
+	public static final String QUERY_BY_ALL = "LinkAncestryLanguage.findAll";
 
 	@EmbeddedId
 	private LinkAncestryLanguageKey key;
@@ -43,10 +45,6 @@ public class LinkAncestryLanguage implements HandleItemInf, Serializable {
 	@JoinColumn(name = "Language")
 	private RefLanguage language;
 
-	public LinkAncestryLanguageKey getKey() {
-		return this.key;
-	}
-
 	@Override
 	public String methodGetKey() {
 		// TODO Auto-generated method stub
@@ -54,9 +52,9 @@ public class LinkAncestryLanguage implements HandleItemInf, Serializable {
 	}
 
 	public void copyFields(final LinkAncestryLanguage item) {
-		this.setAncestry(item.getAncestry());
-		this.setKey(this.getKey());
-		this.setLanguage(this.getLanguage());
+		this.key = item.key;
+		this.ancestry = item.ancestry;
+		this.language = item.language;
 	}
 
 	@Override

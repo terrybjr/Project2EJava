@@ -16,15 +16,15 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "ref_Ability")
-@NamedQueries({ @NamedQuery(name = "RefAbility.findAll", query = " SELECT T FROM RefAbility T"),
-	@NamedQuery(name = "RefAbility.byCode", query = " SELECT T FROM RefAbility T WHERE t.code = :code"), })
+@NamedQueries({ @NamedQuery(name = RefAbility.QUERY_BY_ALL, query = " SELECT T FROM RefAbility T"),
+	@NamedQuery(name = RefAbility.QUERY_BY_NAME, query = " SELECT T FROM RefAbility T WHERE t.code = :code"), })
 public class RefAbility implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Transient
-	public static String queryByAll = "RefAbility.findAll";
+	public static final String QUERY_BY_ALL = "RefAbility.findAll";
 	@Transient
-	public static String queryByName = "RefAbility.byCode";
+	public static final String QUERY_BY_NAME = "RefAbility.byCode";
 
 	@Id
 	@Column(name = "Code")
@@ -37,7 +37,7 @@ public class RefAbility implements HandleItemInf, Serializable {
 	}
 
 	public void copyFields(final RefAbility item) {
-		this.setCode(item.getCode());
+		this.code = item.code;
 	}
 
 	@Override
