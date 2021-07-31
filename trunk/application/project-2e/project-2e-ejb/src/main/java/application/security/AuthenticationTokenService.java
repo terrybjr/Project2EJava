@@ -1,31 +1,38 @@
 package application.security;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.Logger;
+
+import application.entity.User;
+import application.entity.ref.links.LinkUserRole;
 import application.security.exception.AuthenticationTokenRefreshmentException;
+import application.utils.DunGenLogger;
 
 /**
  * Service which provides operations for authentication tokens.
  *
- * @author cassiomolin
  */
 @ApplicationScoped
 public class AuthenticationTokenService {
 
+	Logger logger = DunGenLogger.getLogger();
+
 	/**
 	 * How long the token is valid for (in seconds).
 	 */
-	private Long validFor = (long) 36000;
+	private final Long validFor = (long) 36000;
 
 	/**
 	 * How many times the token can be refreshed.
 	 */
-	private Integer refreshLimit = 1;
+	private final Integer refreshLimit = 1;
 
 	@Inject
 	private AuthenticationTokenIssuer tokenIssuer;
@@ -40,14 +47,12 @@ public class AuthenticationTokenService {
 	 * @param authorities
 	 * @return
 	 */
-	public String issueToken(final String username, final Set<Authority> authorities) {
-
+	public String issueToken(final User user) {
 		String id = this.generateTokenIdentifier();
 		ZonedDateTime issuedDate = ZonedDateTime.now();
 		ZonedDateTime expirationDate = this.calculateExpirationDate(issuedDate);
-
 		AuthenticationTokenDetails authenticationTokenDetails = new AuthenticationTokenDetails.Builder().withId(id)
-				.withUsername(username).withAuthorities(authorities).withIssuedDate(issuedDate)
+				.withUsername(user.getEmail()).withAuthorities(user.getRolesAsSet()).withIssuedDate(issuedDate)
 				.withExpirationDate(expirationDate).withRefreshCount(0).withRefreshLimit(this.refreshLimit).build();
 
 		return this.tokenIssuer.issueToken(authenticationTokenDetails);

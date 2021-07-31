@@ -16,6 +16,12 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.logging.log4j.Logger;
+
+import application.utils.DunGenLogger;
+import application.utils.Secure;
+
+@Secure
 @Provider
 @Dependent
 @Priority(Priorities.AUTHORIZATION)
@@ -26,6 +32,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException {
+
+		Logger logger = DunGenLogger.getLogger();
 
 		Method method = this.resourceInfo.getResourceMethod();
 

@@ -1,7 +1,9 @@
 package application.data.sheet;
 
 import application.utils.MiscUtils;
+import lombok.Data;
 
+@Data
 public class CharacterSheet {
 
 	private SheetDemographics characterDemographics;
@@ -14,8 +16,4 @@ public class CharacterSheet {
 	// TODO weapons
 	private int speed;
 
-	@Override
-	public String toString() {
-		return MiscUtils.objToJson(this);
-	}
 }

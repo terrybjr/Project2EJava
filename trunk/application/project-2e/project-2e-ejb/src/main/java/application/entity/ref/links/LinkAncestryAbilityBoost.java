@@ -19,16 +19,18 @@ import application.entity.composite_key.LinkAncestryAbilityKey;
 import application.entity.ref.RefAbility;
 import application.entity.ref.RefAncestry;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "ancestry")
 @Table(name = "Ancestry_Ability_Boost")
 @NamedQueries({
-	@NamedQuery(name = "LinkAncestryAbilityBoost.findAll", query = " SELECT T FROM LinkAncestryAbilityBoost T"), })
+	@NamedQuery(name = LinkAncestryAbilityBoost.QUERY_BY_ALL, query = " SELECT T FROM LinkAncestryAbilityBoost T"), })
 public class LinkAncestryAbilityBoost implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "LinkAncestryAbilityBoost.findAll";
+	public static final String QUERY_BY_ALL = "LinkAncestryAbilityBoost.findAll";
 
 	@EmbeddedId
 	LinkAncestryAbilityKey key;
@@ -54,10 +56,10 @@ public class LinkAncestryAbilityBoost implements HandleItemInf, Serializable {
 	}
 
 	public void copyFields(final LinkAncestryAbilityBoost item) {
-		this.setAbility(item.getAbility());
-		this.setAncestry(item.getAncestry());
-		this.setQuantity(item.getQuantity());
-		this.setKey(item.getKey());
+		this.ability = item.ability;
+		this.ancestry = item.ancestry;
+		this.quantity = item.quantity;
+		this.key = item.key;
 	}
 
 	@Override

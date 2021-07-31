@@ -41,7 +41,6 @@ public class StaticDataRest {
 	@Path("getStaticData/{value}")
 	@ApiOperation(value = "Get Static Data")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
-
 	public Response getStaticData(
 			@PathParam("value") final String value,
 			@Context final HttpServletRequest request,

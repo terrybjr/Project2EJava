@@ -1,10 +1,8 @@
-package application.utils;
+package application.security;
 
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Set;
-
-import application.security.Authority;
 
 public final class SystemUser implements Principal {
 

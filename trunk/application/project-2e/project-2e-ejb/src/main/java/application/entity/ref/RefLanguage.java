@@ -18,14 +18,14 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "ref_Language")
-@NamedQueries({ @NamedQuery(name = "RefLanguage.findAll", query = " SELECT T FROM RefLanguage T"),
-	@NamedQuery(name = "RefLanguage.byName", query = " SELECT T FROM RefLanguage T WHERE t.name = :name"), })
+@NamedQueries({ @NamedQuery(name = RefLanguage.QUERY_BY_ALL, query = " SELECT T FROM RefLanguage T"),
+	@NamedQuery(name = RefLanguage.QUERY_BY_NAME, query = " SELECT T FROM RefLanguage T WHERE t.name = :name"), })
 public class RefLanguage extends StaticData implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "RefLanguage.findAll";
+	public static final String QUERY_BY_ALL = "RefLanguage.findAll";
 	@Transient
-	public static String queryByName = "RefLanguage.byName";
+	public static final String QUERY_BY_NAME = "RefLanguage.byName";
 
 
 	@Id
@@ -39,7 +39,7 @@ public class RefLanguage extends StaticData implements HandleItemInf, Serializab
 	}
 
 	public void copyFields(final RefLanguage item) {
-		this.setName(item.getName());
+		this.name = item.name;
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import application.entity.User;
 import application.security.AuthenticationToken;
 import application.security.AuthenticationTokenService;
 import application.security.Authority;
+import application.security.LoginDS;
 import application.security.UsernamePasswordValidator;
 import application.security.exception.PasswordEncoder;
 import application.utils.DunGenLogger;
@@ -51,9 +52,6 @@ public class UserSLS {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		// persist into db
-
-		// Map<String, String> credMap = MiscUtils.hashPassword(user.getPassword());
 		User newUser = new User();
 		user.setPassword(this.passwordEncoder.hashPassword(user.getPassword()));
 		// user.setSalt(credMap.get("salt"));
@@ -62,19 +60,28 @@ public class UserSLS {
 		return new StatusResp(this.persistenceSLS.persistUser(newUser));
 	}
 
-	public StatusResp login(final User user) {
+	public StatusResp login(final LoginDS login) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		User validUser = this.validator.validateCredentials(user.getEmail(), user.getPassword());
-		Set<Authority> authSet = new HashSet<Authority>();
-		authSet.add(Authority.ADMIN);
-		validUser.setAuthorities(authSet);
-		String token = this.authService.issueToken(validUser.getEmail(), user.getAuthorities());
+		User validUser = this.validator.validateCredentials(login.getEmail(), login.getPassword());
+		String token = this.authService.issueToken(validUser);
 		AuthenticationToken authenticationToken = new AuthenticationToken();
 		authenticationToken.setToken(token);
 		return new StatusResp(token);
+	}
+
+	public StatusResp getUserByEmailEntry(final String email) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
+		Optional<User> user = this.getUserByEmail(email);
+		if (!user.isPresent()) {
+			return new StatusResp(StatusResp.STAT_USER, "Unable to find user for email: " + email);
+		}
+		return new StatusResp(user.get());
 	}
 
 	public User updateUser(final User user) {
@@ -103,8 +110,17 @@ public class UserSLS {
 			logger.debug(method + "Entering");
 		}
 		List<User> UserList = this.persistenceSLS.getDataList(User.QUERY_FIND_ALL, User.class, null, "getUsers");
+
+		// forcing ORM to load everything;
+		UserList.toString();
 		return new StatusResp(UserList);
 	}
+
+	/**
+	 * Call this method if you intend on returning user(s) to the front end, we need
+	 * to populate dependencies before the entity becomes detached. This will
+	 * forcfully pull in dependencies into the context
+	 */
 
 	public Optional<User> getUserById(final Long id) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
@@ -123,6 +139,10 @@ public class UserSLS {
 		}
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("email", email);
-		return this.persistenceSLS.getData(User.QUERY_BY_EMAIL, User.class, parameters, method);
+		Optional<User> userOpt = this.persistenceSLS.getData(User.QUERY_BY_EMAIL, User.class, parameters, method);
+		if (userOpt.isPresent()) {
+			userOpt.get().toString();
+		}
+		return userOpt;
 	}
 }

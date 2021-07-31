@@ -37,19 +37,19 @@ public class StaticDataSLS extends SLSBase {
 		final Map<String, Integer> parameters = new HashMap<>();
 		switch (value) {
 		case Lookup.STATIC_DATA_ANCESTRY:
-			List<RefAncestry> ancestryList = this.persistenceSLS.getDataList(RefAncestry.queryByAllAbilityBoost,
+			List<RefAncestry> ancestryList = this.persistenceSLS.getDataList(RefAncestry.QUERY_BY_ALL_ABILITY_BOOST,
 					RefAncestry.class, parameters, method);
-			ancestryList = this.persistenceSLS.getDataList(RefAncestry.queryByAllAbilityFlaw, RefAncestry.class,
+			ancestryList = this.persistenceSLS.getDataList(RefAncestry.QUERY_BY_ALL_ABILITY_FLAW, RefAncestry.class,
 					parameters, method);
-			ancestryList = this.persistenceSLS.getDataList(RefAncestry.queryByAllLanguages, RefAncestry.class,
+			ancestryList = this.persistenceSLS.getDataList(RefAncestry.QUERY_BY_ALL_LANGUAGES, RefAncestry.class,
 					parameters, method);
 			return ancestryList;
 		case Lookup.STATIC_DATA_ALIGNMENT:
-			return this.persistenceSLS.getDataList(RefAlignment.queryByAll, RefAlignment.class, parameters, method);
+			return this.persistenceSLS.getDataList(RefAlignment.QUERY_BY_ALL, RefAlignment.class, parameters, method);
 		case Lookup.STATIC_DATA_SIZE:
-			return this.persistenceSLS.getDataList(RefSize.queryByAll, RefSize.class, parameters, method);
+			return this.persistenceSLS.getDataList(RefSize.QUERY_BY_ALL, RefSize.class, parameters, method);
 		case Lookup.STATIC_DATA_LANGUAGE:
-			return this.persistenceSLS.getDataList(RefLanguage.queryByAll, RefLanguage.class, parameters, method);
+			return this.persistenceSLS.getDataList(RefLanguage.QUERY_BY_ALL, RefLanguage.class, parameters, method);
 		}
 		return null;
 	}
@@ -59,12 +59,18 @@ public class StaticDataSLS extends SLSBase {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
+		StaticData data = null;
 		final Map<String, String> parameters = new HashMap<>();
 		switch (value) {
 		case Lookup.STATIC_DATA_ANCESTRY:
 			parameters.put("name", key);
-			return this.persistenceSLS.getData(RefAncestryData.queryByAncestry, RefAncestryData.class, parameters, method).get();
+			data = this.persistenceSLS
+					.getData(RefAncestryData.QUERY_BY_ANCESTRY_NAME, RefAncestryData.class, parameters, method).get();
+			break;
 		}
-		return null;
+		if (data != null) {
+			data.toString();
+		}
+		return data;
 	}
 }

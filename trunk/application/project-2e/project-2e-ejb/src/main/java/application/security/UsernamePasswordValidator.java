@@ -28,9 +28,7 @@ public class UsernamePasswordValidator {
 	 * @return
 	 */
 	public User validateCredentials(final String email, final String password) {
-
 		Optional<User> optUser = this.userSLS.getUserByEmail(email);
-
 		if (!optUser.isPresent()) {
 			// User cannot be found with the given username/email
 			throw new AuthenticationException("Bad credentials.");

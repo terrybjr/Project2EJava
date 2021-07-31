@@ -17,10 +17,11 @@ import javax.ws.rs.core.Context;
  */
 @ApplicationPath("/api")
 public class Project2EConfig extends Application {
-
+	public Project2EConfig() {
+		super();
+	}
 	public Project2EConfig(@Context final ServletConfig servletConfig) {
 		super();
-
 	}
 
 }

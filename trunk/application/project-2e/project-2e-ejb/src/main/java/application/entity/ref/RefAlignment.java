@@ -17,14 +17,14 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "ref_Alignment")
-@NamedQueries({ @NamedQuery(name = "RefAlignment.findAll", query = " SELECT T FROM RefAlignment T"),
-	@NamedQuery(name = "RefAlignment.byName", query = " SELECT T FROM RefAlignment T WHERE t.name = :name"), })
+@NamedQueries({ @NamedQuery(name = RefAlignment.QUERY_BY_ALL, query = " SELECT T FROM RefAlignment T"),
+		@NamedQuery(name = RefAlignment.QUER_BY_NAME, query = " SELECT T FROM RefAlignment T WHERE t.name = :name"), })
 public class RefAlignment extends StaticData implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "RefAlignment.findAll";
+	public static final String QUERY_BY_ALL = "RefAlignment.findAll";
 	@Transient
-	public static String queryByName = "RefAlignment.byName";
+	public static final String QUER_BY_NAME = "RefAlignment.byName";
 
 	@Id
 	@Column(name = "Name", length = 50)

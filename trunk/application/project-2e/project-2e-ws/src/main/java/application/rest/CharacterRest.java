@@ -27,15 +27,17 @@ public class CharacterRest {
 	CharacterSLS characterSLS;
 	String className = this.getClass().getSimpleName();
 	static Logger logger = DunGenLogger.getLogger();
-	@Path("new/{name}/{userId}")
+
+	@Path("new/{userId}/{name}")
 	@GET
-	public Response createCharacter(@PathParam("name") final String name,
-			@PathParam("userId") final Long userId) {
+	public Response createCharacter(
+			@PathParam("userId") final int userId,
+			@PathParam("name") final String name) {
 		String method = this.className + ".createCharacter: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
-			logger.debug(method + "name: " + name);
 			logger.debug(method + "userId: " + userId);
+			logger.debug(method + "name: " + name);
 		}
 		try {
 			StatusResp resp = this.characterSLS.createCharacter(userId, name);

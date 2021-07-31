@@ -18,7 +18,9 @@ import javax.ws.rs.ext.Provider;
 
 import application.entity.User;
 import application.session.UserSLS;
+import application.utils.Secure;
 
+@Secure
 @Provider
 @Dependent
 @Priority(Priorities.AUTHENTICATION)
@@ -53,10 +55,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		}
 		User user = optUser.get();
-		Set<Authority> authoritySet = new HashSet<Authority>();
-		authoritySet.add(Authority.ADMIN);
 		AuthenticatedUserDetails authenticatedUserDetails = new AuthenticatedUserDetails(user.getEmail(),
-				authoritySet);
+				user.getRolesAsSet());
 
 		boolean isSecure = requestContext.getSecurityContext().isSecure();
 		SecurityContext securityContext = new TokenBasedSecurityContext(authenticatedUserDetails,

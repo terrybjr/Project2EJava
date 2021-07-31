@@ -8,11 +8,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import application.data.HandleItemInf;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "character")
 public class Inventory implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -22,6 +26,7 @@ public class Inventory implements HandleItemInf, Serializable {
 	@OneToOne
 	@MapsId
 	@JoinColumn(name = "character_id")
+	@JsonBackReference
 	private Character character;
 
 	public void copyFields(final Inventory item) {

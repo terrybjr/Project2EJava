@@ -21,15 +21,17 @@ import application.entity.ref.RefAbility;
 import application.entity.ref.RefAncestry;
 import application.utils.MiscUtils;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "ancestry")
 @Table(name = "Ancestry_Ability_Flaw")
 @NamedQueries({
-	@NamedQuery(name = "LinkAncestryAbilityFlaw.findAll", query = " SELECT T FROM LinkAncestryAbilityFlaw T"), })
+	@NamedQuery(name = LinkAncestryAbilityFlaw.QUERY_BY_ALL, query = " SELECT T FROM LinkAncestryAbilityFlaw T"), })
 public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	@Transient
-	public static String queryByAll = "LinkAncestryAbilityBoost.findAll";
+	public static final String QUERY_BY_ALL = "LinkAncestryAbilityFlaw.findAll";
 
 	@EmbeddedId
 	@JsonIgnore
@@ -56,10 +58,10 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 	}
 
 	public void copyFields(final LinkAncestryAbilityFlaw item) {
-		this.setAbility(item.getAbility());
-		this.setAncestry(item.getAncestry());
-		this.setQuantity(item.getQuantity());
-		this.setKey(item.getKey());
+		this.ability = item.ability;
+		this.ancestry = item.ancestry;
+		this.quantity = item.quantity;
+		this.key = item.key;
 	}
 
 	@Override
@@ -68,10 +70,4 @@ public class LinkAncestryAbilityFlaw implements HandleItemInf {
 		this.copyFields(newItem);
 		return this;
 	}
-
-	@Override
-	public String toString() {
-		return MiscUtils.objToJson(this);
-	}
-
 }

@@ -17,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -27,20 +28,22 @@ import application.entity.ref.RefAncestry;
 import application.entity.ref.RefBackground;
 import application.entity.ref.RefCreatureType;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "user")
 @Table(name = "`character`")
 @NamedQueries ({
-	@NamedQuery(name = "Character.findAll", query = " SELECT T FROM Character T"),
-	@NamedQuery(name = "Character.byId", query = " SELECT T FROM Character T WHERE t.id = :id"),
+	@NamedQuery(name = Character.QUERY_BY_ALL, query = " SELECT T FROM Character T"),
+	@NamedQuery(name = Character.QUERY_BY_ID, query = " SELECT T FROM Character T WHERE t.id = :id"),
 })
 public class Character implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "Character.findAll";
+	public static final String QUERY_BY_ALL = "Character.findAll";
 	@Transient
-	public static String queryById = "Character.byId";
+	public static final String QUERY_BY_ID = "Character.byId";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,9 +55,11 @@ public class Character implements HandleItemInf, Serializable {
 	private User user;
 
 	@OneToOne(mappedBy = "character", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@PrimaryKeyJoinColumn
 	private Inventory inventory;
 
 	@OneToOne(mappedBy = "character", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@PrimaryKeyJoinColumn
 	private Background tempbackground;
 
 	@OneToMany(mappedBy = "character", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -83,23 +88,24 @@ public class Character implements HandleItemInf, Serializable {
 	public Character(final String pCharacterName, final User pUser, final Inventory pInventory,
 			final RefBackground pBackground, final ArrayList<Level> pArrayList) {
 		super();
-		this.user = pUser;
-		this.inventory = pInventory;
-		this.levels = pArrayList;
-		this.characterName = pCharacterName;
-		this.background = pBackground;
+		this.setUser(pUser);
+		this.setInventory(pInventory);
+		this.inventory.setCharacter(this);
+		this.setLevels(pArrayList);
+		this.setCharacterName(pCharacterName);
+		this.setBackground(pBackground);
 	}
 
 
 
 	public void copyFields(final Character item) {
-		this.setId(item.getId());
-		this.setCharacterName(item.getCharacterName());
-		this.setAncestry(item.getAncestry());
-		this.setBackground(item.getBackground());
-		this.setInventory(item.getInventory());
-		this.setLevels(item.getLevels());
-		this.setUser(this.getUser());
+		this.id = item.id;
+		this.characterName = item.characterName;
+		this.ancestry = item.ancestry;
+		this.background = item.background;
+		this.inventory = item.inventory;
+		this.levels = item.levels;
+		this.user = item.user;
 	}
 
 	@Override

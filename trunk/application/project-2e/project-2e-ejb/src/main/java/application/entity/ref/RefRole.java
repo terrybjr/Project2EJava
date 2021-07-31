@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -11,41 +13,39 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.data.HandleItemInf;
+import application.security.Authority;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "ref_Ability")
-@NamedQueries({ @NamedQuery(name = RefAbility.QUERY_BY_ALL, query = " SELECT T FROM RefAbility T"),
-	@NamedQuery(name = RefAbility.QUERY_BY_NAME, query = " SELECT T FROM RefAbility T WHERE t.code = :code"), })
-public class RefAbility implements HandleItemInf, Serializable {
+@Table(name = "ref_Role")
+@NamedQueries({ @NamedQuery(name = RefRole.QUERY_BY_ALL, query = " SELECT T FROM RefRole T"), })
+public class RefRole implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Transient
-	public static final String QUERY_BY_ALL = "RefAbility.findAll";
-	@Transient
-	public static final String QUERY_BY_NAME = "RefAbility.byCode";
+	public static final String QUERY_BY_ALL = "RefRole.findAll";
 
 	@Id
-	@Column(name = "Code")
-	private char code;
+	@Column(name = "Role")
+	@Enumerated(EnumType.STRING)
+	private Authority role;
 
 	@Override
 	public String methodGetKey() {
 		// TODO Auto-generated method stub
-		return "getCode";
+		return "getRole";
 	}
 
-	public void copyFields(final RefAbility item) {
-		this.code = item.code;
+	public void copyFields(final RefRole item) {
+		this.role = item.role;
 	}
 
 	@Override
 	public HandleItemInf updateItem(final HandleItemInf pNewItem) {
-		RefAbility newItem = (RefAbility) pNewItem;
+		RefRole newItem = (RefRole) pNewItem;
 		this.copyFields(newItem);
 		return this;
 	}
-
 
 }

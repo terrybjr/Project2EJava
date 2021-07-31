@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import org.apache.logging.log4j.Logger;
 
 import application.data.StatusResp;
+import application.data.sheet.CharacterSheet;
 import application.entity.Inventory;
 import application.entity.Level;
 import application.entity.Character;
@@ -49,7 +50,7 @@ public class CharacterSLS {
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
 	 */
-	public StatusResp createCharacter(final Long userId, final String characterName)
+	public StatusResp createCharacter(final long userId, final String characterName)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
@@ -57,10 +58,10 @@ public class CharacterSLS {
 		}
 		Optional<User> optUser = this.userSLS.getUserById(userId);
 		if (!optUser.isPresent()) {
-			throw new Error("crap");
+			return new StatusResp(StatusResp.STAT_USER, "No user with id: " + userId);
 		}
-		User user = optUser.get();
-		Character newCharacter = new Character(characterName, user, new Inventory(), null, new ArrayList<Level>());
+		User foundUser = optUser.get();
+		Character newCharacter = new Character(characterName, foundUser, new Inventory(), null, new ArrayList<Level>());
 		newCharacter = this.persistenceSLS.persistPlayerCharacter(newCharacter);
 		// return the persisted object to the client
 		return new StatusResp(newCharacter);
@@ -80,7 +81,7 @@ public class CharacterSLS {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		List<Character> characterList = this.persistenceSLS.getDataList(Character.queryByAll, Character.class, null,
+		List<Character> characterList = this.persistenceSLS.getDataList(Character.QUERY_BY_ALL, Character.class, null,
 				method);
 		return new StatusResp(characterList);
 	}
@@ -92,7 +93,7 @@ public class CharacterSLS {
 		}
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("id", id);
-		return this.persistenceSLS.getData(Character.queryById, Character.class, parameters,
+		return this.persistenceSLS.getData(Character.QUERY_BY_ID, Character.class, parameters,
 				method);
 	}
 
@@ -103,7 +104,7 @@ public class CharacterSLS {
 		}
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("name", ancestryName);
-		return this.persistenceSLS.getData(RefAncestry.queryByName, RefAncestry.class, parameters, method);
+		return this.persistenceSLS.getData(RefAncestry.QUER_BY_NAME, RefAncestry.class, parameters, method);
 	}
 
 

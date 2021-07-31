@@ -254,33 +254,33 @@ public class MiscUtils {
 		}
 		return null;
 	}
-
-	public static Map<String, String> hashPassword(final String password) {
-		org.apache.shiro.util.ByteSource salt = MiscUtils.getSalt();
-
-		Map<String, String> credMap = new HashMap<String, String>();
-		credMap.put("hashedPassword", MiscUtils.hashAndSaltPassword(password, salt));
-		credMap.put("salt", salt.toHex());
-		return credMap;
-	}
-
-	public static String hashAndSaltPassword(final String password, final org.apache.shiro.util.ByteSource salt) {
-		return new Sha512Hash(password, salt, 2000000).toHex();
-	}
-
-	public static org.apache.shiro.util.ByteSource getSalt() {
-		return new SecureRandomNumberGenerator().nextBytes();
-	}
-
-	public static boolean authenticateUser(final User user, final String password) {
-		ByteSource salt = ByteSource.Util.bytes(Hex.decode(user.getSalt()));
-		String hashedPassword = hashAndSaltPassword(password, salt);
-		return hashedPassword.equals(user.getPassword());
-	}
-
-	public static Key generateKey(final String keyString) {
-		return new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
-	}
+	// keeping these for reference
+	//	public static Map<String, String> hashPassword(final String password) {
+	//		org.apache.shiro.util.ByteSource salt = MiscUtils.getSalt();
+	//
+	//		Map<String, String> credMap = new HashMap<String, String>();
+	//		credMap.put("hashedPassword", MiscUtils.hashAndSaltPassword(password, salt));
+	//		credMap.put("salt", salt.toHex());
+	//		return credMap;
+	//	}
+	//
+	//	public static String hashAndSaltPassword(final String password, final org.apache.shiro.util.ByteSource salt) {
+	//		return new Sha512Hash(password, salt, 2000000).toHex();
+	//	}
+	//
+	//	public static org.apache.shiro.util.ByteSource getSalt() {
+	//		return new SecureRandomNumberGenerator().nextBytes();
+	//	}
+	//
+	//	public static boolean authenticateUser(final User user, final String password) {
+	//		ByteSource salt = ByteSource.Util.bytes(Hex.decode(user.getSalt()));
+	//		String hashedPassword = hashAndSaltPassword(password, salt);
+	//		return hashedPassword.equals(user.getPassword());
+	//	}
+	//
+	//	public static Key generateKey(final String keyString) {
+	//		return new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
+	//	}
 
 	public static Date toDate(final LocalDateTime localDateTime) {
 		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());

@@ -26,14 +26,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "ref_AncestryData")
 @NamedQueries({
-	@NamedQuery(name = "RefAncestryData.findAll", query = " SELECT T FROM RefAncestryData T"), 
-	@NamedQuery(name = "RefAncestryData.findByAncestryName", query = "SELECT T FROM RefAncestryData T where T.name = :name ") })
+	@NamedQuery(name = RefAncestryData.QUERY_BY_ALL, query = " SELECT T FROM RefAncestryData T"),
+	@NamedQuery(name = RefAncestryData.QUERY_BY_ANCESTRY_NAME, query = "SELECT T FROM RefAncestryData T where T.name = :name ") })
 public class RefAncestryData extends StaticData implements HandleItemInf, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Transient
-	public static String queryByAll = "RefAncestryData.findAll";
+	public static final String QUERY_BY_ALL = "RefAncestryData.findAll";
 	@Transient
-	public static String queryByAncestry = "RefAncestryData.findByAncestryName";
+	public static final String QUERY_BY_ANCESTRY_NAME = "RefAncestryData.findByAncestryName";
 
 
 	@Id
@@ -73,14 +73,13 @@ public class RefAncestryData extends StaticData implements HandleItemInf, Serial
 	}
 
 	public void copyFields(final RefAncestryData item) {
-		this.setName(item.getName());
-		this.setAncestry(item.getAncestry());
-		this.setAlignmentAndReligion(item.getAlignmentAndReligion());
-		this.setInitialDescription(item.getInitialDescription());
-		this.setPhysicalDescription(item.getPhysicalDescription());
-		this.setSociety(item.getSociety());
-		this.setSampleNames(item.getSampleNames());
-
+		this.name = item.name;
+		this.ancestry = item.ancestry;
+		this.alignmentAndReligion = item.alignmentAndReligion;
+		this.initialDescription = item.initialDescription;
+		this.physicalDescription = item.physicalDescription;
+		this.society = item.society;
+		this.sampleNames = item.sampleNames;
 	}
 
 	@Override

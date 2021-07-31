@@ -8,7 +8,6 @@ import java.util.HashSet;
 /**
  * Model that holds details about an authentication token.
  *
- * @author cassiomolin
  */
 public final class AuthenticationTokenDetails {
 
