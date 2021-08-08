@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -18,13 +19,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
-import { ViewTypes } from '../Views';
+import HomeIcon from '@material-ui/icons/Home';
+import AddCharIcon from '@material-ui/icons/PersonAdd';
+// import { ViewTypes } from '../Views';
 
 interface Props {
   authState: { isSignedIn: boolean; username?: string };
   children: ReactElement;
   onSignOut: () => void;
-  onSetView: (view: ViewTypes) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -90,12 +92,17 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 const Navigation = (props: Props) => {
-  const { authState, children, onSetView, onSignOut } = props;
+  const { authState, children, onSignOut } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const views: ViewTypes[] = ['ANCESTRY', 'BACKGROUND', 'CLASSES', 'ABILITIES', 'FEATS'];
+  // const views: ViewTypes[] = ['ANCESTRY', 'BACKGROUND', 'CLASSES', 'ABILITIES', 'FEATS'];
+
+  const routes: { Icon: any, label: string, link: string }[] = [
+    { Icon: HomeIcon, label: 'Dashboard', link: '/' },
+    { Icon: AddCharIcon, label: 'Create New Character', link: '/create' },
+  ];
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -155,11 +162,13 @@ const Navigation = (props: Props) => {
           </div>
           <Divider />
           <List>
-            {views.map((text, index) => (
-              <ListItem button key={text} onClick={() => onSetView(text)}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
+            {routes.map(({ Icon, label, link }, index) => (
+              <Link to={link} key={label}>
+                <ListItem button className="btn-link">
+                  <ListItemIcon><Icon /></ListItemIcon>
+                  <ListItemText primary={label} />
+                </ListItem>
+              </Link>
               // eslint-disable-next-line @typescript-eslint/comma-dangle
             ))}
           </List>

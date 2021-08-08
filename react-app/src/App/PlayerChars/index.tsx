@@ -11,22 +11,23 @@ import { Character as CharacterInterface } from '../../models/Character.model';
 import { Ancestry as AncestryInterface } from '../../models/Ancestry.model';
 import { updateAncestry } from '../../redux/actions/ancestry.actions'; */
 import './index.css';
+import { Link } from 'react-router-dom';
 
 type State = {
-   characters: CharacterInterface[];
-   index: number;
+  characters: CharacterInterface[];
+  index: number;
 };
 
 class PlayerChars extends React.Component {
-   state: State = {
-      characters: [{name: 'Finrod', class: 'Wizard', level: 5}, {name: 'Melda', class: 'Medic', level: 7}],
-      index: 100,
-   };
+  state: State = {
+    characters: [{ name: 'Finrod', class: 'Wizard', level: 5 }, { name: 'Melda', class: 'Medic', level: 7 }],
+    index: 100,
+  };
 
-   render () {
-      return (
-         // <div>Player_Chars</div>
-         <Grid container spacing={2}>
+  render() {
+    return (
+      // <div>Player_Chars</div>
+      <Grid container spacing={2}>
         <Grid item xs={8}>
           <Card>
             <List>
@@ -35,10 +36,10 @@ class PlayerChars extends React.Component {
               </ListItem>
               {this.state.characters.map((character, index) => (
                 <ListItem
-/*                   selected={this.is_selected_item(index)}
-                  onClick={() => this.onSelect(index)}
-                  onMouseEnter={() => this.setState({ mouseOn: index })}
-                  onMouseLeave={() => this.setState({ mouseOn: 100 })} */
+                  /*                   selected={this.is_selected_item(index)}
+                                    onClick={() => this.onSelect(index)}
+                                    onMouseEnter={() => this.setState({ mouseOn: index })}
+                                    onMouseLeave={() => this.setState({ mouseOn: 100 })} */
                   button
                   key={character.name}
                 >
@@ -47,7 +48,7 @@ class PlayerChars extends React.Component {
                   />
                   <ListItemText
                     secondary={character.class}
-                    />
+                  />
                   Level: {character.level}
                 </ListItem>
               ))}
@@ -56,13 +57,13 @@ class PlayerChars extends React.Component {
         </Grid>
         <Grid item xs={8}>
           <Card> Click on Character to view or update
-                <Button className="button" variant="contained">Create New Character</Button><p></p>
+            <Link className="btn-link" to='/create'><Button className="button" variant="contained">Create New Character</Button></Link>
           </Card>
         </Grid>
       </Grid>
 
-      );
-   }
+    );
+  }
 }
 
 export default PlayerChars;
