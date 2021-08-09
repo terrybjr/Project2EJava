@@ -1,17 +1,8 @@
 import React from 'react';
-// import { connect } from 'react-redux';
-import { Card } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Button } from '@material-ui/core';
-import { Character as CharacterInterface } from '../../models/Character.model';
-/* import { fetchAncestryData } from '../../api/static-data';
-import { Ancestry as AncestryInterface } from '../../models/Ancestry.model';
-import { updateAncestry } from '../../redux/actions/ancestry.actions'; */
-import './index.css';
 import { Link } from 'react-router-dom';
+import { Button, Card, Grid, List, ListItem, ListItemText } from '@material-ui/core';
+import { Character as CharacterInterface } from '../../models/Character.model';
+import './index.css';
 
 type State = {
   characters: CharacterInterface[];
@@ -28,7 +19,7 @@ class PlayerChars extends React.Component {
     return (
       // <div>Player_Chars</div>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           <Card>
             <List>
               <ListItem>
@@ -55,9 +46,9 @@ class PlayerChars extends React.Component {
             </List>
           </Card>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           <Card> Click on Character to view or update
-            <Link className="btn-link" to='/create'><Button className="button" variant="contained">Create New Character</Button></Link>
+            <Link className="btn-link" to='/character/new'><Button className="button" variant="contained">Create New Character</Button></Link>
           </Card>
         </Grid>
       </Grid>

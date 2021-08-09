@@ -52,7 +52,7 @@ class Routing extends Component<Props, State> {
                     <Auth onSignOn={this.onSignOn.bind(this)} /> :
                     (
                         <Switch>
-                            <Route path="/create"><Views view="ANCESTRY" /></Route>
+                            <Route path="/character/new"><Views view="ANCESTRY" /></Route>
                             <Route path="/"><PlayerChars /></Route>
                         </Switch>
                     )

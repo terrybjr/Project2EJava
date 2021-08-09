@@ -16,8 +16,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import AddCharIcon from '@material-ui/icons/PersonAdd';
@@ -101,7 +99,7 @@ const Navigation = (props: Props) => {
 
   const routes: { Icon: any, label: string, link: string }[] = [
     { Icon: HomeIcon, label: 'Dashboard', link: '/' },
-    { Icon: AddCharIcon, label: 'Create New Character', link: '/create' },
+    { Icon: AddCharIcon, label: 'Create New Character', link: '/character/new' },
   ];
 
   const handleDrawerOpen = () => {
@@ -170,15 +168,6 @@ const Navigation = (props: Props) => {
                 </ListItem>
               </Link>
               // eslint-disable-next-line @typescript-eslint/comma-dangle
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['Gear', 'Weapons', 'Armor'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
             ))}
           </List>
         </Drawer>
