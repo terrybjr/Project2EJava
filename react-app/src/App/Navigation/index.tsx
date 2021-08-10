@@ -19,6 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import AddCharIcon from '@material-ui/icons/PersonAdd';
+import CharListIcon from '@material-ui/icons/People';
 // import { ViewTypes } from '../Views';
 
 interface Props {
@@ -97,8 +98,9 @@ const Navigation = (props: Props) => {
 
   // const views: ViewTypes[] = ['ANCESTRY', 'BACKGROUND', 'CLASSES', 'ABILITIES', 'FEATS'];
 
-  const routes: { Icon: any, label: string, link: string }[] = [
+  const routes: { Icon: any; label: string; link: string }[] = [
     { Icon: HomeIcon, label: 'Dashboard', link: '/' },
+    { Icon: CharListIcon, label: 'Character List', link: '/characters' },
     { Icon: AddCharIcon, label: 'Create New Character', link: '/character/new' },
   ];
 
@@ -163,7 +165,9 @@ const Navigation = (props: Props) => {
             {routes.map(({ Icon, label, link }, index) => (
               <Link to={link} key={label}>
                 <ListItem button className="btn-link">
-                  <ListItemIcon><Icon /></ListItemIcon>
+                  <ListItemIcon>
+                    <Icon />
+                  </ListItemIcon>
                   <ListItemText primary={label} />
                 </ListItem>
               </Link>
