@@ -7,11 +7,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Abilities from '../Classes/Abilities';
 import { connect } from 'react-redux';
 import { Ancestry } from '../../models/Ancestry.model';
+import { Button } from '@material-ui/core';
 
 type State = {
   oAbilities: Abilities;
   ability_scores: number[];
   ability_names: string[];
+  free: boolean;
 };
 
 type Props = {
@@ -23,6 +25,7 @@ class AbilitiesComponent extends React.Component<Props, State> {
     oAbilities: new Abilities(),
     ability_names: [],
     ability_scores: [],
+    free: true,
   };
 
   componentDidMount() {
@@ -62,7 +65,7 @@ class AbilitiesComponent extends React.Component<Props, State> {
       <Card>
         {' '}
         <Grid container>
-          <Grid item xs={9}>
+          <Grid item xs={6}>
             <List>
               {this.state.ability_names.map((text) => (
                 <ListItem key={text}>
@@ -71,11 +74,13 @@ class AbilitiesComponent extends React.Component<Props, State> {
               ))}
             </List>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6}>
             <List>
               {this.state.ability_scores.map((score, index) => (
                 <ListItem key={`score${index}`}>
+                  <Button size="small" disabled={this.state.free}>-</Button>
                   <ListItemText primary={score} />
+                  <Button size="small" disabled={this.state.free}>+</Button>
                 </ListItem>
               ))}
             </List>
