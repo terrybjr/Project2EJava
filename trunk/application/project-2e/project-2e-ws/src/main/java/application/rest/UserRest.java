@@ -59,9 +59,8 @@ public class UserRest {
 	@POST
 	@Path("new")
 	@ApiOperation(value = "Add a User")
-	@ApiResponses({
-		@ApiResponse(code = 200, message = "Success")
-	})
+	@ApiResponse(code = 200, message = "Success")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createUser(final User user) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
@@ -144,6 +143,8 @@ public class UserRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
+		logger.debug(this.securityContext.getUserPrincipal().getName());
+		logger.debug(this.securityContext.isUserInRole("ADMIN"));
 		return MiscUtils.buildResponse(new StatusResp("wohoo admin"));
 	}
 

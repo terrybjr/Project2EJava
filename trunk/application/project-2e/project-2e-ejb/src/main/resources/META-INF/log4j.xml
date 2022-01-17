@@ -14,5 +14,10 @@
         <level value="DEBUG" />
         <appender-ref ref="fileAppender" />
     </root>
+    
+    <logger name="org.hibernate" additivity="true">
+	<level value="error" />
+	<appender-ref ref="fileAppender" />
+</logger>
 
 </log4j:configuration>

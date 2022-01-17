@@ -16,8 +16,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.logging.log4j.Logger;
+
 import application.entity.User;
 import application.session.UserSLS;
+import application.utils.DunGenLogger;
 import application.utils.Secure;
 
 @Secure
@@ -25,6 +28,10 @@ import application.utils.Secure;
 @Dependent
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
+
+	final String className = this.getClass().getSimpleName();
+
+	static Logger logger = DunGenLogger.getLogger();
 
 	@EJB
 	private UserSLS userSLS;
@@ -34,6 +41,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(final ContainerRequestContext requestContext) throws IOException {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -47,6 +58,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	private void handleTokenBasedAuthentication(final String authenticationToken,
 			final ContainerRequestContext requestContext) {
+		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "Entering");
+		}
 
 		AuthenticationTokenDetails authenticationTokenDetails = this.authenticationTokenService
 				.parseToken(authenticationToken);
