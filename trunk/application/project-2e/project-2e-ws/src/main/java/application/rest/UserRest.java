@@ -1,5 +1,6 @@
 package application.rest;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -34,6 +35,7 @@ import application.session.UserSLS;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
 import application.utils.Secure;
+import application.cdi.annotations.DunGenRest;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.Api;
@@ -41,6 +43,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+@DunGenRest
 @Path(value = "user")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -59,20 +62,16 @@ public class UserRest {
 	@POST
 	@Path("new")
 	@ApiOperation(value = "Add a User")
-	@ApiResponses({
-		@ApiResponse(code = 200, message = "Success")
-	})
-	public Response createUser(final User user) {
+	@ApiResponse(code = 200, message = "Success")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response createUser(final User user)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		try {
-			StatusResp resp = this.userSLS.createUser(user);
-			return MiscUtils.buildResponse(resp);
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
-		}
+		StatusResp resp = this.userSLS.createUser(user);
+		return MiscUtils.buildResponse(resp);
 	}
 
 	@POST
@@ -85,12 +84,8 @@ public class UserRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		try {
-			StatusResp resp = this.userSLS.login(login);
-			return MiscUtils.buildResponse(resp);
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
-		}
+		StatusResp resp = this.userSLS.login(login);
+		return MiscUtils.buildResponse(resp);
 	}
 
 	@GET
@@ -105,11 +100,7 @@ public class UserRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		try {
-			return MiscUtils.buildResponse(this.userSLS.getUserByEmailEntry(email));
-		} catch (Exception e) {
-			return MiscUtils.buildResponse(e);
-		}
+		return MiscUtils.buildResponse(this.userSLS.getUserByEmailEntry(email));
 	}
 	// localhost:8080/project-2e-ws/api/user/list
 	@GET
@@ -123,11 +114,7 @@ public class UserRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		try {
-			return MiscUtils.buildResponse(this.userSLS.getUsers());
-		} catch (Exception e) {
-			return MiscUtils.buildResponse(e);
-		}
+		return MiscUtils.buildResponse(this.userSLS.getUsers());
 	}
 
 	@GET
@@ -144,6 +131,8 @@ public class UserRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
+		logger.debug(this.securityContext.getUserPrincipal().getName());
+		logger.debug(this.securityContext.isUserInRole("ADMIN"));
 		return MiscUtils.buildResponse(new StatusResp("wohoo admin"));
 	}
 
@@ -162,27 +151,5 @@ public class UserRest {
 		}
 		return MiscUtils.buildResponse(new StatusResp("wohoo admin and user"));
 	}
-
-
-	// keeping for reference
-	//	public String getToken(final String email) {
-	//		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
-	//		if (logger.isDebugEnabled()) {
-	//			logger.debug(method + "Entering");
-	//		}
-	//		Key key = MiscUtils.generateKey(email);
-	//		if (logger.isDebugEnabled()) {
-	//			logger.debug("email: " + email);
-	//			logger.debug("uriInfo: " + this.uriInfo);
-	//		}
-	//		String token = Jwts.builder().setSubject(email).setIssuer(this.uriInfo.getAbsolutePath().toString())
-	//				.setIssuedAt(new Date())
-	//				.setExpiration(MiscUtils.toDate(LocalDateTime.now().plusMinutes(15)))
-	//				.signWith(SignatureAlgorithm.HS512, key).setAudience(this.uriInfo.getBaseUri().toString()).compact();
-	//		if (logger.isDebugEnabled()) {
-	//			logger.debug(method + "token =" + token);
-	//		}
-	//		return token;
-	//	}
 
 }

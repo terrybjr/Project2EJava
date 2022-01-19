@@ -69,8 +69,7 @@ public class User implements HandleItemInf, Serializable {
 	@JsonManagedReference
 	private List<Character> characters;
 
-	@Size(min = 8)
-	@JsonIgnore
+	@Column(name = "Password")
 	private String password;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

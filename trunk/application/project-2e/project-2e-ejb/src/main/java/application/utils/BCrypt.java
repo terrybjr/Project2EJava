@@ -211,7 +211,7 @@ public class BCrypt {
 		int c1, c2;
 
 		if (len <= 0 || len > d.length) {
-			throw new IllegalArgumentException("Invalid len");
+			throw new IllegalArgumentException ("Invalid len");
 		}
 
 		while (off < len) {
@@ -268,7 +268,7 @@ public class BCrypt {
 		byte c1, c2, c3, c4, o;
 
 		if (maxolen <= 0) {
-			throw new IllegalArgumentException("Invalid maxolen");
+			throw new IllegalArgumentException ("Invalid maxolen");
 		}
 
 		while (off < slen - 1 && olen < maxolen) {
@@ -302,7 +302,7 @@ public class BCrypt {
 
 		ret = new byte[olen];
 		for (off = 0; off < olen; off++) {
-			ret[off] = (byte) rs.charAt(off);
+			ret[off] = (byte)rs.charAt(off);
 		}
 		return ret;
 	}
@@ -445,11 +445,11 @@ public class BCrypt {
 		byte ret[];
 
 		if (log_rounds < 4 || log_rounds > 30) {
-			throw new IllegalArgumentException("Bad number of rounds");
+			throw new IllegalArgumentException ("Bad number of rounds");
 		}
 		rounds = 1 << log_rounds;
 		if (salt.length != BCRYPT_SALT_LEN) {
-			throw new IllegalArgumentException("Bad salt length");
+			throw new IllegalArgumentException ("Bad salt length");
 		}
 
 		this.init_key();
@@ -499,14 +499,14 @@ public class BCrypt {
 		} else {
 			minor = salt.charAt(2);
 			if (minor != 'a' || salt.charAt(3) != '$') {
-				throw new IllegalArgumentException("Invalid salt revision");
+				throw new IllegalArgumentException ("Invalid salt revision");
 			}
 			off = 4;
 		}
 
 		// Extract number of rounds
 		if (salt.charAt(off + 2) > '$') {
-			throw new IllegalArgumentException("Missing salt rounds");
+			throw new IllegalArgumentException ("Missing salt rounds");
 		}
 		rounds = Integer.parseInt(salt.substring(off, off + 2));
 

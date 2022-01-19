@@ -11,6 +11,7 @@
 	     
 	        <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
 	        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://24.242.87.134:3306/project2e"/>
+	         <property name="hibernate.show_sql" value="false" />
         </properties>
     </persistence-unit>
 </persistence>

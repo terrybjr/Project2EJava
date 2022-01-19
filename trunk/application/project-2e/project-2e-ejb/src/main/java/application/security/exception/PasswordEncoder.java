@@ -2,7 +2,7 @@ package application.security.exception;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import application.utils.BCrypt;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @ApplicationScoped
 public class PasswordEncoder {
@@ -14,8 +14,8 @@ public class PasswordEncoder {
 	 * @return
 	 */
 	public String hashPassword(final String plainTextPassword) {
-		String salt = BCrypt.gensalt();
-		return BCrypt.hashpw(plainTextPassword, salt);
+
+		return BCrypt.withDefaults().hashToString(12, plainTextPassword.toCharArray());
 	}
 
 	/**
@@ -26,11 +26,7 @@ public class PasswordEncoder {
 	 * @return
 	 */
 	public boolean checkPassword(final String plainTextPassword, final String hashedPassword) {
-
-		if (null == hashedPassword || !hashedPassword.startsWith("$2a$")) {
-			throw new RuntimeException("Hashed password is invalid");
-		}
-
-		return BCrypt.checkpw(plainTextPassword, hashedPassword);
+		BCrypt.Result result = BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword);
+		return result.verified;
 	}
 }
