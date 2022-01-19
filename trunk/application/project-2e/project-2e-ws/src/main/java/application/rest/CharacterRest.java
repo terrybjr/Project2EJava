@@ -1,5 +1,7 @@
 package application.rest;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,7 +20,9 @@ import application.entity.User;
 import application.session.CharacterSLS;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
+import application.cdi.annotations.DunGenRest;
 
+@DunGenRest
 @Path(value = "character")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,37 +36,30 @@ public class CharacterRest {
 	@GET
 	public Response createCharacter(
 			@PathParam("userId") final int userId,
-			@PathParam("name") final String name) {
+			@PathParam("name") final String name)
+					throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + ".createCharacter: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
 			logger.debug(method + "userId: " + userId);
 			logger.debug(method + "name: " + name);
 		}
-		try {
-			StatusResp resp = this.characterSLS.createCharacter(userId, name);
-			return MiscUtils.buildResponse(resp);
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
-		}
+		StatusResp resp = this.characterSLS.createCharacter(userId, name);
+		return MiscUtils.buildResponse(resp);
 	}
 
 	@Path("setAncestry/{characterId}/{ancestry}")
 	@GET
 	public Response setAncestry(@PathParam("characterId") final Long characterId,
-			@PathParam("ancestry") final String ancestry) {
+			@PathParam("ancestry") final String ancestry) throws Exception {
 		String method = this.className + ".setAncestry: ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
 			logger.debug(method + "characterId: " + characterId);
 			logger.debug(method + "ancestry: " + ancestry);
 		}
-		try {
-			StatusResp resp = this.characterSLS.setAncestry(characterId, ancestry);
-			return MiscUtils.buildResponse(resp);
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
-		}
+		StatusResp resp = this.characterSLS.setAncestry(characterId, ancestry);
+		return MiscUtils.buildResponse(resp);
 	}
 
 	// localhost:8080/project-2e-ws/api/v1/pc/list
@@ -73,11 +70,7 @@ public class CharacterRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "entering");
 		}
-		try {
-			StatusResp resp = this.characterSLS.getCharacters();
-			return MiscUtils.buildResponse(resp);
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
-		}
+		StatusResp resp = this.characterSLS.getCharacters();
+		return MiscUtils.buildResponse(resp);
 	}
 }

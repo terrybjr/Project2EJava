@@ -21,11 +21,13 @@ import application.data.StatusResp;
 import application.session.StaticDataSLS;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
+import application.cdi.annotations.DunGenRest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+@DunGenRest
 @Path(value = "data")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -50,15 +52,11 @@ public class StaticDataRest {
 			logger.debug(method + "Entering");
 		}
 		List<? extends StaticData> staticData;
-		try {
-			staticData = this.staticDataSLS.getStaticData(value);
-			if (logger.isDebugEnabled()) {
-				logger.debug(method + "staticData: " + staticData);
-			}
-			return MiscUtils.buildResponse(new StatusResp(staticData));
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
+		staticData = this.staticDataSLS.getStaticData(value);
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "staticData: " + staticData);
 		}
+		return MiscUtils.buildResponse(new StatusResp(staticData));
 	}
 	@GET
 	@Path("getDataObject/{value}/{key}")
@@ -74,14 +72,10 @@ public class StaticDataRest {
 			logger.debug(method + "Entering");
 		}
 		StaticData data;
-		try {
-			data = this.staticDataSLS.getDataObject(value, key);
-			if (logger.isDebugEnabled()) {
-				logger.debug(method + "data: " + data);
-			}
-			return MiscUtils.buildResponse(new StatusResp(data));
-		} catch (Exception ex) {
-			return MiscUtils.buildResponse(ex);
+		data = this.staticDataSLS.getDataObject(value, key);
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "data: " + data);
 		}
+		return MiscUtils.buildResponse(new StatusResp(data));
 	}
 }
