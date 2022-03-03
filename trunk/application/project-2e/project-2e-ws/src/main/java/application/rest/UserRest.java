@@ -1,16 +1,9 @@
 package application.rest;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.Key;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -27,17 +20,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
 
-import application.data.StaticData;
+import application.cdi.annotations.DunGenRest;
 import application.data.StatusResp;
-import application.entity.User;
 import application.security.LoginDS;
 import application.session.UserSLS;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
 import application.utils.Secure;
-import application.cdi.annotations.DunGenRest;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -64,13 +53,13 @@ public class UserRest {
 	@ApiOperation(value = "Add a User")
 	@ApiResponse(code = 200, message = "Success")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createUser(final User user)
+	public Response createUser(final LoginDS login)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		StatusResp resp = this.userSLS.createUser(user);
+		StatusResp resp = this.userSLS.createUser(login);
 		return MiscUtils.buildResponse(resp);
 	}
 

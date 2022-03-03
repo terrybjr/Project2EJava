@@ -2,11 +2,9 @@ package application.session;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -21,7 +19,6 @@ import application.data.StatusResp;
 import application.entity.User;
 import application.security.AuthenticationToken;
 import application.security.AuthenticationTokenService;
-import application.security.Authority;
 import application.security.LoginDS;
 import application.security.UsernamePasswordValidator;
 import application.security.exception.PasswordEncoder;
@@ -46,17 +43,16 @@ public class UserSLS {
 
 	static Logger logger = DunGenLogger.getLogger();
 
-	public StatusResp createUser(final User user)
+	public StatusResp createUser(final LoginDS loginInfo)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
+			logger.debug(method + "LoginDS: " + loginInfo);
 		}
 		User newUser = new User();
-		user.setPassword(this.passwordEncoder.hashPassword(user.getPassword()));
-		// user.setSalt(credMap.get("salt"));
-		newUser.copyFields(user);
-		newUser.setId(null);
+		newUser.setEmail(loginInfo.getEmail());
+		newUser.setPassword(this.passwordEncoder.hashPassword(loginInfo.getPassword()));
 		return new StatusResp(this.persistenceSLS.persistUser(newUser));
 	}
 
