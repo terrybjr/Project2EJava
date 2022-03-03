@@ -8,7 +8,7 @@
   <h3 align="center">Project2E</h3>
 
   <p align="center">
-    Java application supporting the Project2E web application.
+    Java application supporting the Project2E web application.<br/>
   PLEASE IGNORE THIS README FOR NOW Instead if you want a good description of how to setup this project, look at the wiki.
     <!-- 
     <br />
