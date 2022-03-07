@@ -10,14 +10,15 @@ import java.util.Optional;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.Logger;
 
+import application.cdi.beans.Global;
 import application.data.StatusResp;
-import application.data.sheet.CharacterSheet;
+import application.entity.Character;
 import application.entity.Inventory;
 import application.entity.Level;
-import application.entity.Character;
 import application.entity.User;
 import application.entity.ref.RefAncestry;
 import application.utils.DunGenLogger;
@@ -35,6 +36,8 @@ public class CharacterSLS {
 	PersistenceSLS persistenceSLS;
 	@EJB
 	UserSLS userSLS;
+	@Inject
+	Global global;
 
 	static Logger logger = DunGenLogger.getLogger();
 
@@ -50,15 +53,15 @@ public class CharacterSLS {
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
 	 */
-	public StatusResp createCharacter(final long userId, final String characterName)
+	public StatusResp createCharacter(final String characterName)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		Optional<User> optUser = this.userSLS.getUserById(userId);
+		Optional<User> optUser = this.userSLS.getUserById(this.global.getUserId());
 		if (!optUser.isPresent()) {
-			return new StatusResp(StatusResp.STAT_USER, "No user with id: " + userId);
+			return new StatusResp(StatusResp.STAT_USER, "No user with id: " + this.global.getUserId());
 		}
 		User foundUser = optUser.get();
 		Character newCharacter = new Character(characterName, foundUser, new Inventory(), null, new ArrayList<Level>());

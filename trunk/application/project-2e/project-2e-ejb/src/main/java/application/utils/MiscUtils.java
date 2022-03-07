@@ -1,29 +1,19 @@
 package application.utils;
 
 import java.lang.reflect.Method;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.crypto.spec.SecretKeySpec;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.shiro.codec.Hex;
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
-import org.apache.shiro.crypto.hash.Sha512Hash;
-import org.apache.shiro.util.ByteSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.net.HttpHeaders;
 
 import application.data.StatusResp;
-import application.entity.User;
 
 /**
  * Credit goes to Joseph Witherspoon for the majority of the utils in this file.
@@ -172,11 +162,6 @@ public class MiscUtils {
 		// returning a message if it exist... may be informative...
 		if (MiscUtils.hasValue(valResp.getErrMsg())) {
 			return Response.status(valResp.getHttpStatusCd()).entity(valResp.getErrMsg()).build();
-		}
-		if (token != null) {
-			return Response.ok(valResp.getRetObj())
-					.header(HttpHeaders.AUTHORIZATION, SecurityFilter.BEARER + " " + token)
-					.build();
 		}
 		return Response.ok(valResp.getRetObj()).build();
 	}

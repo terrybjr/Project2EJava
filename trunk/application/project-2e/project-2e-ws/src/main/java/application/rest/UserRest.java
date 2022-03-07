@@ -2,7 +2,6 @@ package application.rest;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,17 +21,16 @@ import org.apache.logging.log4j.Logger;
 
 import application.cdi.annotations.DunGenRest;
 import application.data.StatusResp;
-import application.security.LoginDS;
 import application.session.UserSLS;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
-import application.utils.Secure;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @DunGenRest
+//@Secure
 @Path(value = "user")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -53,43 +51,33 @@ public class UserRest {
 	@ApiOperation(value = "Add a User")
 	@ApiResponse(code = 200, message = "Success")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createUser(final LoginDS login)
+	public Response createUser(
+			@Context final HttpServletRequest request,
+			@Context final HttpServletResponse response
+			)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		StatusResp resp = this.userSLS.createUser(login);
+		StatusResp resp = this.userSLS.createUser();
 		return MiscUtils.buildResponse(resp);
 	}
 
-	@POST
-	@Path("login")
-	@ApiOperation(value = "Login To A User")
-	@ApiResponse(code = 200, message = "Success")
-	@Produces(MediaType.TEXT_HTML)
-	public Response login(final LoginDS login) {
-		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "Entering");
-		}
-		StatusResp resp = this.userSLS.login(login);
-		return MiscUtils.buildResponse(resp);
-	}
 
 	@GET
 	@Path("getUser/{email}")
 	@ApiOperation(value = "Get a User")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
 	public Response getUser(
-			@PathParam("email") final String email,
+			@PathParam("id") final String id,
 			@Context final HttpServletRequest request,
 			@Context final HttpServletResponse response) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		return MiscUtils.buildResponse(this.userSLS.getUserByEmailEntry(email));
+		return MiscUtils.buildResponse(this.userSLS.findUser(id));
 	}
 	// localhost:8080/project-2e-ws/api/user/list
 	@GET
@@ -107,9 +95,7 @@ public class UserRest {
 	}
 
 	@GET
-	@Secure
 	@Path("adminSecure")
-	@RolesAllowed("ADMIN")
 	@ApiOperation(value = "AdminSecure")
 	@Produces(MediaType.TEXT_HTML)
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
@@ -122,12 +108,11 @@ public class UserRest {
 		}
 		logger.debug(this.securityContext.getUserPrincipal().getName());
 		logger.debug(this.securityContext.isUserInRole("ADMIN"));
-		return MiscUtils.buildResponse(new StatusResp("wohoo admin"));
+		return MiscUtils.buildResponse(this.userSLS.adminSecure());
 	}
 
 	@GET
 	@Path("userSecure")
-	@RolesAllowed("USER")
 	@ApiOperation(value = "UserSecure")
 	@Produces(MediaType.TEXT_HTML)
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
@@ -138,7 +123,14 @@ public class UserRest {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		return MiscUtils.buildResponse(new StatusResp("wohoo admin and user"));
+		if (this.securityContext != null) {
+			logger.debug("userPrincipal Name" + this.securityContext.getUserPrincipal().getName());
+			logger.debug(this.securityContext.isUserInRole("USER"));
+		}
+		if (request.getRemoteUser() != null) {
+			logger.debug("remoteUser" + request.getRemoteUser());
+		}
+		return MiscUtils.buildResponse(this.userSLS.userSecure());
 	}
 
 }

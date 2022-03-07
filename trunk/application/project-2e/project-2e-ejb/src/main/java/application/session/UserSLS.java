@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,69 +19,42 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
 
+import application.cdi.beans.Global;
 import application.data.StatusResp;
 import application.entity.User;
-import application.security.AuthenticationToken;
-import application.security.AuthenticationTokenService;
-import application.security.LoginDS;
-import application.security.UsernamePasswordValidator;
-import application.security.exception.PasswordEncoder;
 import application.utils.DunGenLogger;
 
 @Stateless
 @EJB(name = "java:global/UserSLS", beanInterface = UserSLS.class)
 @LocalBean
+@RolesAllowed("USER")
 public class UserSLS {
 	@EJB
 	PersistenceSLS persistenceSLS;
-	@Inject
-	private PasswordEncoder passwordEncoder;
-	@Inject
-	UsernamePasswordValidator validator;
-	@Inject
-	AuthenticationTokenService authService;
 	@Context
 	private UriInfo uriInfo;
+	@Resource
+	EJBContext securityContext;
+	@Inject
+	Global global;
 
 	String className = this.getClass().getSimpleName();
 
 	static Logger logger = DunGenLogger.getLogger();
 
-	public StatusResp createUser(final LoginDS loginInfo)
+	public StatusResp createUser()
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
-			logger.debug(method + "LoginDS: " + loginInfo);
 		}
 		User newUser = new User();
-		newUser.setEmail(loginInfo.getEmail());
-		newUser.setPassword(this.passwordEncoder.hashPassword(loginInfo.getPassword()));
+		Optional<User> existingUser = this.getUserById(this.global.getUserId());
+		if (existingUser.isPresent()) {
+			return new StatusResp(StatusResp.STAT_USER, "User already has an account.");
+		}
+		newUser.setId(this.global.getUserId());
 		return new StatusResp(this.persistenceSLS.persistUser(newUser));
-	}
-
-	public StatusResp login(final LoginDS login) {
-		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "Entering");
-		}
-		User validUser = this.validator.validateCredentials(login.getEmail(), login.getPassword());
-		String token = this.authService.issueToken(validUser);
-		AuthenticationToken authenticationToken = new AuthenticationToken();
-		authenticationToken.setToken(token);
-		return new StatusResp(token);
-	}
-
-	public StatusResp getUserByEmailEntry(final String email) {
-		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "Entering");
-		}
-		Optional<User> user = this.getUserByEmail(email);
-		if (!user.isPresent()) {
-			return new StatusResp(StatusResp.STAT_USER, "Unable to find user for email: " + email);
-		}
-		return new StatusResp(user.get());
 	}
 
 	public User updateUser(final User user) {
@@ -91,15 +68,15 @@ public class UserSLS {
 		return entUser;
 	}
 
-	public User findUser(final Long id) {
+	public StatusResp findUser(final String id) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
 		Optional<User> user = this.getUserById(id);
-		return user.get();
+		return new StatusResp(user.get());
 	}
-
+	@PermitAll
 	public StatusResp getUsers() {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
@@ -118,7 +95,7 @@ public class UserSLS {
 	 * forcfully pull in dependencies into the context
 	 */
 
-	public Optional<User> getUserById(final Long id) {
+	public Optional<User> getUserById(final String id) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
@@ -128,17 +105,21 @@ public class UserSLS {
 		return this.persistenceSLS.getData(User.QUERY_BY_ID, User.class, parameters, method);
 	}
 
-	public Optional<User> getUserByEmail(final String email) {
-		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "Entering, email: " + email);
+
+	@RolesAllowed("USER")
+	public StatusResp userSecure() {
+		if (this.securityContext == null) {
+			logger.debug("It's null... noooo!!");
+		} else {
+			logger.debug(this.securityContext);
+			logger.debug(this.securityContext.getCallerPrincipal());
+			logger.debug(this.securityContext.getCallerPrincipal().getName());
 		}
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("email", email);
-		Optional<User> userOpt = this.persistenceSLS.getData(User.QUERY_BY_EMAIL, User.class, parameters, method);
-		if (userOpt.isPresent()) {
-			userOpt.get().toString();
-		}
-		return userOpt;
+		return new StatusResp("Hello from userSecure");
+	}
+
+	public StatusResp adminSecure() {
+
+		return new StatusResp("Hello from adminSecure");
 	}
 }

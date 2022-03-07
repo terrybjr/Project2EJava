@@ -12,10 +12,10 @@ import javax.ws.rs.core.SecurityContext;
 
 import org.apache.logging.log4j.Logger;
 
-import application.utils.DunGenLogger;
-import application.utils.MiscUtils;
 import application.cdi.annotations.RestErrorHandled;
 import application.cdi.beans.Global;
+import application.utils.DunGenLogger;
+import application.utils.MiscUtils;
 
 @RestErrorHandled
 @Interceptor
@@ -55,9 +55,7 @@ public class RestErrorHandlerInterceptor {
 				if (!(resp.getStatus() == 200)) {
 					logger.warn(method + "Non 200 response occured printing request details.");
 					Object[] array = invocationContext.getParameters();
-					logger.warn(method + " request submitted by user: "
-							+ ((this.securityContext != null) ? this.securityContext.getUserPrincipal().getName()
-									: "Anonymous"));
+					logger.warn(method + " request submitted by user: " + this.global.getUserId());
 					//					logger.warn(method + " request url: " + request.getRequestURL().toString());
 					for (Object object : array) {
 						logger.warn(method + " request argument: " + object);
@@ -72,9 +70,7 @@ public class RestErrorHandlerInterceptor {
 			// TODO Auto-generated catch block
 			logger.error(method + "Exception occured printing request details.");
 			Object[] array = invocationContext.getParameters();
-			logger.error(method + " request submitted by user: " + ((this.securityContext != null)
-					? 
-							this.securityContext.getUserPrincipal().getName() : "Anonymous"));
+			logger.error(method + " request submitted by user: " + this.global.getUserId());
 			//			logger.error(method + " request url: " + request.getRequestURL().toString());
 			for (Object object : array) {
 				logger.error(method + " request argument: " + object);

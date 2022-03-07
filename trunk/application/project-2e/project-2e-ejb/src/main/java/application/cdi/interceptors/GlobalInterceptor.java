@@ -11,9 +11,9 @@ import javax.ws.rs.core.SecurityContext;
 
 import org.apache.logging.log4j.Logger;
 
-import application.utils.DunGenLogger;
 import application.cdi.annotations.GloballyManaged;
 import application.cdi.beans.Global;
+import application.utils.DunGenLogger;
 
 @GloballyManaged
 @Interceptor
@@ -31,18 +31,17 @@ public class GlobalInterceptor {
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");
 		}
-		String userId = "";
-		//		for (Object object : invocationContext.getParameters()) {  // we might need the request back at some point, this is how we get it.
-		//			if (object instanceof HttpServletRequest) {
-		userId = this.securityContext != null ? this.securityContext.getUserPrincipal().getName() : "Anonymous";
-		//						break;
-		//			}
-		//		}
-		Object retObj = null;
-		if (logger.isDebugEnabled()) {
-			logger.debug(method + "setting userId: " + userId);
+		String userId = "Anonymous";
+		for (Object object : invocationContext.getParameters()) {
+			if (object instanceof HttpServletRequest) {
+				userId = ((HttpServletRequest) object).getRemoteUser();
+			}
 		}
+		Object retObj = null;
 		this.global.setUserId(userId);
+		if (logger.isDebugEnabled()) {
+			logger.debug(method + "setting userId: " + this.global.getUserId());
+		}
 		retObj = invocationContext.proceed();
 		return retObj;
 	}

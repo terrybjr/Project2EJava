@@ -16,12 +16,12 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.Logger;
 
+import application.cdi.annotations.DunGenRest;
 import application.data.StaticData;
 import application.data.StatusResp;
 import application.session.StaticDataSLS;
 import application.utils.DunGenLogger;
 import application.utils.MiscUtils;
-import application.cdi.annotations.DunGenRest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -43,9 +43,7 @@ public class StaticDataRest {
 	@Path("getStaticData/{value}")
 	@ApiOperation(value = "Get Static Data")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
-	public Response getStaticData(
-			@PathParam("value") final String value,
-			@Context final HttpServletRequest request,
+	public Response getStaticData(@PathParam("value") final String value, @Context final HttpServletRequest request,
 			@Context final HttpServletResponse response) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
@@ -58,15 +56,13 @@ public class StaticDataRest {
 		}
 		return MiscUtils.buildResponse(new StatusResp(staticData));
 	}
+
 	@GET
 	@Path("getDataObject/{value}/{key}")
 	@ApiOperation(value = "Get Data Object")
 	@ApiResponses({ @ApiResponse(code = 200, message = "Success") })
-	public Response getDataObject(
-			@PathParam("value") final String value,
-			@PathParam("key") final String key,
-			@Context final HttpServletRequest request,
-			@Context final HttpServletResponse response) {
+	public Response getDataObject(@PathParam("value") final String value, @PathParam("key") final String key,
+			@Context final HttpServletRequest request, @Context final HttpServletResponse response) {
 		String method = this.className + "." + new Throwable().getStackTrace()[0].getMethodName() + ": ";
 		if (logger.isDebugEnabled()) {
 			logger.debug(method + "Entering");

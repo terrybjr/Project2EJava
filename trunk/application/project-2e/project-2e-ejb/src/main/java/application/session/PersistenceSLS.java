@@ -7,22 +7,23 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
 import application.entity.Background;
+import application.entity.Character;
 import application.entity.Inventory;
 import application.entity.Level;
-import application.entity.Character;
 import application.entity.User;
 import application.utils.MiscUtils;
 
 @Stateless
 @EJB(name = "java:global/PersistenceSLS", beanInterface = PersistenceSLS.class)
 @LocalBean
-
+@PermitAll
 public class PersistenceSLS extends SLSBase {
 
 	public <T> T persistItem(final T item, final String getKeyMethod, final String callingMethod)
